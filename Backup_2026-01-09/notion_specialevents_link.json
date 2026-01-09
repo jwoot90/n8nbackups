@@ -1,0 +1,155 @@
+{
+  "createdAt": "2025-12-17T21:52:43.537Z",
+  "updatedAt": "2025-12-17T22:44:12.006Z",
+  "id": "4VOrIoV4CdggHqT5",
+  "name": "notion_specialevents_link",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyHour"
+            }
+          ]
+        },
+        "databaseId": {
+          "__rl": true,
+          "value": "2cb6ffe8-2f48-8013-938a-c839a0cf6be4",
+          "mode": "list",
+          "cachedResultName": "Calendar Intake",
+          "cachedResultUrl": "https://www.notion.so/2cb6ffe82f488013938ac839a0cf6be4"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1a2840ab-5ff5-4bae-8c19-b26c66a7c28e",
+      "name": "Notion Trigger",
+      "credentials": {
+        "notionApi": {
+          "id": "GvXFbJlEgvlLAuri",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e3fe75ac-80aa-4beb-b2a3-cb62ff25ddbd",
+              "leftValue": "={{ $json[\"Event Category\"] }}",
+              "rightValue": "Special Event",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "aa1f456d-e3e1-4547-a9bc-46741bc642d3",
+              "leftValue": "={{ $json[\"Related Event\"] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "02f95fc5-713c-4118-9ffe-afda0de19e23",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "199a905f-fe2f-4d95-9577-6d28bde4d539",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "GvXFbJlEgvlLAuri",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Notion Trigger": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "dd9ed4a1-28be-4978-b108-9e56ff0c59c6",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-17T21:52:43.537Z",
+      "updatedAt": "2025-12-17T21:52:43.537Z",
+      "role": "workflow:owner",
+      "workflowId": "4VOrIoV4CdggHqT5",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
