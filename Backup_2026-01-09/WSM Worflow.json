@@ -1,0 +1,873 @@
+{
+  "createdAt": "2025-11-03T02:42:16.136Z",
+  "updatedAt": "2025-11-09T20:10:49.146Z",
+  "id": "dCiOjzeoRl437vzM",
+  "name": "WSM Worflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}\n",
+        "options": {
+          "systemMessage": "System PROMPT\nOverview\nYou are a helpful assistant that creates written promotional material for upcoming events at Clearbrook Center of the Arts. Your goal is to create posts for each  event to be published on the Clearbrook website, Clearbrook Facebook page, and Clearbrook Instagram page. \n\nGoals\n1.\tCreate event post for Clearbrook Center of the Arts website in HTML format\n2.\tCreate event post caption for Clearbrook Center of Facebook Page\n3.\tCreate event post caption for Clearbrook Center of Instagram Page\n4.\tDetect and handle event collisions.\n5.\tDetect if you have insufficient information to create post. If you have insufficient information , ask user for more information.\n\nTools Available\nBe specific about how and when to use each tool.\n•\tBefore creating an event Check Clearbrook Events Google Sheets. \n•\tFor each row in the Clearbrook Events Google Sheets check “Posted” column. If Posted = “No”, then create a post for the event using the information from the name, host, time, frequency, and description column\n•\tIf any cell is empty ask user for the information needed to complete cell.\n•\tOnce you have received updated information pertaining to the spreadsheet update the spreadsheet.\n•\tIf user wants to create an event that’s not on the spreadsheet. Request information about the event and update each column of the spreadsheet with the new information.\n\n\nWorkflow overview\n1.\tRead the events listed on the Clearbrook Event Google Sheet.\n2.\t Use the information on the Clearbrook Event Google Sheet to draft an outline of the post. \n•\tTo get the event name refer to the “Event Name” column. \n•\tTo get the name of the host refer to the “Host” column. To get the event date refer to the “Date” column . \n•\tTo get a description of the event refer to the “Description” column . \n•\tTo get the event time refer to the “Time” column. \n•\tTo get the Posted status refer to the “Posted” column.\n-Posted status refers to whether or not all the web post, facebook post, and Instagram post have been approved by the user.\n3.\tOnce the web post is approved by the user the create a full post in HTML.\n4.\tDraft a Facebook caption for the post .\n5.\tOnce the Facebook caption is approved. Draft a caption for Instagram.\n6.\tOnce  the web post, Facebook and Instagram caption are approved, update the “Posted” column as “Yes” for the appropriate row. \n7.\tOnce the Website, Facebook and Instagram posts are approved for an event ask the user if there are any additional events that they would like to make posts for. If so, repeat steps 2-6.\nnote: you can break out of this workflow if requested, but generally follow these steps.\nUse the  keyword column in the Clearbrook Event Google Sheet to add relevant \"Meta Keywords\" that you discover.\n-Keywords: The big picture keywords that you want to sprinkle into your posts.\nYou must follow any existing preferences and meta keywords set if they are relevant to the current request.\nFinal Post Format:\nUse the post_blog tool to deliver the completed blog post once you have all the details. For example:\n\"html\": \"<h1>Sample Blog Post with Images<\\/h1><br><p>Welcome to this sample blog post. Below are examples of how to include images using the &lt;img&gt; tag with working URLs.<\\/p><br><h2>Example 1: Displaying a Cat Image<\\/h2><br><p>Here's an image of a cat:<\\/p><br><img src=\\\"https:\\/\\/cdn2.thecatapi.com\\/images\\/MTY3ODIyMQ.jpg\\\" alt=\\\"A cute cat\\\" width=\\\"500\\\" height=\\\"600\\\"><br><h2>Example 2: Displaying a Dog Image<\\/h2><br><p>Here's an image of a dog:<\\/p><br><img src=\\\"https:\\/\\/images.dog.ceo\\/breeds\\/labrador\\/n02099712_5646.jpg\\\" alt=\\\"A happy dog\\\" width=\\\"500\\\" height=\\\"500\\\"><br><h2>Example 3: Displaying a Placeholder Image<\\/h2><br><p>Here's a placeholder image:<\\/p><br><img src=\\\"https:\\/\\/via.placeholder.com\\/150\\\" alt=\\\"Placeholder image\\\" width=\\\"150\\\" height=\\\"150\\\"><br><p>Thank you for reading this sample blog post. The images above demonstrate how to use the &lt;img&gt; tag with different URLs to display images in your HTML content.<\\/p>\",\n\"title\": \"Title of Blog\"\nFacebook Post Creation.\nFor Facebook posts try to aim for 40-80 characters\nInstagram Post Creation\nFor  Instagram posts try to aim for up to 125 characters\n\n\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1056,
+        640
+      ],
+      "id": "dd532866-794e-4ca0-9e84-6f13281174a4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        624
+      ],
+      "id": "ac5912ce-633d-4aa9-b9f9-c1c42b3f99b0",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1376,
+        672
+      ],
+      "id": "0f03c817-fd11-4424-8ec4-cc45e16aec3f",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Keywords": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Keywords__using_to_match_', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "Keywords"
+          ],
+          "schema": [
+            {
+              "id": "Event Name ",
+              "displayName": "Event Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Host",
+              "displayName": "Host",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Frequency",
+              "displayName": "Frequency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Brand Voice",
+              "displayName": "Brand Voice",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Posted ",
+              "displayName": "Posted ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1472,
+        832
+      ],
+      "id": "e1317398-0f6e-4819-8a9c-02629582d4cf",
+      "name": "Update row in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1104,
+        -640
+      ],
+      "id": "be58bf47-b31a-4b38-9b97-2703e908a05c",
+      "name": "Telegram Trigger1",
+      "webhookId": "0269d0ef-0d25-4061-af44-1e205bd86337",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6XtWZCIj5gK0FVh",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1312,
+        -640
+      ],
+      "id": "39669558-0ee1-4547-8ce2-fffdff227e77",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "wpYn7ru9ht2Tl24s",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.wj8n.org/webhook/3da94c06-8472-4c25-a760-c0d02440da1a",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "=Event Name",
+              "value": "={{ $json[\"Event Name \"] }}"
+            },
+            {
+              "name": "Host",
+              "value": "={{ $json.Host }}"
+            },
+            {
+              "name": "Description",
+              "value": "={{ $json.Description }}"
+            },
+            {
+              "name": "Frequency",
+              "value": "={{ $json.Frequency }}"
+            },
+            {
+              "name": "Time",
+              "value": "={{ $json.Time }}"
+            },
+            {
+              "name": "Date",
+              "value": "={{ $json.Date }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1536,
+        -640
+      ],
+      "id": "be19044e-882b-44f1-a52e-6581c0c00a57",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a social media manager. You recieve posts that were rejected by the  user and your job is to improve the writing of your posts, so it closely aligns with the user’s specifications. I need a 1 to 4 paragraph post that I’m going to add to the Clearbrook Center of the Arts website for an event designated by the user. If you cannot find sufficient information from the spreadsheet , consult with user for additional information. I will also need an Instagram post (up to 125 characters), and a Facebook post (between 40-80 characters). Consult with user to determine writing voice for all posts. ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2464,
+        -832
+      ],
+      "id": "c7d26de7-0671-4ad4-bc41-1488ede7ae78",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2368,
+        -560
+      ],
+      "id": "7bc3cb5c-d786-4336-bd38-67ccc2932ea3",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2560,
+        -576
+      ],
+      "id": "a60b13a0-fbe1-48a2-b422-fa33dffc727a",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "chatId": " 6990062444",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1664,
+        -448
+      ],
+      "id": "06483e2e-51aa-42aa-b537-4c0aa8768d0f",
+      "name": "Send a text message2",
+      "webhookId": "12a27c3d-ab7a-4927-94e1-3e1baa5833c5",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6XtWZCIj5gK0FVh",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1280,
+        96
+      ],
+      "id": "27fcbf5d-174e-4546-9c4e-a4167f83f7a9",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        3360,
+        112
+      ],
+      "id": "11195c26-913f-4e46-b14e-2220e53230dd"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.Description }}",
+                    "rightValue": "YCC Entertainment",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "f7226bf5-43cc-4fac-abcf-8c2eb72fc544"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "14fac0f3-405b-4d8c-af55-c94d72250e56",
+                    "leftValue": "={{ $json.body.Host }}",
+                    "rightValue": "Kim B Miller",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d576e6c4-ccb5-4b24-9335-2d549fec40ff",
+                    "leftValue": "={{ $json.body.Host }}",
+                    "rightValue": "Fringe Stew",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5e8f9479-6ff0-4288-ae38-12e3025aabdb",
+                    "leftValue": "={{ $json.body.Host }}",
+                    "rightValue": "Clearbrook Artist Collective",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "56c53fc2-2394-4340-a649-b7f434298680",
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1680,
+        112
+      ],
+      "id": "c9e11a0c-cabe-4963-ba97-19b10d9c8171",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "c4f00740-da56-48ac-b3d2-58619db9fb3a",
+        "options": {
+          "responseData": ""
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        96
+      ],
+      "id": "24bd1ae0-b02d-46f2-b37f-44f55a02de7d",
+      "name": "Webhook",
+      "webhookId": "c4f00740-da56-48ac-b3d2-58619db9fb3a"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "System Prompt\nYou are an experienced Social Media Manager for Clearbrook Center of the Arts, a multidisciplinary arts center in Lake Ridge, Virginia. Your job is to create compelling and brand-aligned posts for non-recurring or special events such as new shows, exhibitions, workshops, or one-time performances.\n\nFor each event provided, generate:\n\nWebsite Post (1–4 paragraphs) — A detailed, engaging event write-up suitable for the Clearbrook Center of the Arts website.\n\nInclude:\n\nEvent name\n\nEvent description\n\nDate and time\n\nCover charge (if applicable)\n\nIf instructed by the user, omit specific details.\n\nMaintain a professional yet inviting tone that reflects the center’s mission: to support experimental, community-driven, and inclusive art experiences.\n\nInstagram Post (up to 125 characters) — Short, catchy, and visually oriented. Use active language and include a relevant call-to-action (e.g., Join us!, Don’t miss it!, Experience the art!).\n\nFacebook Post (40–80 characters) — Friendly and community-focused. Emphasize connection, local engagement, or excitement.\n\nQuality Metrics:\n\nPosts must align with Clearbrook’s brand voice: artistic, inclusive, community-centered, and creative.\n\nPosts must appeal to the target audience: art lovers, creators, and supporters seeking authentic, local cultural experiences.\n\nEach post should be clear, engaging, and suitable for the platform’s tone and format.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1328,
+        -448
+      ],
+      "id": "652014cd-ddbd-4172-bfdb-05a16e5a7d07",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1328,
+        -288
+      ],
+      "id": "b309c821-3a6f-4d69-8f4b-1ba66f0c0704",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are a social media content creator. I need a 1 to 2 paragraph post that I’m going to add to the Clearbrook Center of the Arts website for “Lime Light Vibes”. An uncensored open mic that operates weekly on Wednesdays from 8pm – 10pm at Clearbrook Center of the Arts. Produced by YCC Entertainment and streamed on YouTube. I will also need an Instagram post (up to 125 characters), and a Facebook post (between 40-80 characters). Write all of the posts in the style of BET’s show 106 and Park. Here is a reference of the writing voice. \n“Tap into Lime Light Vibes!  An Open Mic where raw uncut talent straight out of the DMV is delivered to you here at  Clearbrook Center of Arts in Woodbridge VA. We got raw rappers, raunchy comedians, uncensored spoken word performers, all displays of talent at a place where Art can not be restricted. Every Wednesday Night at 8:00 PM, pull up to the show in person, or enjoy the livestream on YouTube from home.”\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2176,
+        -32
+      ],
+      "id": "d13dcea4-0bf8-4478-b73d-9b9587ecb217",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -448
+      ],
+      "id": "0d71a7d7-1a8a-4b2b-9000-f98d1ecd7145",
+      "name": "When clicking ‘Execute workflow’"
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Telegram Trigger1": [
+      {
+        "json": {
+          "update_id": 113234041,
+          "message": {
+            "message_id": 229,
+            "from": {
+              "id": 6990062444,
+              "is_bot": false,
+              "first_name": "J",
+              "last_name": "W",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 6990062444,
+              "first_name": "J",
+              "last_name": "W",
+              "type": "private"
+            },
+            "date": 1762717814,
+            "text": "lol"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "1055c248-333f-422f-890c-10e5f9086ae5",
+  "triggerCount": 2,
+  "shared": [
+    {
+      "createdAt": "2025-11-03T02:42:16.136Z",
+      "updatedAt": "2025-11-03T02:42:16.136Z",
+      "role": "workflow:owner",
+      "workflowId": "dCiOjzeoRl437vzM",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
