@@ -1,0 +1,489 @@
+{
+  "createdAt": "2025-10-25T00:13:50.894Z",
+  "updatedAt": "2025-12-12T20:56:52.850Z",
+  "id": "x34iQgD3U9k4WQyj",
+  "name": "Bloging Agent Workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "dd7a70f8-4936-41a8-b8ef-414c45324d1d",
+      "name": "Telegram Trigger",
+      "webhookId": "9e333e56-f898-481b-9467-8e91b2d16940",
+      "credentials": {
+        "telegramApi": {
+          "id": "YnT90bOVM0up5xLv",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appUsRrtY73QpnkEO",
+          "mode": "list",
+          "cachedResultName": "Blog Agent",
+          "cachedResultUrl": "https://airtable.com/appUsRrtY73QpnkEO"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl9cf6APq1jbPcmO",
+          "mode": "list",
+          "cachedResultName": "Preferences",
+          "cachedResultUrl": "https://airtable.com/appUsRrtY73QpnkEO/tbl9cf6APq1jbPcmO"
+        },
+        "returnAll": false,
+        "limit": 20,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        192,
+        -192
+      ],
+      "id": "474f4a5e-2b9d-40b3-a0ee-154a1d70a429",
+      "name": "Preferences",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "IZTgLsxFGInFRsWg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appUsRrtY73QpnkEO",
+          "mode": "list",
+          "cachedResultName": "Blog Agent",
+          "cachedResultUrl": "https://airtable.com/appUsRrtY73QpnkEO"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblyB3KmljjRNcoSO",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appUsRrtY73QpnkEO/tblyB3KmljjRNcoSO"
+        },
+        "returnAll": false,
+        "limit": 20,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        160
+      ],
+      "id": "934a5ed4-b65d-4873-bf8b-eb4bc5b9a0e7",
+      "name": "Keywords",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "IZTgLsxFGInFRsWg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "Preferences",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -192
+      ],
+      "id": "2b8b471c-ec51-48d1-b6db-546d0f8b98f8",
+      "name": "Aggregate Preferences"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "Keywords",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        416,
+        160
+      ],
+      "id": "12205e7c-5fe2-48cb-a878-9a47a2726d3b",
+      "name": "Aggregate Keywords"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        688,
+        16
+      ],
+      "id": "4937bb08-9373-4300-ae0f-12fe83b18656",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}\n",
+        "options": {
+          "systemMessage": "=SYSTEM PROMPT\n\nYOU ARE A BLOGGING ASSISTANT. YOUR PRIMARY ROLE IS TO DRAFT BLOG POSTS (DRAFTED IN HTML) AND CONSULT WITH THE USER ABOUT BLOG RELATED REQUESTS. USE THE FOLLOWING GUIDELINES AND STEPS IN YOUR WORKFLOW.\n--------------------------------------------------------------------------------------------\nWorkflow Overview\n1.Discuss Blog Ideas. Brainstorm Relevant Topics for Users\n2.Draft an outline: Provide a brief structured outline, (not the full post) for confirmation\n3.Publish Post Once confirmed, create the full blog post in HTML. \n\nnote: you can break out of this workflow if requested, but generally follow these steps. \n\n--------------------------------------------------------------------------------------------------------\nAdd Preferences tool: Use this to add \"Preferences\" in 1 or 2 sentences or less.These preferences are for capturing information about style,branding,marketing,SEO or any other detail that may help improve future blog posts.\n\nAdd Keyword tool: use this to add relevant \"Meta Keywords\" that you discover.\n-Keywords: The big picture keywords that you want to sprinkle into your posts. \n\nYou must follow any existing preferences and meta keywords set if they are relevant to the current request. \n\n---------------------------------------------------------------------------------------------------------\n\nBLOG POST CREATION\n\nFinal Post Format:\nUse the post_blog tool to deliver the completed blog post once you have all the details. For example:\n\n\"html\": \"<h1>Sample Blog Post with Images<\\/h1><br><p>Welcome to this sample blog post. Below are examples of how to include images using the &lt;img&gt; tag with working URLs.<\\/p><br><h2>Example 1: Displaying a Cat Image<\\/h2><br><p>Here's an image of a cat:<\\/p><br><img src=\\\"https:\\/\\/cdn2.thecatapi.com\\/images\\/MTY3ODIyMQ.jpg\\\" alt=\\\"A cute cat\\\" width=\\\"500\\\" height=\\\"600\\\"><br><h2>Example 2: Displaying a Dog Image<\\/h2><br><p>Here's an image of a dog:<\\/p><br><img src=\\\"https:\\/\\/images.dog.ceo\\/breeds\\/labrador\\/n02099712_5646.jpg\\\" alt=\\\"A happy dog\\\" width=\\\"500\\\" height=\\\"500\\\"><br><h2>Example 3: Displaying a Placeholder Image<\\/h2><br><p>Here's a placeholder image:<\\/p><br><img src=\\\"https:\\/\\/via.placeholder.com\\/150\\\" alt=\\\"Placeholder image\\\" width=\\\"150\\\" height=\\\"150\\\"><br><p>Thank you for reading this sample blog post. The images above demonstrate how to use the &lt;img&gt; tag with different URLs to display images in your HTML content.<\\/p>\",\n\"title\": \"Title of Blog\"\n\nBacklinks:\nInsert relevant inline backlinks from the following list when it fits naturally in the content:\nhttps://tackettsmill.com/shop/(shop)\nhttps://tackettsmill.com/dine/(dine)\nhttps://tackettsmill.com/time-capsule/(time capsule)\nhttps://tackettsmill.com/prince-william-county-walk-of-fame/(walk of fame)\nhttps://tackettsmill.com/leasing/(leasing)\nhttps://tackettsmill.com/directory/(directory)\nhttps://tackettsmill.com/event-directory/(events)\nhttps://tackettsmill.com/history/(history)\nhttps://tackettsmill.com/category/news/(tackett's mill news)\n\n\n\n\n\nMarketing/SEO & Offer:\nMaintain focus on the company’s details, relevant subject matter, and SEO optimization.\nEnd (or sprinkle within) the blog post a clear offer or invitation to contact us using the link above if it makes sense.\n\n\nCurrent Preferences\n{{\n  $json.Preferences\n    .map(pref => `\n      ${pref[\"Preference\"]}\n    `)\n    .join('')\n}}\n\n-----------------------------\n CURRENT META KEYWORDS FOR THE ENTIRE SITE\n\n{{\n  $json.Keywords\n    .map(kw => `\n      ${kw[\"Keywords\"]}\n    `)\n    .join('')\n}}\n<writing style>\nUse clear, direct language and avoid complex terminology.\nAim for a Flesch reading score of 80 or higher.\nUse the active voice.\nAvoid adverbs.\nAvoid buzzwords and instead use plain English.\nUse jargon where relevant.\nAvoid being salesy or overly enthusiastic and instead express calm confidence.\n</writing style>\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        16
+      ],
+      "id": "f7587a64-0775-486e-8bef-cf6712a60da7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        224
+      ],
+      "id": "0e59e83b-f79e-49f9-90b3-e072c8a5499b",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 9
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        912,
+        224
+      ],
+      "id": "eca19eeb-88ab-4250-a47e-6b71ae64622a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "=appUsRrtY73QpnkEO",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbl9cf6APq1jbPcmO",
+          "mode": "list",
+          "cachedResultName": "Preferences",
+          "cachedResultUrl": "https://airtable.com/appUsRrtY73QpnkEO/tbl9cf6APq1jbPcmO"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Preference": "={{ $fromAI('add_preference') }}"
+          },
+          "matchingColumns": [
+            "Preference"
+          ],
+          "schema": [
+            {
+              "id": "Preference",
+              "displayName": "Preference",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        1056,
+        224
+      ],
+      "id": "c516cbb1-35f7-4465-8d29-977e484d2e8a",
+      "name": "add_preferences",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "IZTgLsxFGInFRsWg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "=appUsRrtY73QpnkEO",
+          "mode": "id"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblyB3KmljjRNcoSO",
+          "mode": "list",
+          "cachedResultName": "Keywords",
+          "cachedResultUrl": "https://airtable.com/appUsRrtY73QpnkEO/tblyB3KmljjRNcoSO"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Keywords": "={{ $fromAI('add_keyword') }}\n"
+          },
+          "matchingColumns": [
+            "Keywords"
+          ],
+          "schema": [
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtableTool",
+      "typeVersion": 2.1,
+      "position": [
+        1216,
+        208
+      ],
+      "id": "f0e25bb3-9926-416a-97cc-dd8b82a7bf04",
+      "name": "add_keyword",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "IZTgLsxFGInFRsWg",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1248,
+        16
+      ],
+      "id": "d573b307-0bc8-4439-8b71-35c26735cc6d",
+      "name": "Send a text message",
+      "webhookId": "a0941a83-c3de-4250-8d43-6d5821fdc686",
+      "credentials": {
+        "telegramApi": {
+          "id": "YnT90bOVM0up5xLv",
+          "name": "Blog Agent"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Preferences",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preferences": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Preferences",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Keywords": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Preferences": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Keywords": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add_preferences": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add_keyword": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "e534da64-79b9-4057-adb0-2dba7b79f080",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-25T00:13:50.894Z",
+      "updatedAt": "2025-10-25T00:13:50.894Z",
+      "role": "workflow:owner",
+      "workflowId": "x34iQgD3U9k4WQyj",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
