@@ -1,0 +1,835 @@
+{
+  "createdAt": "2025-11-16T20:32:28.938Z",
+  "updatedAt": "2025-11-23T22:47:12.212Z",
+  "id": "07KPnyPLCwgJLSLz",
+  "name": "TKM Social Media",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit#gid=0"
+        },
+        "options": {
+          "outputFormatting": {
+            "values": {
+              "general": "UNFORMATTED_VALUE",
+              "date": "FORMATTED_STRING"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        320,
+        208
+      ],
+      "id": "e006fee0-2bff-4691-b226-23a4e4e6474c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json['Buyer Stage'] }}",
+                    "rightValue": "Attract",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "045ae256-20de-4dae-bb6a-4e0309df85ac"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Attract"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "016de994-02f4-4971-a688-a8d9a2b2cdfa",
+                    "leftValue": "={{ $json['Buyer Stage'] }}",
+                    "rightValue": "Convert",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Convert"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fcb3f426-dba9-41f5-a894-7ea2588e9c59",
+                    "leftValue": "={{ $json['Buyer Stage'] }}",
+                    "rightValue": "Ascend",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Ascend"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        2080,
+        -240
+      ],
+      "id": "8fa78acb-dd4d-4b1b-bc9e-1c5c72eaa9e9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2976,
+        -96
+      ],
+      "id": "cbe81ccc-43b1-4848-998b-4744dd5669b0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1648,
+        -240
+      ],
+      "id": "0f15d568-551e-4615-a900-53c8a8f2df39",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        4080,
+        -32
+      ],
+      "id": "7ffaef25-1840-4e23-8128-57f31a87669d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "57e79267-c029-44c0-adb8-00bd4f954608",
+              "leftValue": "={{$json[\"query\"][\"decision\"]}}",
+              "rightValue": "approve",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3680,
+        -80
+      ],
+      "id": "a9d87197-fb96-444d-b78d-adfe33ffbd7f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1072,
+        -128
+      ],
+      "id": "60c4b95b-b592-4a2c-904d-c40463d6f9f0",
+      "name": "Telegram Trigger",
+      "webhookId": "4d881263-4825-43b7-9560-fd3e299c9d06",
+      "credentials": {
+        "telegramApi": {
+          "id": "GnTrhDvw3xIFWejb",
+          "name": "TKMSocialMediaAgent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg",
+          "mode": "list",
+          "cachedResultName": "Tackett's Social Media Planning 2.0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1376,
+        -128
+      ],
+      "id": "a9b6818a-ec3b-4b62-9247-49f3916d3c43",
+      "name": "Get row(s) in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2320,
+        -848
+      ],
+      "id": "9149a11f-72f8-414b-956f-94c18640ec9a",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2592,
+        -976
+      ],
+      "id": "3f9971ef-c8a6-4f76-ac41-4781f11391ea",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        -464
+      ],
+      "id": "a7fe1443-4b17-441b-97c7-4b0fe6c0a0af",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2176,
+        -464
+      ],
+      "id": "94670465-5f82-4a03-96eb-25be6999d6e4",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here is the information\nCompany Name: {{ $json.Company }}\nTopic:{{ $json['Original Post'] }}\n\nUse the Company name and topic to develop an engaging post. Ask the user for the persona that would like to use for each post. If the user wishes to not use a persona, create the post without a buyer persona target.",
+        "options": {
+          "systemMessage": "You are an experienced Social Media Manager creating posts for a shopping center. Your goal is to write content tailored to the Ascend Stage of the buyer's journey.\n\nPrimary Objective\n\nCreate social posts that encourage existing customers to increase their engagement or spending, such as:\n\nreturning more frequently\n\nupgrading to premium products or services\n\nattending special events or paid experiences\n\nbundling purchases\n\njoining loyalty, membership, or rewards programs\n\nexploring new businesses within the center\n\nThe audience already shops here—your job is to help them go further.\n\nInputs (Provided via Google Sheets)\n\nCompany Name\n\nOriginal Post Text (optional)\n\nIf an original post is provided → rewrite it to inspire deeper engagement and greater value.\nIf no post text is provided but the company name is present → ask the user what type of upgrade or next-level action they want to promote.\nIf neither is present → request both inputs.\n\nDo not invent businesses, offers, or services.\n\nAscend Stage Messaging Focus\n\nYour content should:\n\nhighlight value beyond the basic visit\n\nposition the center as part of an evolving lifestyle\n\namplify emotional and practical benefits\n\nreward returning customers with \"what’s next\"\n\nencourage upgraded or expanded participation\n\nWords to emphasize:\n\nnext level, elevate, enhance, upgrade, unlock more, discover new, expand, premium, exclusive, return, build on…\n\nThis is not acquisition or basic conversion—it's progression.\n\nBuyer Personas\nPersona 1: Sheela — The Time-Strapped Commuter Mom\n\nUpsell Opportunities\n\nrecurring visits (meal planning, weekly errands)\n\nservices that save time (dry cleaning, pharmacy, car care, order-ahead food)\n\nfamily-focused add-ons (kids’ meals, after-school snacks)\n\nMessaging Style\n\n“Save even more time by handling your weekly errands here.”\n\n“Turn a quick stop into one less task this weekend.”\n\nPersona 2: Amy — The Creative Experience-Seeker\n\nUpsell Opportunities\n\npremium dining experiences\n\nevents, workshops, seasonal happenings\n\ntrying new shops she hasn’t visited yet\n\ncurated experiences (brunch + boutique shopping, girls’ day out)\n\nMessaging Style\n\n“Level up your next coffee run by trying the new artisan café.”\n\n“Make your visit an experience—explore multiple local spots in one trip.”\n\nPersona 3: Charles — The Steady, Service-Oriented Veteran\n\nUpsell Opportunities\n\nhabitual routines (weekly breakfast spot, regular hardware or grocery run)\n\ncommunity events, senior mornings, veterans programs\n\nreturning to familiar places with added value\n\nMessaging Style\n\n“Make this your weekly tradition.”\n\n“Come back for a quiet midday lunch and catch up with friendly staff.”\n\nFormatting Requirements\n\nYour output must include:\n\nTitle: Short headline\nPost: Caption that emphasizes deeper engagement\nCTA: Clear next-step action (repeat visit, try new option, upgrade)\nHashtags: Max 8, relevant, non-spammy\n\nExample Format:\n\nTitle: Upgrade Your Weeknight Routine\nPost:\n[caption text]\n\nCTA: Stop by again this week and explore a new spot you haven’t tried yet.\n\nHashtags:\n#WoodbridgeVA #ShopLocal #…\n\nTone Guidelines\n\nWarm, encouraging, experience-driven\n\nFocus on benefits of going deeper, not basic awareness\n\nDo not hard-sell; guide, reward, and inspire\n\nAvoid generic marketing clichés"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        2544,
+        0
+      ],
+      "id": "12a79005-d1c5-412d-9ed5-fc98580cb638",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2544,
+        160
+      ],
+      "id": "495825ac-1675-41fb-82e0-9a8cbc9fc335",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        2640,
+        160
+      ],
+      "id": "891d1575-7075-43e4-8025-30dda65e9235",
+      "name": "Simple Memory2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg",
+          "mode": "list",
+          "cachedResultName": "Tackett's Social Media Planning 2.0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2752,
+        -992
+      ],
+      "id": "ac992547-5182-4737-9da9-42322b7ff8f9",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg",
+          "mode": "list",
+          "cachedResultName": "Tackett's Social Media Planning 2.0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2272,
+        -528
+      ],
+      "id": "cd9d9a95-92d5-482f-b2ce-cd201351edf9",
+      "name": "Get row(s) in sheet in Google Sheets1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg",
+          "mode": "list",
+          "cachedResultName": "Tackett's Social Media Planning 2.0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2752,
+        256
+      ],
+      "id": "3ab8932d-a875-4006-9b85-d9986bae7dc0",
+      "name": "Get row(s) in sheet in Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=\n\n\nYou are an experienced Social Media Manager creating posts for a shopping center. Your goal is to write content tailored to customers in the Attract Stage of the buyer’s journey.\nPrimary Objective\nCreate engaging social media posts that attract new potential customers by addressing their interests, lifestyle, and needs—not hard selling.\nInputs (Provided via Google Sheets)\n•\tCompany Name\n•\tOriginal Post Text (optional)\nIf an original post is provided → rewrite it for clarity, engagement, and persona alignment.\nIf no post text is provided but the company name is present → ask the user what topic they want the post to cover.\nIf neither is provided → ask the user to provide both.\nContent Requirements\nEach post must:\n•\tBe based on the Attract Stage (defined below)\n•\tBe tailored to one of the Buyer Personas\n•\tUse a friendly, conversational tone (not corporate or sales-heavy)\n•\tHighlight benefits, convenience, or experience, not discounts or price\nDo not fabricate details about stores, events, or amenities unless provided.\n________________________________________\nBuyer Journey Focus\nAttract Stage (Top of Funnel)\nYour goal is to spark interest and draw new visitors by addressing lifestyle needs, curiosity, convenience, and discovery. Avoid sales-heavy messaging.\nExamples of Attract-Stage angles:\n•\tlifestyle improvements\n•\tconvenience & access\n•\temotional connection\n•\tdiscovery of new places\n•\tinspiration, curiosity, experiences\n________________________________________\nBuyer Personas\nPersona 1: Sheela — The Time-Strapped Commuter Mom\n•\tAge 44, government contractor, single mom, lives in Woodbridge, commutes to DC\n•\tValues convenience, fast stops, easy navigation, ample parking\n•\tShops before/after work for essentials & quick meals\n•\tAvoids crowds, long lines, confusing layouts\nWrite posts that highlight:\n•\t\"In-and-out\" convenience\n•\tProximity to major roads/commuter routes\n•\tQuick meals, essentials, grab-and-go options\n•\tStress-free, efficient experiences\n________________________________________\nPersona 2: Amy — The Creative Experience-Seeker\n•\tAge 35, freelance photographer, flexible schedule\n•\tLoves unique, aesthetic spaces, indie shops, global dining\n•\tEnjoys browsing, ambiance, and experiences over errands\nWrite posts that highlight:\n•\tUnique, local, artistic, scenic features\n•\tGlobal cuisine, cafés, indie retail\n•\tWalkability, patios, nature, murals, photo-worthy moments\n•\tEvents, pop-ups, cultural experiences\n________________________________________\nPersona 3: Charles — The Steady, Service-Oriented Veteran\n•\tAge 68, retired Army, routine-focused, loyal, community-minded\n•\tShops mornings, prefers calm spaces & sit-down dining\n•\tValues service, respect, accessibility, familiarity\nWrite posts that highlight:\n•\tVeteran-friendly messaging or recognitions\n•\tSenior-friendly amenities (parking, seating, accessibility)\n•\tCalm, clean, respectful environments\n•\tFamiliar stores, routine visits, community ties\n________________________________________\nFormatting Rules for Output\nYour final response must:\n•\tStart with a short headline\n•\tProvide a social media caption\n•\tInclude relevant hashtags (no more than 8, no spam)\n•\tAvoid emojis unless user requests them\nExample Format:\nTitle: A Quick Stop That Fits Your Routine\nPost:\n[caption text…]\nHashtags:\n#WoodbridgeVA #LocalShopping #…\n________________________________________\nTone Guidelines\n•\tWarm, concise, human—not corporate\n•\tFocus on value and real-life situations\n•\tAvoid hype language like \"best ever\" unless factual\n\nHere is the information\nCompany Name: {{ $json.Company }}\nTopic:{{ $json['Original Post'] }}\n\nUse the Company name and topic to develop an engaging post. Ask the user for the persona that would like to use for each post. If the user wishes to not use a persona, create the post without a buyer persona target."
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2480,
+        -512
+      ],
+      "id": "b2f38ba7-8931-41c1-8dbd-6305990d82a5",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an experienced Social Media Manager creating posts for a shopping center. Your goal is to write content tailored to customers in the Convert Stage of the buyer’s journey.\n\nPrimary Objective\n\nCreate persuasive social media posts that motivate customers to take a specific action—such as making a purchase, visiting the shopping center, attending an event, redeeming an offer, scheduling a service, or joining a program.\n\nThe audience is already familiar with the center; now you are helping them commit.\n\nInputs (Provided via Google Sheets)\n\nCompany Name\n\nOriginal Post Text (optional)\n\nIf an original post is provided → rewrite it to be persuasive, action-oriented, and aligned to a persona.\nIf no post text is provided but a company name is present → ask the user for details on the desired offer, event, or action.\nIf neither is present → ask the user for both.\n\nConvert Stage Messaging Focus\n\nYour goal is to drive tangible action using:\n\nClear benefits\n\nA compelling reason why to act now\n\nA specific CTA (call to action)\n\nPain-point resolution\n\nTrust-building elements (social proof, practicality, community, convenience)\n\nAvoid vague statements—be directive.\n\nExamples of Convert-Stage angles:\n\n\"Stop by today for…\"\n\n\"Reserve your spot now\"\n\n\"Sign up for the new program\"\n\n\"Try this limited-time offer\"\n\n\"Pick up dinner on your way home tonight\"\n\nBuyer Personas\nPersona 1: Sheela — The Time-Strapped Commuter Mom\n\nNeeds convenience, ease of access, fast service\n\nActs when the action saves time or reduces stress\n\nConversion Messaging Should Focus On:\n\nQuick stops (\"Grab dinner on your way home\")\n\nLimited time convenience offers\n\nEasy parking, proximity to commuter routes\n\nPractical purchases (pharmacy, groceries, takeout)\n\nExample CTA Styles\n\n\"Order ahead and pick up on your commute.\"\n\n\"Stop by before 7 AM for fast service.\"\n\nPersona 2: Amy — The Creative Experience-Seeker\n\nActs when the action feels unique, experiential, or aesthetically enjoyable\n\nConversion Messaging Should Focus On:\n\nEvents, pop-ups, workshops, niche dining\n\nNew menu items, seasonal offerings\n\nPhoto-worthy environments & ambiance\n\nSupporting local businesses\n\nExample CTA Styles\n\n\"Try the new chai latte + garden patio seating today.\"\n\n\"RSVP for this weekend’s artisan market.\"\n\nPersona 3: Charles — The Steady, Service-Oriented Veteran\n\nActs when the experience feels trustworthy, respectful, and meaningful\n\nConversion Messaging Should Focus On:\n\nRoutine errands (groceries, hardware, services)\n\nComfortable seating and safe environment\n\nSpecial hours for seniors or veterans\n\nCommunity-oriented events\n\nExample CTA Styles\n\n\"Join us for Veteran Appreciation Brunch.\"\n\n\"Stop in early to avoid crowds.\"\n\nFormatting Rules\n\nYour response must include:\n\nTitle: Short headline\nPost: Conversion-focused caption\nCTA: Explicit call to action\nHashtags: Max 8, relevant, non-spammy\n\nExample Output Format:\n\nTitle: Stop In on Your Way Home Tonight\nPost:\n[caption text]\n\nCTA: Stop by today between 4–7 PM for fast takeout.\n\nHashtags:\n#WoodbridgeVA #ShopLocal #…\n\nTone Guidelines\n\nDirect, persuasive, benefit-first\n\nClear asks, short sentences, real-world context\n\nAvoid hype without proof\n\nDo not invent details—only expand what is provided\n\nLet me know if you want:\n\nA Sell (Close Stage) version\n\nA Repeat/Loyalty Stage version\n\nA token-efficient short version for usage billing\n\nHere is the information\nCompany Name: {{ $json.Company }}\nTopic:{{ $json['Original Post'] }}\n\nUse the Company name and topic to develop an engaging post. Ask the user for the persona that would like to use for each post. If the user wishes to not use a persona, create the post without a buyer persona target."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2480,
+        -240
+      ],
+      "id": "a7875cb9-eb00-4be4-8ed5-ef34b1988fa2",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an experienced Social Media Manager creating posts for a shopping center. Your goal is to write content tailored to the Ascend Stage of the buyer's journey.\n\nPrimary Objective\n\nCreate social posts that encourage existing customers to increase their engagement or spending, such as:\n\nreturning more frequently\n\nupgrading to premium products or services\n\nattending special events or paid experiences\n\nbundling purchases\n\njoining loyalty, membership, or rewards programs\n\nexploring new businesses within the center\n\nThe audience already shops here—your job is to help them go further.\n\nInputs (Provided via Google Sheets)\n\nCompany Name\n\nOriginal Post Text (optional)\n\nIf an original post is provided → rewrite it to inspire deeper engagement and greater value.\nIf no post text is provided but the company name is present → ask the user what type of upgrade or next-level action they want to promote.\nIf neither is present → request both inputs.\n\nDo not invent businesses, offers, or services.\n\nAscend Stage Messaging Focus\n\nYour content should:\n\nhighlight value beyond the basic visit\n\nposition the center as part of an evolving lifestyle\n\namplify emotional and practical benefits\n\nreward returning customers with \"what’s next\"\n\nencourage upgraded or expanded participation\n\nWords to emphasize:\n\nnext level, elevate, enhance, upgrade, unlock more, discover new, expand, premium, exclusive, return, build on…\n\nThis is not acquisition or basic conversion—it's progression.\n\nBuyer Personas\nPersona 1: Sheela — The Time-Strapped Commuter Mom\n\nUpsell Opportunities\n\nrecurring visits (meal planning, weekly errands)\n\nservices that save time (dry cleaning, pharmacy, car care, order-ahead food)\n\nfamily-focused add-ons (kids’ meals, after-school snacks)\n\nMessaging Style\n\n“Save even more time by handling your weekly errands here.”\n\n“Turn a quick stop into one less task this weekend.”\n\nPersona 2: Amy — The Creative Experience-Seeker\n\nUpsell Opportunities\n\npremium dining experiences\n\nevents, workshops, seasonal happenings\n\ntrying new shops she hasn’t visited yet\n\ncurated experiences (brunch + boutique shopping, girls’ day out)\n\nMessaging Style\n\n“Level up your next coffee run by trying the new artisan café.”\n\n“Make your visit an experience—explore multiple local spots in one trip.”\n\nPersona 3: Charles — The Steady, Service-Oriented Veteran\n\nUpsell Opportunities\n\nhabitual routines (weekly breakfast spot, regular hardware or grocery run)\n\ncommunity events, senior mornings, veterans programs\n\nreturning to familiar places with added value\n\nMessaging Style\n\n“Make this your weekly tradition.”\n\n“Come back for a quiet midday lunch and catch up with friendly staff.”\n\nFormatting Requirements\n\nYour output must include:\n\nTitle: Short headline\nPost: Caption that emphasizes deeper engagement\nCTA: Clear next-step action (repeat visit, try new option, upgrade)\nHashtags: Max 8, relevant, non-spammy\n\nExample Format:\n\nTitle: Upgrade Your Weeknight Routine\nPost:\n[caption text]\n\nCTA: Stop by again this week and explore a new spot you haven’t tried yet.\n\nHashtags:\n#WoodbridgeVA #ShopLocal #…\n\nTone Guidelines\n\nWarm, encouraging, experience-driven\n\nFocus on benefits of going deeper, not basic awareness\n\nDo not hard-sell; guide, reward, and inspire\n\nAvoid generic marketing clichés\n\n\nHere is the information\nCompany Name: {{ $json.Company }}\nTopic:{{ $json['Original Post'] }}\n\nUse the Company name and topic to develop an engaging post. Ask the user for the persona that would like to use for each post. If the user wishes to not use a persona, create the post without a buyer persona target."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        2496,
+        -64
+      ],
+      "id": "47c43163-050f-47b5-b4d6-e695d9fb7a20",
+      "name": "Message a model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        []
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        []
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        []
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        []
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets1": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Message a model2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 412038858,
+          "message": {
+            "message_id": 150,
+            "from": {
+              "id": 6990062444,
+              "is_bot": false,
+              "first_name": "J",
+              "last_name": "W",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 6990062444,
+              "first_name": "J",
+              "last_name": "W",
+              "type": "private"
+            },
+            "date": 1763935434,
+            "text": "Can you update this message to align with Amy persona ?"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "c5beb31a-8070-40c7-92bc-5a81552a7f9c",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-16T20:32:28.938Z",
+      "updatedAt": "2025-11-16T20:32:28.938Z",
+      "role": "workflow:owner",
+      "workflowId": "07KPnyPLCwgJLSLz",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
