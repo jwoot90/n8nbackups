@@ -1,0 +1,486 @@
+{
+  "createdAt": "2025-12-16T17:41:20.405Z",
+  "updatedAt": "2025-12-18T05:16:38.372Z",
+  "id": "ex4JSTXEJMUWKJqi",
+  "name": "Notion Database Cleaner",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        0
+      ],
+      "id": "9d5c1329-fade-4599-b848-d89344130486",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"url\"]}}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleCalendarOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "singleEvents",
+              "value": "true"
+            },
+            {
+              "name": "orderBy",
+              "value": "startTime"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        432,
+        0
+      ],
+      "id": "1ab2d1da-3460-4aa3-9a4f-4158c166b23c",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "phO0g9ClL4zuy414",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        528
+      ],
+      "id": "226de9b0-489a-4b39-a77c-cbab6b74d336",
+      "name": "Create an event",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "phO0g9ClL4zuy414",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.all().flatMap(inputItem => {\n  const items = inputItem.json.items ?? [];\n\n  return items.map(item => {\n    const start = /** @type {any} */ (item.start);\n    const end   = /** @type {any} */ (item.end);\n\n    const startIsoString = start?.dateTime ?? (start?.date ? start.date + 'T00:00:00' : null);\n    const endIsoString   = end?.dateTime   ?? (end?.date   ? end.date   + 'T00:00:00' : null);\n\n    const dtStart = startIsoString ? DateTime.fromISO(startIsoString) : null;\n    const dtEnd   = endIsoString   ? DateTime.fromISO(endIsoString)   : null;\n\n    return {\n      json: {\n        \"Google Event ID\": item.id ?? \"\",  // ADD THIS LINE\n        \"Event Name\": item.summary ?? \"\",\n        \"Calendar Source\": item.organizer?.displayName ?? \"\",\n        \"Event Date\": dtStart?.toISO() ?? null,\n        \"End Date\": dtEnd?.toISO() ?? null,\n      }\n    };\n  });\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -16
+      ],
+      "id": "63de674e-a08d-4d8a-a862-2623a41d74f5",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Return Clearbrook and Tackett's Mill Google Calendars\nreturn [{\n  json: {\n    url: 'https://www.googleapis.com/calendar/v3/calendars/1ttilvfbhv7go5sp5unkg1rous@group.calendar.google.com/events'\n\n  }\n}, {\n  json: {\n    url: 'https://www.googleapis.com/calendar/v3/calendars/5f4811c2fc5d3f2517db93b77ad484f971ed22873fa10447d41ff2db9fb08413@group.calendar.google.com/events'\n  }\n}]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "ae0ca8fb-82e6-4f0f-b4de-c4595ef9641b",
+      "name": "QueryUrls"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "45db659c-1ba8-43d5-8f68-91bed902233d",
+              "leftValue": "={{ DateTime.fromISO(($json[\"Event Date\"] ?? '').trim()).isValid }}\n",
+              "rightValue": "={{ $now.setZone('America/New_York').startOf('day').toMillis() }}\n",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "fd3963b5-96b8-40e1-8225-6d867d7b0cf1",
+              "leftValue": "={{ DateTime.fromISO(($json[\"Event Date\"] ?? '').trim()).toMillis() }}\n\n",
+              "rightValue": "={{ DateTime.now().setZone('America/New_York').startOf('day').toMillis() }}\n",
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            },
+            {
+              "id": "9548fb11-94e7-4661-9865-ee58d70a5edf",
+              "leftValue": "={{ DateTime.fromISO(($json[\"Event Date\"] ?? '').trim()).toMillis() }}\n",
+              "rightValue": "={{ DateTime.now().setZone('America/New_York').startOf('day').plus({ months: 6 }).toMillis() }}\n",
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        -1040
+      ],
+      "id": "19cc67f7-2617-4117-920b-f1e9db42d13e",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "2cb6ffe8-2f48-8013-938a-c839a0cf6be4",
+          "mode": "list",
+          "cachedResultName": "Calendar Intake",
+          "cachedResultUrl": "https://www.notion.so/2cb6ffe82f488013938ac839a0cf6be4"
+        },
+        "title": "={{ $json['Event Name'] }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Event Name|title",
+              "title": "={{ $json['Event Name'] }}"
+            },
+            {
+              "key": "Google Event ID|rich_text",
+              "textContent": "={{ $json['Google Event ID'] }}"
+            },
+            {
+              "key": "Event Date|date",
+              "date": "={{ $json['date:Event Date:start'] }}"
+            },
+            {
+              "key": "End Date|date",
+              "date": "={{ $json['date:End Date:start'] }}"
+            },
+            {
+              "key": "Calendar Source|select",
+              "selectValue": "={{ $json['Calendar Source'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1664,
+        0
+      ],
+      "id": "efb86ce8-cbb4-4655-bbfe-2a90d7499478",
+      "name": "Create a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "GvXFbJlEgvlLAuri",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "",
+          "__regex": "(?:https|http)://www\\.notion\\.so/(?:[a-z0-9-]{2,}/)?(?:[a-zA-Z0-9-]{1,}-)?([0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12})"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        944,
+        448
+      ],
+      "id": "3e5d61b1-b965-4429-8e64-93ac63502dc1",
+      "name": "Update a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "GvXFbJlEgvlLAuri",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "2cb6ffe8-2f48-8013-938a-c839a0cf6be4",
+          "mode": "list",
+          "cachedResultName": "Calendar Intake",
+          "cachedResultUrl": "https://www.notion.so/2cb6ffe82f488013938ac839a0cf6be4"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        256
+      ],
+      "id": "f3effafb-d661-4405-94c9-e67d84d00f65",
+      "name": "Get many database pages",
+      "credentials": {
+        "notionApi": {
+          "id": "GvXFbJlEgvlLAuri",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "509be7af-e9e2-4e99-8654-8322892279a9",
+              "leftValue": "={{ $json.notionEventDate }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "09d835e6-ea2a-49a7-98d2-2372ca413373",
+              "leftValue": "=",
+              "rightValue": "={{ $json.notionEventName }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "d0ff67d1-aa99-4477-a40f-45b8308362c3",
+              "leftValue": "={{ $json[\"Event Date\"] }}",
+              "rightValue": "={{ $json.property_event_date?.start ?? \"\" }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1264,
+        -800
+      ],
+      "id": "40dee2fd-d7f9-490d-8b38-94a9b24ee0ea",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        944,
+        0
+      ],
+      "id": "5d74dc51-1d7d-4968-a63a-6612a45f3918",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Transform Google Calendar format to Notion property format\nreturn $input.all().map(item => {\n  const event = item.json;\n  \n  return {\n    json: {\n      \"Event Name\": event['Event Name'] || '',\n      \"Google Event ID\": event['Google Event ID'] || '',\n      \"Calendar Source\": event['Calendar Source'] || '',\n      \"date:Event Date:start\": event['Event Date'] || null,\n      \"date:Event Date:is_datetime\": 1,\n      \"date:End Date:start\": event['End Date'] || null,\n      \"date:End Date:is_datetime\": 1\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1408,
+        0
+      ],
+      "id": "33eee87c-eb22-49f4-8989-19895a479d7c",
+      "name": "Transform Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get all items - Google events and Notion pages are now merged\nconst allItems = $input.all();\n\n// Separate Google events from Notion pages\nconst googleEvents = [];\nconst notionPages = [];\n\nfor (const item of allItems) {\n  const data = item.json;\n  \n  // Google events have \"Google Event ID\" (with capital letters and spaces)\n  if (data['Google Event ID'] !== undefined) {\n    googleEvents.push(item);\n  }\n  // Notion pages have \"property_google_event_id\" (lowercase with underscores)\n  else if (data.property_google_event_id !== undefined) {\n    notionPages.push(data);\n  }\n}\n\n// Extract existing Google Event IDs from Notion pages\nconst existingEventIds = new Set(\n  notionPages\n    .map(page => page.property_google_event_id)\n    .filter(id => id && id !== \"\")\n);\n\n// Define date range (adjust these as needed)\nconst now = new Date();\nconst sixMonthsFromNow = new Date();\nsixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);\n\n// Filter: events not in Notion + within date range\nconst newEvents = googleEvents.filter(item => {\n  const googleEventId = item.json['Google Event ID'];\n  const eventDate = item.json['Event Date'];\n  \n  // Skip if no event ID\n  if (!googleEventId) return false;\n  \n  // Skip if already exists in Notion\n  if (existingEventIds.has(googleEventId)) return false;\n  \n  // Skip if no date or date is outside range\n  if (!eventDate) return false;\n  const eventDateTime = new Date(eventDate);\n  \n  // Only include events from today through 6 months from now\n  return eventDateTime >= now && eventDateTime <= sixMonthsFromNow;\n});\n\n// Return only new events within date range\nif (newEvents.length > 0) {\n  return newEvents;\n} else {\n  return [{\n    json: {\n      message: \"No new events to add\",\n      totalGoogleEvents: googleEvents.length,\n      totalNotionPages: notionPages.length,\n      eventsInDateRange: googleEvents.filter(item => {\n        const eventDate = new Date(item.json['Event Date']);\n        return eventDate >= now && eventDate <= sixMonthsFromNow;\n      }).length,\n      duplicatesFiltered: googleEvents.filter(item => existingEventIds.has(item.json['Google Event ID'])).length,\n      newEventsAfterFiltering: newEvents.length\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "0f6375ff-2b9f-4020-b528-85815461e9ae",
+      "name": "Deduplification"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "QueryUrls",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create an event": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "QueryUrls": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        []
+      ]
+    },
+    "Create a database page": {
+      "main": [
+        []
+      ]
+    },
+    "Get many database pages": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Deduplification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transform Data": {
+      "main": [
+        [
+          {
+            "node": "Create a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplification": {
+      "main": [
+        [
+          {
+            "node": "Transform Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "dbe54cb7-8aed-4335-84fa-909cc6b5a204",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-16T17:41:20.405Z",
+      "updatedAt": "2025-12-16T17:41:20.405Z",
+      "role": "workflow:owner",
+      "workflowId": "ex4JSTXEJMUWKJqi",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
