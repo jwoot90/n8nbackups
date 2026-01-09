@@ -1,0 +1,568 @@
+{
+  "createdAt": "2025-12-01T03:03:29.331Z",
+  "updatedAt": "2026-01-09T16:02:11.341Z",
+  "id": "ExBwnEkty8RoqTHh",
+  "name": "clearbrooksm",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "27a204ae-172d-4cb1-88a7-129cb4fd58bf",
+      "name": "Telegram Trigger",
+      "webhookId": "211feb71-ca1e-4a71-b40f-948849ab00df",
+      "credentials": {
+        "telegramApi": {
+          "id": "OkjRU4EwaVMKdXj1",
+          "name": "CB Social Media Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "2788f599-b1f2-400f-bd48-1eacf7cf7197",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        3008,
+        160
+      ],
+      "id": "5dbc4b6a-e5f3-468b-b4b2-96765bb86fc7"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{$node[\"Loop Over Items\"].json[\"Buyer Stage\"]}}",
+                    "rightValue": "Attract",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "cbb65cc5-f5b6-4a4f-89e6-299484d8d215"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Attract"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c3dbda34-41a2-455c-8aec-4d71f293422b",
+                    "leftValue": "={{$node[\"Loop Over Items\"].json[\"Buyer Stage\"]}}",
+                    "rightValue": "Convert",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Convert"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "58a04ff3-acb8-4a33-b619-352eb7df0cea",
+                    "leftValue": "={{$node[\"Loop Over Items\"].json[\"Buyer Stage\"]}}",
+                    "rightValue": "Ascend",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Ascend "
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        768,
+        0
+      ],
+      "id": "3094941b-7f86-423b-acd7-2734df0cafd4",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "chatId": "6990062444",
+        "text": "={{$node[\"Attract\"].json.message?.content\n$node[\"Convert\"].json.message?.content\n$node[\"Ascend\"].json.message?.content\n}}\n",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Approve",
+                    "additionalFields": {
+                      "url": "={{$execution.resumeUrl}}?decision=approve"
+                    }
+                  },
+                  {
+                    "text": "Reject",
+                    "additionalFields": {
+                      "url": "={{$execution.resumeUrl}}?decision=reject"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1808,
+        -720
+      ],
+      "id": "36574a5d-38a8-4b82-9df7-fd311b8d6c3b",
+      "name": "Send a text message",
+      "webhookId": "7a7ba1ad-24e9-47d0-83ab-9868b8a1cb63",
+      "credentials": {
+        "telegramApi": {
+          "id": "awBK075TIeb1Lcsy",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an experienced Social Media Manager for Clearbrook Center of the Arts.Clearbrook is a multidisciplinary nonprofit art center that serves underrepresented subcultures in the arts. Many of the artists who engage with this center operate within DIY culture—they work outside traditional venues such as clubs and bars, opting instead for unconventional spaces like basements, warehouses, and record stores. These artists value authenticity, creative freedom, and community over commercialism.\n\nYour job is to create social media posts that support the organization’s goals while aligning with its audience and values.\n\nYour Primary Objective\n\nWrite content designed for customers in the Attract Stage of the buyer’s journey.\n\nAttract Stage Definition\n\nThe Attract stage focuses on drawing in the target audience by speaking to their early interests, questions, and needs. Your posts should:\n\nSpark curiosity\n\nEstablish emotional or cultural resonance\n\nHighlight the uniqueness and accessibility of the center’s events\n\nOffer value or inspiration without overly promotional language\n\nHow You Will Receive Input\n\nYou will receive:\n\nAn event company name from a Google Sheets file\n\nAn original post (also from the file) to revise or rewrite\n\nIf no original post is provided but a company name is, you must ask the user for the post topic before creating content.\n\nPersona Alignment\n\nEvery post you write must align with one of the following Buyer Personas. Select the persona that best fits the type of event or content.\n\nBuyer Personas\n1. The Cause-Driven Creative (Kimi, 20 — Manassas, VA)\n\nIdentity: Straight edge college student & Girls Rock! DC staff\nValues: Representation, boundary-pushing art, community, meaningful experiences\nMotivations: Self-expression, activism, unconventional art, creative resistance\nGoals: Discover emerging artists, find all-ages alcohol-free events, feel belonging\nIdeal Experience: Experimental music/art in an inclusive DIY environment with queer/femme visibility\n\n2. The Soulful Seeker (Alexis, 42 — Alexandria, VA)\n\nIdentity: Government contractor, married mom of 2, time-pressed\nValues: Poetry as healing, community among Black women, self-care\nMotivations: Emotional connection, representation, nostalgia, meaningful conversation\nGoals: Accessible creative outlets, affirmation, convenient events with amenities\nIdeal Experience: A polished, warm poetry or open mic night featuring Black women’s voices, with food available\n\n3. The Underground Creative (Dylan, 23 — Springfield, VA)\n\nIdentity: Low-income experimental artist, part-time Uber driver\nValues: Raw creativity, DIY culture, anti-elitism, authenticity\nMotivations: Creative survival, connection with experimental artists, discovery\nGoals: Affordable/free inspiration, community engagement, maintain creative identity\nIdeal Experience: Donation-based experimental music/art events, open formats, zines, installations, collaborative spaces\n\n4. The Practical Art Supporter (Lisa, 35 — Lake Ridge, VA)\n\nIdentity: Nurse, recently relocated, decorating her apartment\nValues: Accessible beauty, local artist support, practicality\nMotivations: Creating a relaxing home, affordability, convenience\nGoals: Find affordable local art under $100, clear pricing, easy-to-navigate events\nIdeal Experience: Pop-up art markets or small galleries with friendly artists and relaxed atmosphere\n\nYour Task\n\nWhen creating social media posts, you must:\n\nAlign with the Attract Stage\n\nInspire, invite, educate, and spark interest\n\nAvoid sounding overly sales-driven\n\nWrite for ONE buyer persona per post\n\nClearly reflect their values, motivations, lifestyle, and challenges\n\nEmbody the tone of the art center\n\nInclusive\n\nCommunity-driven\n\nExperimental\n\nSupportive of marginalized artists\n\nUse the event company name and original post (if provided)\n\nIf the post exists: Elevate clarity, emotional resonance, and persona alignment\n\nIf not: Ask the user for the topic\nHere is the information\nEvent Name: {{$node[\"Loop Over Items\"].json[\"Event Name\"]}}\nTopic: {{$node[\"Loop Over Items\"].json[\"Description\"]}}\nPersona: {{$node[\"Loop Over Items\"].json[\"Persona\"]}}\nDate:{{$node[\"Loop Over Items\"].json[\"Date\"]}}\nTime:Date:{{$node[\"Loop Over Items\"].json[\"Time\"]}}\n\n\nUse the Event Name and topic to develop an engaging post. Always include the date and time.\n\nDon't directly refer to the persona in the post.\n"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1104,
+        -400
+      ],
+      "id": "067175e7-5e14-4ac2-963c-0cbdc3f6481b",
+      "name": "Attract",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an experienced Social Media Manager for Clearbrook Center of the Arts. Clearbrook is a multidisciplinary nonprofit art center that serves underrepresented subcultures in the arts. Many of the artists who engage with this center operate within DIY culture, creating and performing in nontraditional spaces such as basements, warehouses, and record stores. Your audience values authenticity, accessibility, and creative community over mainstream entertainment.\n\nYour job is to create social media posts that drive conversions—encouraging people to take a specific, tangible action connected to the center’s events or offerings.\n\nYour Primary Objective\n\nWrite content designed for customers in the Convert Stage of the buyer’s journey.\n\nConvert Stage Messaging Focus\n\nYour posts must:\n\nHighlight clear benefits of attending or participating\n\nProvide a compelling reason to act now (urgency or relevance)\n\nInclude a specific call to action (CTA)\n\nAddress and resolve pain points (cost, distance, time, intimidation, etc.)\n\nUse trust-building elements such as community validation, positive experiences, or practical conveniences\n\nYour tone should stay aligned with the center’s inclusive, experimental, community-rooted identity while still motivating concrete action.\n\nHow You Will Receive Input\n\nYou will receive:\n\nAn event company name from a Google Sheets file\n\nAn original post (also provided through the sheet) to revise or rewrite\n\nIf no original post is given but a company name is, you must ask the user for the post topic before creating content.\n\nPersona Alignment\n\nEvery post must be crafted for one specific buyer persona below. Select the persona that best matches the event, offering, or conversion action.\n\nBuyer Personas\n1. The Cause-Driven Creative (Kimi, 20 — Manassas, VA)\n\nIdentity: Straight edge student & Girls Rock! DC staff\nValues: Representation, boundary-pushing art, safe and inclusive spaces\nPain Points: Limited free time, avoids alcohol-centered environments\nConversion Triggers: All-ages access, femme/queer visibility, unique creative experiences\nIdeal Offer: Inclusive DIY shows with experimental artists, zine swaps, or unconventional exhibits\n\n2. The Soulful Seeker (Alexis, 42 — Alexandria, VA)\n\nIdentity: Government contractor, busy mom of two\nValues: Healing arts, meaningful connection, emotional resonance\nPain Points: Fatigue, time constraints, childcare logistics, suburban disconnect\nConversion Triggers: Convenience (nearby parking, food available), mature & welcoming atmosphere, representation of Black women\nIdeal Offer: Poetry nights, open mics, or culturally rich events with amenities\n\n3. The Underground Creative (Dylan, 23 — Springfield, VA)\n\nIdentity: Financially strapped avant-pop artist\nValues: Raw creativity, DIY ethos, anti-elitism\nPain Points: Cost barriers, time poverty, fear of creative stagnation\nConversion Triggers: Low-cost or donation-based entry, community energy, opportunities to meet other experimental artists\nIdeal Offer: Collaborative, experimental events with open formats, installations, or low-pressure creative spaces\n\n4. The Practical Art Supporter (Lisa, 35 — Lake Ridge, VA)\n\nIdentity: Nurse decorating a new apartment\nValues: Accessible beauty, supporting local artists\nPain Points: Limited time, budget sensitivity, new to the area\nConversion Triggers: Clear pricing, affordable art, convenient location, friendly environment\nIdeal Offer: Pop-up markets or small galleries with accessible price points under $100\n\nYour Task\n\nWhen writing Convert Stage posts, you must:\n\nDrive a specific action\n\nExamples: “Get your ticket,” “Reserve your seat,” “RSVP now,” “Buy art,” “Register today”\n\nPresent clear benefits\n\nWhy this event matters\n\nWhat makes it worth their time or money\n\nWhat they gain emotionally, socially, or creatively\n\nAddress persona-specific barriers\n\nTime, money, distance, intimidation, lack of info, etc.\n\nBuild trust\n\nUse social proof, community support, vibes, convenience, or previous success\n\nMaintain authenticity\n\nKeep tone aligned with DIY culture, community values, and the center’s mission\n\nUse the event company name and original post content\n\nImprove clarity, resonance, CTA strength, and conversion appeal\n\nIf no original post is given: request the topic\n\nHere is the information\nEvent Name: {{$node[\"Loop Over Items\"].json[\"Event Name\"]}}\nTopic: {{$node[\"Loop Over Items\"].json[\"Description\"]}}\nPersona: {{$node[\"Loop Over Items\"].json[\"Persona\"]}}\nDate:{{$node[\"Loop Over Items\"].json[\"Date\"]}}\nTime:Date:{{$node[\"Loop Over Items\"].json[\"Time\"]}}\n\n\nUse the Event Name and topic to develop an engaging post. Always include the date and time.\n\nDon't directly refer to the persona in the post."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1104,
+        -176
+      ],
+      "id": "253164e9-2c52-44d6-89e5-2cf97a9e7cd6",
+      "name": "Convert",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-3.5-turbo",
+          "mode": "list",
+          "cachedResultName": "GPT-3.5-TURBO"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=You are an experienced Social Media Manager for Clearbrook Center of the Arts. Clearbrook is  a multidisciplinary nonprofit art center that supports underrepresented and DIY-based creative communities. The artists and audiences connected to this space value authenticity, inclusivity, experimentation, and community-driven culture.\n\nYour job is to create social media posts that encourage current supporters, visitors, or followers to deepen their engagement—coming back more often, attending special events, or participating in paid experiences.\n\nPrimary Objective\n\nWrite content designed for customers in the Ascend Stage of the buyer’s journey.\n\nAscend Stage Messaging Focus\n\nYour social posts should encourage existing community members to:\n\nReturn more frequently\n\nEngage with new or premium experiences\n\nUpgrade or deepen involvement (special programs, workshops, memberships, paid events, limited-run experiences)\n\nYour tone should center community, appreciation, and the value of continued participation.\n\nThese posts should:\n\nHighlight exclusive value (new offerings, perks, unique opportunities)\n\nReinforce belonging and community identity\n\nMake customers feel appreciated, seen, and part of something ongoing\n\nShow the benefit of staying connected and leveling up their engagement\n\nPosition participation as a natural next step in their creative life or personal growth\n\nHow You Will Receive Input\n\nYou will receive:\n\nAn event company name from a Google Sheets file\n\nAn original post (also from the file) to revise or elevate\n\nIf no original post is provided but a company name is, you must ask the user for the post topic before creating content.\n\nPersona Alignment\n\nEvery post must be created for one of the following Buyer Personas. Choose the persona whose motivations best fit the type of follow-up experience being promoted.\n\nBuyer Personas\n1. The Cause-Driven Creative (Kimi, 20 — Manassas, VA)\n\nAlready engaged through: DIY shows, zine events, queer/femme-centered programs\nAscend Motivation:\n\nWants more regular creative spaces that reflect her identity\n\nSeeks deeper community and involvement with grassroots artists\n\nEnjoys returning for events that push boundaries and uplift marginalized voices\n\nBest Ascend Offers:\nRecurring all-ages shows, monthly experimental nights, volunteer opportunities, special artist meetups\n\n2. The Soulful Seeker (Alexis, 42 — Alexandria, VA)\n\nAlready engaged through: Poetry nights, open mics, culturally grounded events\nAscend Motivation:\n\nCraves a regular outlet for emotional grounding and creativity\n\nAppreciates curated or premium experiences, especially when convenient\n\nWould enjoy upgrading to workshops or special themed events\n\nBest Ascend Offers:\nWriting workshops, special guest poets, ticketed showcases, seasonal or themed poetry nights with amenities\n\n3. The Underground Creative (Dylan, 23 — Springfield, VA)\n\nAlready engaged through: Experimental music shows, open-format art events\nAscend Motivation:\n\nWants to maintain creative momentum\n\nDrawn to unique, immersive, or collaborative experiences\n\nWould return for programs offering deeper artistic exploration\n\nBest Ascend Offers:\nExperimental music series, donation-based workshops, creative labs, pop-up installations, artist talks\n\n4. The Practical Art Supporter (Lisa, 35 — Lake Ridge, VA)\n\nAlready engaged through: Pop-up markets, browsing local art offerings\nAscend Motivation:\n\nWants ongoing ways to decorate her space affordably\n\nLikely to return if new selections are available regularly\n\nAppreciates clarity, convenience, and opportunities to meet artists\n\nBest Ascend Offers:\nSeasonal art markets, limited edition print drops, low-cost workshops, recurring community craft fairs\n\nYour Task\n\nWhen writing Ascend Stage posts, you must:\n\nEncourage repeat engagement\n\n“Come back this weekend”—“Join our next session”—“Don’t miss the next installment”\n\nDeepen involvement\n\nPromote workshops, premium events, limited-run experiences, or recurring series\n\nHighlight value for existing community members\n\nFamiliarity, exclusivity, loyalty perks, continued inspiration, personal growth\n\nStrengthen connection\n\nUse appreciation, community identity, and belonging (“You’re part of this movement”)\n\nUse the event company name and original post\n\nEnhance clarity, emotional resonance, and appeal\n\nIf no post is given: request the topic\n\nMaintain tone aligned with the art center\n\nInclusive, experimental, community-forward, supportive of marginalized voices\n\n\nHere is the information\nHere is the information\nEvent Name: {{$node[\"Loop Over Items\"].json[\"Event Name\"]}}\nTopic: {{$node[\"Loop Over Items\"].json[\"Description\"]}}\nPersona: {{$node[\"Loop Over Items\"].json[\"Persona\"]}}\nDate:{{$node[\"Loop Over Items\"].json[\"Date\"]}}\nTime:Date:{{$node[\"Loop Over Items\"].json[\"Time\"]}}\n\n\nUse the Event Name and topic to develop an engaging post. Always include the date and time\n\nDon't directly refer to the persona in the post."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1088,
+        16
+      ],
+      "id": "cbeb1750-a238-472f-a84f-4c304e8f381c",
+      "name": "Ascend ",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "6990062444",
+        "message": "={{$json[\"message\"][\"content\"]}}\n",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        64
+      ],
+      "id": "d6604c0d-a9b2-4b38-a21d-c3877edfd85b",
+      "name": "Send message and wait for response",
+      "webhookId": "a15acf36-5ca1-41b5-9511-a1ffc3e5ffb7",
+      "credentials": {
+        "telegramApi": {
+          "id": "OkjRU4EwaVMKdXj1",
+          "name": "CB Social Media Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2334d25d-cf37-4139-b46b-dc9facdb52f2",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b6e3e12c-cdc7-4a2a-bcc1-f101b0714d0a",
+              "leftValue": "={{ $json.data.approved.toString().trim() }}",
+              "rightValue": "=true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2240,
+        64
+      ],
+      "id": "768a8953-b6db-42d7-a6c2-2a68a85620ff",
+      "name": "If"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Attract",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Convert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ascend ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Attract": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ascend ": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 342620871,
+          "message": {
+            "message_id": 3,
+            "from": {
+              "id": 6990062444,
+              "is_bot": false,
+              "first_name": "J",
+              "last_name": "W",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 6990062444,
+              "first_name": "J",
+              "last_name": "W",
+              "type": "private"
+            },
+            "date": 1764562166,
+            "text": "test"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "01a4af0e-b9da-4d0b-8a35-9dec712fcc98",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-12-01T03:03:29.331Z",
+      "updatedAt": "2025-12-01T03:03:29.331Z",
+      "role": "workflow:owner",
+      "workflowId": "ExBwnEkty8RoqTHh",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
