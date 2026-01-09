@@ -1,0 +1,192 @@
+{
+  "createdAt": "2025-12-22T17:58:53.772Z",
+  "updatedAt": "2025-12-22T18:21:21.575Z",
+  "id": "tacm0wwwFE96HMd3",
+  "name": "Notion Delete Past Events",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        -96
+      ],
+      "id": "410b06a3-d861-43d5-a636-aae889eb7817",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "2cb6ffe8-2f48-8013-938a-c839a0cf6be4",
+          "mode": "list",
+          "cachedResultName": "Calendar Intake",
+          "cachedResultUrl": "https://www.notion.so/2cb6ffe82f488013938ac839a0cf6be4"
+        },
+        "returnAll": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "77d6eec3-da3e-447e-8d08-e1747222d3a2",
+      "name": "Get many database pages",
+      "credentials": {
+        "notionApi": {
+          "id": "GvXFbJlEgvlLAuri",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ac6392bf-5396-4697-a06c-fd40873268df",
+              "leftValue": "={{ $json.property_end_date.start }}",
+              "rightValue": "={{ $now }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "before"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "197d7119-9daf-4256-88a9-6928b86d9694",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "archive",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        -144
+      ],
+      "id": "76137593-0c93-40d1-a5ae-95cf65824658",
+      "name": "Archive page",
+      "credentials": {
+        "notionApi": {
+          "id": "GvXFbJlEgvlLAuri",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -48,
+        128
+      ],
+      "id": "0a3a95eb-bfc2-484e-842c-772b7204164d",
+      "name": "Schedule Trigger"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many database pages": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Archive page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "c319eba8-c759-4828-9877-2c52820f59e3",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-12-22T17:58:53.772Z",
+      "updatedAt": "2025-12-22T17:58:53.772Z",
+      "role": "workflow:owner",
+      "workflowId": "tacm0wwwFE96HMd3",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
