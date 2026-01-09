@@ -1,0 +1,331 @@
+{
+  "createdAt": "2025-11-10T00:47:02.762Z",
+  "updatedAt": "2025-11-10T05:54:17.095Z",
+  "id": "jfhCpUmmhawBGfE4",
+  "name": "New Event Agent",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "75e44f65-5280-4148-8ea1-4bfaa68405ba",
+      "name": "Telegram Trigger",
+      "webhookId": "7016f575-6e38-4494-abc9-2094d2d1baa5",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6XtWZCIj5gK0FVh",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "6990062444",
+        "text": "Would you like to create a new event post?",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "=Yes",
+                    "additionalFields": {
+                      "url": "={{$execution.resumeUrl}}?decision=yes"
+                    }
+                  },
+                  {
+                    "text": "No",
+                    "additionalFields": {
+                      "url": "={{$execution.resumeUrl}}?decision=no"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "680931bf-98dc-418d-8ccb-dbf11e8670d7",
+      "name": "Send a text message",
+      "webhookId": "91350603-1a90-4a7c-a802-4079818145f7",
+      "credentials": {
+        "telegramApi": {
+          "id": "T6XtWZCIj5gK0FVh",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "System Prompt\nYou are an experienced Social Media Manager for Clearbrook Center of the Arts, a multidisciplinary arts center in Lake Ridge, Virginia. Your job is to create compelling and brand-aligned posts for non-recurring or special events such as new shows, exhibitions, workshops, or one-time performances.\n\nFor each event provided, generate:\n\nWebsite Post (1–4 paragraphs) — A detailed, engaging event write-up suitable for the Clearbrook Center of the Arts website.\n\nInclude:\n\nEvent name\n\nEvent description\n\nDate and time\n\nCover charge (if applicable)\n\nIf instructed by the user, omit specific details.\n\nMaintain a professional yet inviting tone that reflects the center’s mission: to support experimental, community-driven, and inclusive art experiences.\n\nInstagram Post (up to 125 characters) — Short, catchy, and visually oriented. Use active language and include a relevant call-to-action (e.g., Join us!, Don’t miss it!, Experience the art!).\n\nFacebook Post (40–80 characters) — Friendly and community-focused. Emphasize connection, local engagement, or excitement.\n\nQuality Metrics:\n\nPosts must align with Clearbrook’s brand voice: artistic, inclusive, community-centered, and creative.\n\nPosts must appeal to the target audience: art lovers, creators, and supporters seeking authentic, local cultural experiences.\n\nEach post should be clear, engaging, and suitable for the platform’s tone and format."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        -32
+      ],
+      "id": "4fb4539d-23ab-4cc4-b80a-8f96c03fe74a",
+      "name": "AI Agent",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        176
+      ],
+      "id": "006bfb73-11b0-4e38-8d4b-c1a033f3517d",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "c3adcc1c-0181-45a9-9b5e-3f6b3f0c39f6",
+      "name": "Wait",
+      "webhookId": "cd7c7bba-3e04-4391-940b-1e93721c3212"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c7dd3342-756f-42bd-ad23-d62f7bab5072",
+              "leftValue": "={{$json[\"query\"][\"decision\"]}}",
+              "rightValue": "yes",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "257f1233-5e07-4412-b5a1-08b8599114c5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "6990062444",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1232,
+        -32
+      ],
+      "id": "6cd5a546-a750-4122-a6c3-9265c533f4e5",
+      "name": "Send a text message1",
+      "webhookId": "81bf2aa3-6e14-490f-b810-4994d3f13797",
+      "executeOnce": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "T6XtWZCIj5gK0FVh",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        160
+      ],
+      "id": "3dfdbd82-ec82-4009-b79f-a0f1f44a7ac0",
+      "name": "Simple Memory"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 113234050,
+          "message": {
+            "message_id": 248,
+            "from": {
+              "id": 6990062444,
+              "is_bot": false,
+              "first_name": "J",
+              "last_name": "W",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 6990062444,
+              "first_name": "J",
+              "last_name": "W",
+              "type": "private"
+            },
+            "date": 1762747415,
+            "text": "yo"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "ad23418c-5d5e-4df6-82b9-310e0bb1e221",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-11-10T00:47:02.762Z",
+      "updatedAt": "2025-11-10T00:47:02.762Z",
+      "role": "workflow:owner",
+      "workflowId": "jfhCpUmmhawBGfE4",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "tags": []
+}
