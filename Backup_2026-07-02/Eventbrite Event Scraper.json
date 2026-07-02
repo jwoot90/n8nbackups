@@ -1,0 +1,276 @@
+{
+  "updatedAt": "2026-03-12T22:34:55.156Z",
+  "createdAt": "2026-03-12T22:18:11.885Z",
+  "id": "0mpp4GqRCRo351BP",
+  "name": "Eventbrite Event Scraper",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "9320f393-0e8a-4f4f-8e22-a24cdfbce39e",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "180b2515-c57b-464f-873e-f58a7c9d6313",
+              "name": "eventUrl",
+              "value": "https://www.eventbrite.com/e/command-the-room-public-speaking-skills-with-kim-b-miller-tickets-1984608253711",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "1371b55c-eaf2-427b-a50c-7709d1966146",
+      "name": "Set Event URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        96,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json.eventUrl}}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "a9cfe582-0a69-4fcc-ab3f-9d6bd8182c0f",
+      "name": "Fetch Event Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        304,
+        -96
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $json.body || $json.data || $json.html || '';\n\nfunction decodeHtml(str) {\n  return str\n    .replace(/&quot;/g, '\"')\n    .replace(/&#39;/g, \"'\")\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>');\n}\n\nfunction stripTags(str) {\n  return typeof str === 'string' ? str.replace(/<[^>]*>/g, ' ').replace(/\\s+/g, ' ').trim() : str;\n}\n\nfunction tryParseJson(text) {\n  try {\n    return JSON.parse(text);\n  } catch {\n    return null;\n  }\n}\n\nconst scriptRegex = /<script[^>]*type=[\"']application\\/ld\\+json[\"'][^>]*>([\\s\\S]*?)<\\/script>/gi;\nlet match;\nlet ldJsonObjects = [];\n\nwhile ((match = scriptRegex.exec(html)) !== null) {\n  const raw = decodeHtml(match[1].trim());\n  const parsed = tryParseJson(raw);\n  if (parsed) {\n    if (Array.isArray(parsed)) {\n      ldJsonObjects.push(...parsed);\n    } else {\n      ldJsonObjects.push(parsed);\n    }\n  }\n}\n\nlet eventObj = ldJsonObjects.find(obj => obj['@type'] === 'Event');\n\nif (!eventObj) {\n  for (const obj of ldJsonObjects) {\n    if (obj['@graph'] && Array.isArray(obj['@graph'])) {\n      const found = obj['@graph'].find(x => x['@type'] === 'Event');\n      if (found) {\n        eventObj = found;\n        break;\n      }\n    }\n  }\n}\n\nif (!eventObj) {\n  throw new Error('No Event JSON-LD found on the page. The page structure may have changed or the event may block scraping.');\n}\n\nconst offers = Array.isArray(eventObj.offers) ? eventObj.offers : eventObj.offers ? [eventObj.offers] : [];\nconst firstOffer = offers[0] || {};\nconst location = eventObj.location || {};\nconst address = location.address || {};\nconst organizer = eventObj.organizer || {};\n\nreturn [{\n  json: {\n    eventUrl: $input.first().json.eventUrl,\n    title: eventObj.name || null,\n    description: stripTags(eventObj.description || null),\n    startDate: eventObj.startDate || null,\n    endDate: eventObj.endDate || null,\n    eventStatus: eventObj.eventStatus || null,\n    image: Array.isArray(eventObj.image) ? eventObj.image[0] : eventObj.image || null,\n    organizerName: organizer.name || null,\n    venueName: location.name || null,\n    streetAddress: address.streetAddress || null,\n    addressLocality: address.addressLocality || null,\n    addressRegion: address.addressRegion || null,\n    postalCode: address.postalCode || null,\n    addressCountry: address.addressCountry || null,\n    price: firstOffer.price || null,\n    priceCurrency: firstOffer.priceCurrency || null,\n    availability: firstOffer.availability || null,\n    ticketUrl: firstOffer.url || eventObj.url || $input.first().json.eventUrl\n  }\n}];"
+      },
+      "id": "23463145-41ec-4b7f-9b30-a1c72dc4bda1",
+      "name": "Parse Event JSON-LD",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Events",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 510844157,
+          "mode": "list",
+          "cachedResultName": "EventBrite",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14d4G5vX4seARrLJT2dN9gmfmAoJNz-x6TVLzJ0Z-i7k/edit#gid=510844157"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Title": "={{ $json.title }}",
+            "Event Description": "={{ $json.description }}",
+            "Organizer Name ": "={{ $json.organizerName }}",
+            "Event URL": "={{ $json.ticketUrl }}",
+            "End Date": "={{ $json.endDate }}",
+            "Start Date": "={{ $json.startDate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event Description",
+              "displayName": "Event Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Event URL",
+              "displayName": "Event URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Host",
+              "displayName": "Host",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Start Date",
+              "displayName": "Start Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "End Date",
+              "displayName": "End Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Price",
+              "displayName": "Price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Organizer Name ",
+              "displayName": "Organizer Name ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        944,
+        -64
+      ],
+      "id": "cbdcdeb6-3ece-4f30-9d73-198b7ea87532",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Event URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Event URL": {
+      "main": [
+        [
+          {
+            "node": "Fetch Event Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Event Page": {
+      "main": [
+        [
+          {
+            "node": "Parse Event JSON-LD",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Event JSON-LD": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "655d2b4d-c838-46fe-87d9-a719629361cd",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-03-12T22:18:11.885Z",
+      "createdAt": "2026-03-12T22:18:11.885Z",
+      "role": "workflow:owner",
+      "workflowId": "0mpp4GqRCRo351BP",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
