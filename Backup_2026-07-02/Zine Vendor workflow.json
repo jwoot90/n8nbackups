@@ -1,0 +1,515 @@
+{
+  "updatedAt": "2026-04-13T21:09:15.796Z",
+  "createdAt": "2026-04-10T19:29:55.536Z",
+  "id": "kmsJv2K1RvGOhauQ",
+  "name": "Zine Vendor workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b068dddd-0bb1-4e04-a4d1-ae6c13791fcc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU",
+          "mode": "list",
+          "cachedResultName": "unfiltered zine data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "1284f3bf-c54d-4f6a-a809-87a5fe4794dd",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        816,
+        -48
+      ],
+      "id": "4b4783ed-5586-441b-8bfc-6573c9b5020e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        0
+      ],
+      "id": "f52a5c52-0e0d-4007-9baa-b4736c8de54a"
+    },
+    {
+      "parameters": {
+        "query": "=What is the website for {{ $json['Vendor Name'] }}   ?",
+        "options": {
+          "max_results": 3
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavily",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        -208
+      ],
+      "id": "06415eae-4c62-4f18-9274-d3d60acf68ca",
+      "name": "Search",
+      "credentials": {
+        "tavilyApi": {
+          "id": "o41ChwLCtWJ1tlwd",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "query": "=what is the instagram page for  {{ $('Get row(s) in sheet').item.json['Vendor Name'] }}?",
+        "options": {
+          "max_results": 3
+        }
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavily",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        16
+      ],
+      "id": "07cad556-e4bf-42d2-9464-5ec3b41a746e",
+      "name": "Search1",
+      "credentials": {
+        "tavilyApi": {
+          "id": "o41ChwLCtWJ1tlwd",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU",
+          "mode": "list",
+          "cachedResultName": "unfiltered zine data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Vendor Name": "={{ $('Get row(s) in sheet').item.json['Vendor Name'] }}",
+            "Website 1": "={{ $json.results[0].url }}",
+            "Website 2": "={{ $json.results[1].url }}",
+            "Website 3": "={{ $json.results[2].url }}",
+            "Insta 1": "="
+          },
+          "matchingColumns": [
+            "Vendor Name"
+          ],
+          "schema": [
+            {
+              "id": "Vendor Name",
+              "displayName": "Vendor Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Website 1",
+              "displayName": "Website 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website 2",
+              "displayName": "Website 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website 3",
+              "displayName": "Website 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Insta 1",
+              "displayName": "Insta 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Insta 2",
+              "displayName": "Insta 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Insta 3",
+              "displayName": "Insta 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1744,
+        -208
+      ],
+      "id": "78037639-509d-49f4-ad73-c5a32dbad19d",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU",
+          "mode": "list",
+          "cachedResultName": "unfiltered zine data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1qsrnZf7cFDXWNnuy0bIakHgg-EBkjuG_5332uB6OffU/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Vendor Name": "={{ $('Get row(s) in sheet').item.json['Vendor Name'] }}",
+            "Insta 1": "={{ $json.results[0].url }}",
+            "Insta 2": "={{ $json.results[1].url }}",
+            "Insta 3": "={{ $json.results[2].url }}"
+          },
+          "matchingColumns": [
+            "Vendor Name"
+          ],
+          "schema": [
+            {
+              "id": "Vendor Name",
+              "displayName": "Vendor Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Website 1",
+              "displayName": "Website 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website 2",
+              "displayName": "Website 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Website 3",
+              "displayName": "Website 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Insta 1",
+              "displayName": "Insta 1",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Insta 2",
+              "displayName": "Insta 2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Insta 3",
+              "displayName": "Insta 3",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1744,
+        16
+      ],
+      "id": "74712d3f-55e9-4360-b65c-06c99384e416",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2048,
+        0
+      ],
+      "id": "788a455f-871b-4c71-bd8b-a27131042051",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2240,
+        0
+      ],
+      "id": "bd0f91df-4e39-4ff7-a25c-b50f1587eee0",
+      "name": "Wait",
+      "webhookId": "746cb316-d15a-41d5-a148-cc8a63629077"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Search",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "ea84e35a-13a9-430e-81b4-618f9b2dcacf",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-10T19:29:55.536Z",
+      "createdAt": "2026-04-10T19:29:55.536Z",
+      "role": "workflow:owner",
+      "workflowId": "kmsJv2K1RvGOhauQ",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
