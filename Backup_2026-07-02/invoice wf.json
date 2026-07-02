@@ -1,0 +1,511 @@
+{
+  "updatedAt": "2026-05-06T14:36:28.814Z",
+  "createdAt": "2026-05-05T16:45:14.958Z",
+  "id": "MOWqTgz2PSvrBVCI",
+  "name": "invoice wf",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3202df2f-303b-46b8-8e98-eedb105b08c8",
+      "name": "Telegram Trigger",
+      "webhookId": "e10da216-34e8-4e96-bab4-0756eaa73863",
+      "credentials": {
+        "telegramApi": {
+          "id": "fSpZC2ooM3PqWHAF",
+          "name": "tkminvoicebot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $json.message.from.id }}",
+        "message": "What kind of invoice are we creating?",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Invoice Type",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Marketing"
+                  },
+                  {
+                    "option": "SEO"
+                  },
+                  {
+                    "option": "Festival"
+                  },
+                  {
+                    "option": "Blogging"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fe871b5c-e12f-43c5-a457-8ea6763a84fe",
+      "name": "Send message and wait for response",
+      "webhookId": "191a4387-c84f-4d27-8f44-4c3d88486924",
+      "credentials": {
+        "telegramApi": {
+          "id": "fSpZC2ooM3PqWHAF",
+          "name": "tkminvoicebot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.data['Invoice Type'] }}",
+                    "rightValue": "Marketing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "30ab2a5e-07cf-4175-a4f0-19037a3f8565"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "cc0d2085-2c75-4264-917d-90b9a3a47efa",
+                    "leftValue": "={{ $json.data['Invoice Type'] }}",
+                    "rightValue": "SEO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "353f8d26-54c5-4ea4-8d23-be36190dce48",
+                    "leftValue": "={{ $json.data['Invoice Type'] }}",
+                    "rightValue": "Festival",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6dee2411-c393-4af4-bb72-f50ba8afe760",
+                    "leftValue": "={{ $json.data['Invoice Type'] }}",
+                    "rightValue": "Blogging",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        464,
+        -32
+      ],
+      "id": "bced71ed-8eb6-4e60-b492-976f84d3a8e9",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q",
+          "mode": "list",
+          "cachedResultName": "2026 Invoices",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Marketing",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1088,
+        -240
+      ],
+      "id": "679033e5-326a-4813-8479-62f4c0167c12",
+      "name": "Marketing Invoice Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q",
+          "mode": "list",
+          "cachedResultName": "2026 Invoices",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1867351951,
+          "mode": "list",
+          "cachedResultName": "SEO",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit#gid=1867351951"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        -16
+      ],
+      "id": "1faee677-a721-4397-897a-1766dd8e4cc3",
+      "name": "SEO Invoice Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q",
+          "mode": "list",
+          "cachedResultName": "2026 Invoices",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1470770814,
+          "mode": "list",
+          "cachedResultName": "Festival",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit#gid=1470770814"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        176
+      ],
+      "id": "e7bd19df-e197-41a8-b651-70cddcb411ab",
+      "name": "Festival Invoice Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q",
+          "mode": "list",
+          "cachedResultName": "2026 Invoices",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1004023116,
+          "mode": "list",
+          "cachedResultName": "Blogging",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iq9UBMS2b6xNSPWrdGM9MBzCWqQ4LrOrwCyJPbBhm8Q/edit#gid=1004023116"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        960,
+        352
+      ],
+      "id": "e994f4b7-0837-440f-922f-03c89d524388",
+      "name": "Blogging Invoice Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowStaticData = $getWorkflowStaticData('global');\n\nif (!workflowStaticData.lastOrderNum) {\n  workflowStaticData.lastOrderNum = 510;\n}\n\nworkflowStaticData.lastOrderNum += 100;\n\nconst order_id = 'TKM' + workflowStaticData.lastOrderNum;\n\nreturn [\n  {\n    json: { order_id }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -240
+      ],
+      "id": "c11515eb-e86f-49b7-b6c5-b4b9327227a0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ed900dc2-14db-406c-a34c-eedc464c713f",
+              "leftValue": "={{ $json.row_number }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1296,
+        -240
+      ],
+      "id": "00f54934-d652-4553-b262-435f2fd639e3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "71804298-191c-4254-b039-157819e0ae77",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        -336
+      ],
+      "id": "4d83c067-8636-4fd9-9d3b-87f2cf7e69d8",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "SEO Invoice Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Festival Invoice Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Blogging Invoice Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Marketing Invoice Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marketing Invoice Sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "c725c23f-dc5e-4c48-9b56-3d5f7bd2750f",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-05T16:45:14.958Z",
+      "createdAt": "2026-05-05T16:45:14.958Z",
+      "role": "workflow:owner",
+      "workflowId": "MOWqTgz2PSvrBVCI",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
