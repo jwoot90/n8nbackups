@@ -1,0 +1,153 @@
+{
+  "updatedAt": "2026-06-15T15:20:33.442Z",
+  "createdAt": "2026-05-31T17:12:38.197Z",
+  "id": "KSWXvSmrK9BR0Qrd",
+  "name": "tkmmarketapps",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "57ee788d-f299-4fdc-9b75-fa8d37713c63",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "simple": false,
+        "filters": {
+          "q": "\"Vendor Information\"",
+          "receivedAfter": "2026-06-09T14:00:00"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        192,
+        80
+      ],
+      "id": "54a405a9-545a-437a-898c-a5363688131e",
+      "name": "Get many messages",
+      "webhookId": "5f0af59c-f14c-4ad5-b312-363daf978181",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "3Ze7LwVZbeaAHgwp",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1AE3PX9vta1M0MhtT4q-qADGd4dBMhzFgHZOWjwyE1J0",
+          "mode": "list",
+          "cachedResultName": "Tackett's Mill Farmers Market",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AE3PX9vta1M0MhtT4q-qADGd4dBMhzFgHZOWjwyE1J0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AE3PX9vta1M0MhtT4q-qADGd4dBMhzFgHZOWjwyE1J0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Vendor Blurb": "= {{ $json.text }}"
+          },
+          "matchingColumns": [
+            "Vendor Blurb"
+          ],
+          "schema": [
+            {
+              "id": "Vendor Blurb",
+              "displayName": "Vendor Blurb",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        16
+      ],
+      "id": "705d234f-8ab7-4ea3-803c-459c9e4ae10a",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "2e0150d2-0016-4c73-9ffd-7d77e12b22d6",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-31T17:12:38.197Z",
+      "createdAt": "2026-05-31T17:12:38.197Z",
+      "role": "workflow:owner",
+      "workflowId": "KSWXvSmrK9BR0Qrd",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
