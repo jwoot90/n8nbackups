@@ -1,0 +1,130 @@
+{
+  "updatedAt": "2026-06-30T20:22:03.880Z",
+  "createdAt": "2026-06-30T19:02:12.262Z",
+  "id": "YUbQST8J2YMRHbuW",
+  "name": "My workflow 4",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9072cfa6-3ba3-4839-aca9-2d8eba46bd8f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1kjL4fLjojB6ES5XsXo2pFy-GIUqmvHohmUP7yFIVDxw",
+          "mode": "list",
+          "cachedResultName": "Tacketts Email Correspondent ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kjL4fLjojB6ES5XsXo2pFy-GIUqmvHohmUP7yFIVDxw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kjL4fLjojB6ES5XsXo2pFy-GIUqmvHohmUP7yFIVDxw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "899fc017-9eb5-4a20-9eb1-09762819fa7f",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Important Tackett's Mill Community Market Update",
+        "message": "=Hello {{ $json['First Name'] }} {{ $json['Last Name'] }},\n\nWe’re excited to welcome you to the market starting in August. As this is the first commercial market of its kind in this part of the county, we have worked closely with county officials to ensure compliance with all regulations. To proceed, the county requires us to submit a Vendor Event Sponsor Application. This step is part of their efforts to maintain public safety. Please complete and return the attached form by Friday. It should only take a few minutes. Additionally, everyone involved, including us, will undergo a background check conducted by the county government. No action is required from you for this step. Thank you patience and for your cooperation. We will keep you updated. ",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "cbcf06ab-2f4d-40b5-be23-940767c8fefb",
+      "name": "Send a message",
+      "webhookId": "efcf4c47-9e16-4aba-ac88-07992fb40932",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "BJlGXGvgOJZ1XTHU",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "7922d323-1ce3-4036-942f-d649cd8c2a15",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-30T19:02:12.262Z",
+      "createdAt": "2026-06-30T19:02:12.262Z",
+      "role": "workflow:owner",
+      "workflowId": "YUbQST8J2YMRHbuW",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
