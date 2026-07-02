@@ -1,0 +1,1899 @@
+{
+  "updatedAt": "2026-02-25T17:54:34.651Z",
+  "createdAt": "2026-02-24T16:04:38.869Z",
+  "id": "1nZnpWcKGEFLiKFG",
+  "name": "My workflow 2",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        -208
+      ],
+      "id": "e45ec05c-d433-4c6b-b686-5389f86119f6",
+      "name": "Telegram Trigger",
+      "webhookId": "8ae5560e-9b9b-499d-8e0e-cc852fadd466",
+      "credentials": {
+        "telegramApi": {
+          "id": "f1RPbBIJo6MlXSpn",
+          "name": "Catering Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "You are the Caterer Bot for a Kunsthalle-style art center.\n\nStart of a new order greeting:\n\"Hello I’m the caterer bot, please provide an estimate attendance number for this event and your budget.\"\n\nYou must collect these required inputs before generating a menu:\n- attendance (number)\n- budget (number)\n\nOptional inputs you may ask for only if helpful:\n- dietary notes (vegan/gluten-free/etc.)\n- exhibit vibe/theme (1 sentence)\n\nRules:\n- No alcohol.\n- Finger foods only, light, non-messy, no utensils.\n- Limited refrigeration: prefer room-temp-safe items.\n- Grocery delivery only (Instacart-friendly, common items).\n- Food portions: aim for 6–8 bite-size pieces per person (use 7 midpoint).\n- Drinks: at least 1 drink per person.\n- Drinks must be packaged and include size (e.g., 2 8-packs seltzer, 12 oz cans; 1 2-liter soda; 1 gallon water).\n\nWhen you have attendance + budget:\nReturn ONLY valid JSON (no extra text) in this schema:\n{\n  \"status\": \"ok\",\n  \"attendance\": <number>,\n  \"budget\": <number>,\n  \"menu_lines\": [\n    {\n      \"category\": \"Food\" | \"Drink\",\n      \"quantity\": <integer>,\n      \"item\": \"<string>\",\n      \"size\": \"<string or empty>\"\n    }\n  ]\n}\n\nIf you are missing attendance or budget:\nReturn ONLY valid JSON:\n{\n  \"status\": \"need_info\",\n  \"missing\": [\"attendance\" and/or \"budget\"],\n  \"question\": \"<one short question asking only for missing info>\"\n}\n\nPortioning and quantities (IMPORTANT):\n- Do NOT output quantities as individual “pieces” (e.g., 526 pieces).\n- All quantities must be in Instacart-friendly retail units: trays, platters, boxes, bags, packs, sleeves, clamshells, tubs, or party-size containers.\n- For each FOOD item, choose a unit that a grocery store sells (e.g., “1 party tray”, “2 family-size bags”, “3 boxes”, “4 deli platters”).\n- Aim for 6–8 bites per guest total across the menu using retail-unit estimates.\n\nFood quantity format:\n- Log food as: Quantity | Item\n- Item should include the unit size/type (tray/box/bag) and, when helpful, an approximate piece count per unit in the item text.\n  Examples:\n  - 2 Deli Sandwich Pinwheel Trays (~30 pieces each)\n  - 3 Boxes Mini Brownies (~20 bites per box)\n  - 4 Family-Size Chips Bags (13–15 oz)\n\nDrinks quantity format:\n- Log drinks as: Quantity | Item | Size\n- Drinks must be packages (8-pack/12-pack/24-pack) or containers (2-liter, 1 gallon) and must include ounces/size.\n\nOrder updates:\n- If existing_menu_lines is provided, treat this as the current order (Revision currently active).\n- When the user requests changes, produce a full updated menu (not just deltas).\n- Use LineID for each item (001, 002, …). Keep LineIDs stable where possible when only changing quantities.\n- Never output quantities as raw “pieces”. Always use retail units (trays, boxes, bags, packs, platters).\n- Drinks must be packaged and include size (oz / 2-liter / gallon).\n\nOutput (when ready):\nReturn ONLY JSON:\n{\n  \"status\": \"ok\",\n  \"attendance\": <number>,\n  \"budget\": <number>,\n  \"menu_lines\": [\n    {\"line_id\":\"001\",\"category\":\"Food\",\"quantity\":2,\"item\":\"Deli Pinwheel Wrap Tray (~30 pieces each)\",\"size\":\"\"},\n    {\"line_id\":\"009\",\"category\":\"Drink\",\"quantity\":2,\"item\":\"Seltzer Water 8-pack\",\"size\":\"12 oz cans\"}\n  ]\n}\n\nIf missing attendance or budget:\nReturn ONLY JSON:\n{\"status\":\"need_info\",\"missing\":[\"attendance\" and/or \"budget\"],\"question\":\"...\"}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        944,
+        -176
+      ],
+      "id": "8d988109-4edc-45ae-8d3e-ff825139df72",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        912,
+        208
+      ],
+      "id": "3f8a0918-189f-412b-9616-cf7bf705b6a6",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "4GXamIpdskwyAIku",
+          "name": "Blog Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.question }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1776,
+        -192
+      ],
+      "id": "b8f01fab-b0bd-497c-b8d8-0d717803723e",
+      "name": "Send a text message",
+      "webhookId": "a0a5ebf1-ee7c-4a4d-9425-17c18732fd18",
+      "credentials": {
+        "telegramApi": {
+          "id": "f1RPbBIJo6MlXSpn",
+          "name": "Catering Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+          "mode": "list",
+          "cachedResultName": "Catering Menu",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Category": "={{$json.Category}}",
+            "Quantity ": "={{$json.Quantity}}",
+            "Item": "={{$json.Item}}",
+            "Size": "={{$json.Size}}",
+            "orderID": "={{$json.OrderID}}",
+            "Revision": "={{$json.Revision}}",
+            "IsCurrent": "={{$json.IsCurrent}}",
+            "LineID": "={{$json.LineID}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "orderID",
+              "displayName": "orderID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Revision",
+              "displayName": "Revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "IsCurrent",
+              "displayName": "IsCurrent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "LineID",
+              "displayName": "LineID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Quantity ",
+              "displayName": "Quantity ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Item",
+              "displayName": "Item",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Size",
+              "displayName": "Size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2352,
+        0
+      ],
+      "id": "0c20d7df-b8ae-4265-87da-09da2cd025e3",
+      "name": "Append row in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1056,
+        208
+      ],
+      "id": "515018fc-a04c-4a3e-b1c9-3303a3f47d2d",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5b7e6fe0-e86b-47a8-8908-0c54ee959c36",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "need_info",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1408,
+        -64
+      ],
+      "id": "28246e82-08ca-4f61-acad-03a85067b989",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const text =\n  $json.output ||\n  $json.text ||\n  $json.message?.text ||\n  $json.content ||\n  \"\";\n\n// Parse whole response as JSON\nconst data = JSON.parse(text);\n\nreturn data;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        16
+      ],
+      "id": "6cd794aa-ef8a-4930-afed-ee904bddf193",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a64eb819-c458-4aef-883d-ef77182751b5",
+              "name": "chatID",
+              "value": "={{ $json.message.chat.id }}",
+              "type": "number"
+            },
+            {
+              "id": "01ba4437-695e-4a61-a4fa-a9f78fb3ad3e",
+              "name": "message.text",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            },
+            {
+              "id": "faba2c97-c8d1-4871-b89d-f4dcda28a945",
+              "name": "orderID",
+              "value": "={{ \"TG-\" + $json.message.chat.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        -192
+      ],
+      "id": "195a5e03-e439-46d3-94bf-aef9dd4eddc0",
+      "name": "Set Node Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const maxRevision = Number($json.maxRevision || 0);\nreturn [{ json: { nextRevision: maxRevision + 1, existing_menu_lines: \"\" } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        -768
+      ],
+      "id": "63e32b04-c03b-4ef8-9d34-62bb3e8c1e60",
+      "name": "next_revision"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2000,
+        320
+      ],
+      "id": "116d931a-07e2-4d34-945b-8b5a48419412",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        2480,
+        384
+      ],
+      "id": "9da154cc-aa81-4e6c-ac40-758e23ac87b1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+          "mode": "list",
+          "cachedResultName": "Catering Menu",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{$json.row_number}}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "orderID",
+              "displayName": "orderID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Revision",
+              "displayName": "Revision",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "IsCurrent",
+              "displayName": "IsCurrent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "LineID",
+              "displayName": "LineID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Category",
+              "displayName": "Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Quantity ",
+              "displayName": "Quantity ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Item",
+              "displayName": "Item",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Size",
+              "displayName": "Size",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        352
+      ],
+      "id": "0da86c6c-a331-49b7-a7cc-ec5525bc83b5",
+      "name": "Update row in sheet1",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = await $input.all();\nconst data = all[0].json;\n\n// Expect fields from earlier steps present on the item:\n// orderId, nextRevision, attendance, budget, menu_lines\nconst orderId = data.orderId;\nconst revision = Number(data.nextRevision);\nconst attendance = Number(data.attendance);\nconst budget = Number(data.budget);\nconst menu = Array.isArray(data.menu_lines) ? data.menu_lines : [];\n\nconst ts = new Date().toISOString();\n\nreturn menu.map((m, idx) => {\n  const lineId = m.line_id || String(idx + 1).padStart(3, \"0\");\n  return {\n    json: {\n      OrderID: orderId,\n      Revision: revision,\n      IsCurrent: true,\n      LineID: lineId,\n      Category: m.category,\n      Quantity: m.quantity,\n      Item: m.item,\n      Size: m.size || \"\",\n     \n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2144,
+        16
+      ],
+      "id": "ebfb0df2-87d9-43ec-9c51-e1fbeced40ec",
+      "name": "Build New Revision Rows",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = await $input.all();\n\n// all items = each menu row just written\n// we want a short grouped summary\n\nconst foods = [];\nconst drinks = [];\n\nfor (const item of all) {\n\n  const r = item.json;\n\n  if ((r.Category || \"\").toLowerCase() === \"drink\") {\n\n    drinks.push(\n      `${r.Quantity} ${r.Item}${r.Size ? \" (\" + r.Size + \")\" : \"\"}`\n    );\n\n  } else {\n\n    foods.push(\n      `${r.Quantity} ${r.Item}`\n    );\n  }\n}\n\n// Build short summary text\nlet message = `✅ Catering order logged successfully.\\n\\n`;\n\nif (foods.length) {\n\n  message += `🍽 Food:\\n`;\n\n  message += foods.slice(0,5).map(f => `• ${f}`).join(\"\\n\");\n\n  if (foods.length > 5) {\n\n    message += `\\n• +${foods.length - 5} more items`;\n  }\n\n  message += \"\\n\\n\";\n}\n\nif (drinks.length) {\n\n  message += `🥤 Drinks:\\n`;\n\n  message += drinks.slice(0,5).map(d => `• ${d}`).join(\"\\n\");\n\n  if (drinks.length > 5) {\n\n    message += `\\n• +${drinks.length - 5} more items`;\n  }\n}\n\nreturn [\n  {\n    json: {\n      telegramMessage: message\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2560,
+        0
+      ],
+      "id": "d3158ff5-12cb-49ce-9952-63d9d5f7ba54",
+      "name": "Build Confirmation Message",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "chatId": "={{$node[\"Telegram Trigger\"].json.message.chat.id}}",
+        "text": "={{$json.telegramMessage}}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2768,
+        0
+      ],
+      "id": "37dac16b-cb39-423d-8414-9ab4fbe91d9b",
+      "name": "Send a text message1",
+      "webhookId": "3eea2e4e-38cf-4bd0-b19a-5fe7086006ad",
+      "credentials": {
+        "telegramApi": {
+          "id": "f1RPbBIJo6MlXSpn",
+          "name": "Catering Agent"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const all = await $input.all();\n\n// If the read returned no items, emit one default item\nif (!all || all.length === 0) {\n  return [{\n    json: {\n      hasCurrentRows: false,\n      currentRows: [],\n      maxRevision: 0\n    }\n  }];\n}\n\n// Otherwise package the rows into one item\nconst rows = all.map(x => x.json);\nconst revs = rows.map(r => Number(r.Revision)).filter(n => Number.isFinite(n));\nconst maxRevision = revs.length ? Math.max(...revs) : 0;\n\nreturn [{\n  json: {\n    hasCurrentRows: true,\n    currentRows: rows,\n    maxRevision\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -960
+      ],
+      "id": "6e1c871d-426d-42fb-9803-65999127bc74",
+      "name": "Create Default Item"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+          "mode": "list",
+          "cachedResultName": "Catering Menu",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "orderID",
+              "lookupValue": "orderId"
+            },
+            {
+              "lookupColumn": "IsCurrent",
+              "lookupValue": "TRUE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        528,
+        -656
+      ],
+      "id": "f3999d32-c710-412e-b6b7-0946d5d94741",
+      "name": "GetRows",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db2985f1-f8e6-459d-8699-e4215baa4bde",
+              "leftValue": "={{ $items(\"Google Sheets - Get Rows\").some(i => i.json && i.json.LineID) }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1968,
+        64
+      ],
+      "id": "223fe0d1-f463-4d91-b21d-23ded55a59d6",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+          "mode": "list",
+          "cachedResultName": "Catering Menu",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "orderID",
+              "lookupValue": "={{$node[\"Set Node Fields\"].json.orderId}}"
+            },
+            {
+              "lookupColumn": "IsCurrent",
+              "lookupValue": "TRUE"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1456,
+        176
+      ],
+      "id": "a96100d7-2842-4b5e-a808-a43f00287343",
+      "name": "Google Sheets - Get Rows",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1696,
+        -16
+      ],
+      "id": "0fec1f15-ebfd-441b-b88f-0138cab7e2dc",
+      "name": "Merge"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Node Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        []
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Build Confirmation Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets - Get Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Node Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "next_revision": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Build New Revision Rows",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build New Revision Rows": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Confirmation Message": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Default Item": {
+      "main": [
+        []
+      ]
+    },
+    "GetRows": {
+      "main": [
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build New Revision Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets - Get Rows": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 34709071,
+          "message": {
+            "message_id": 125,
+            "from": {
+              "id": 6990062444,
+              "is_bot": false,
+              "first_name": "J",
+              "last_name": "W",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 6990062444,
+              "first_name": "J",
+              "last_name": "W",
+              "type": "private"
+            },
+            "date": 1772040246,
+            "text": "Attendance 75 Budget $100"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "49285cab-1aa3-44c6-b6eb-8f7144f678cb",
+  "activeVersionId": "49285cab-1aa3-44c6-b6eb-8f7144f678cb",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-02-24T16:04:38.869Z",
+      "createdAt": "2026-02-24T16:04:38.869Z",
+      "role": "workflow:owner",
+      "workflowId": "1nZnpWcKGEFLiKFG",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-07-02T14:35:09.173Z",
+    "createdAt": "2026-07-02T14:35:09.173Z",
+    "versionId": "49285cab-1aa3-44c6-b6eb-8f7144f678cb",
+    "workflowId": "1nZnpWcKGEFLiKFG",
+    "nodes": [
+      {
+        "parameters": {
+          "updates": [
+            "message"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          416,
+          -208
+        ],
+        "id": "e45ec05c-d433-4c6b-b686-5389f86119f6",
+        "name": "Telegram Trigger",
+        "webhookId": "8ae5560e-9b9b-499d-8e0e-cc852fadd466",
+        "credentials": {
+          "telegramApi": {
+            "id": "f1RPbBIJo6MlXSpn",
+            "name": "Catering Agent"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+          "options": {
+            "systemMessage": "You are the Caterer Bot for a Kunsthalle-style art center.\n\nStart of a new order greeting:\n\"Hello I’m the caterer bot, please provide an estimate attendance number for this event and your budget.\"\n\nYou must collect these required inputs before generating a menu:\n- attendance (number)\n- budget (number)\n\nOptional inputs you may ask for only if helpful:\n- dietary notes (vegan/gluten-free/etc.)\n- exhibit vibe/theme (1 sentence)\n\nRules:\n- No alcohol.\n- Finger foods only, light, non-messy, no utensils.\n- Limited refrigeration: prefer room-temp-safe items.\n- Grocery delivery only (Instacart-friendly, common items).\n- Food portions: aim for 6–8 bite-size pieces per person (use 7 midpoint).\n- Drinks: at least 1 drink per person.\n- Drinks must be packaged and include size (e.g., 2 8-packs seltzer, 12 oz cans; 1 2-liter soda; 1 gallon water).\n\nWhen you have attendance + budget:\nReturn ONLY valid JSON (no extra text) in this schema:\n{\n  \"status\": \"ok\",\n  \"attendance\": <number>,\n  \"budget\": <number>,\n  \"menu_lines\": [\n    {\n      \"category\": \"Food\" | \"Drink\",\n      \"quantity\": <integer>,\n      \"item\": \"<string>\",\n      \"size\": \"<string or empty>\"\n    }\n  ]\n}\n\nIf you are missing attendance or budget:\nReturn ONLY valid JSON:\n{\n  \"status\": \"need_info\",\n  \"missing\": [\"attendance\" and/or \"budget\"],\n  \"question\": \"<one short question asking only for missing info>\"\n}\n\nPortioning and quantities (IMPORTANT):\n- Do NOT output quantities as individual “pieces” (e.g., 526 pieces).\n- All quantities must be in Instacart-friendly retail units: trays, platters, boxes, bags, packs, sleeves, clamshells, tubs, or party-size containers.\n- For each FOOD item, choose a unit that a grocery store sells (e.g., “1 party tray”, “2 family-size bags”, “3 boxes”, “4 deli platters”).\n- Aim for 6–8 bites per guest total across the menu using retail-unit estimates.\n\nFood quantity format:\n- Log food as: Quantity | Item\n- Item should include the unit size/type (tray/box/bag) and, when helpful, an approximate piece count per unit in the item text.\n  Examples:\n  - 2 Deli Sandwich Pinwheel Trays (~30 pieces each)\n  - 3 Boxes Mini Brownies (~20 bites per box)\n  - 4 Family-Size Chips Bags (13–15 oz)\n\nDrinks quantity format:\n- Log drinks as: Quantity | Item | Size\n- Drinks must be packages (8-pack/12-pack/24-pack) or containers (2-liter, 1 gallon) and must include ounces/size.\n\nOrder updates:\n- If existing_menu_lines is provided, treat this as the current order (Revision currently active).\n- When the user requests changes, produce a full updated menu (not just deltas).\n- Use LineID for each item (001, 002, …). Keep LineIDs stable where possible when only changing quantities.\n- Never output quantities as raw “pieces”. Always use retail units (trays, boxes, bags, packs, platters).\n- Drinks must be packaged and include size (oz / 2-liter / gallon).\n\nOutput (when ready):\nReturn ONLY JSON:\n{\n  \"status\": \"ok\",\n  \"attendance\": <number>,\n  \"budget\": <number>,\n  \"menu_lines\": [\n    {\"line_id\":\"001\",\"category\":\"Food\",\"quantity\":2,\"item\":\"Deli Pinwheel Wrap Tray (~30 pieces each)\",\"size\":\"\"},\n    {\"line_id\":\"009\",\"category\":\"Drink\",\"quantity\":2,\"item\":\"Seltzer Water 8-pack\",\"size\":\"12 oz cans\"}\n  ]\n}\n\nIf missing attendance or budget:\nReturn ONLY JSON:\n{\"status\":\"need_info\",\"missing\":[\"attendance\" and/or \"budget\"],\"question\":\"...\"}"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          944,
+          -176
+        ],
+        "id": "8d988109-4edc-45ae-8d3e-ff825139df72",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "gpt-4.1-mini"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+        "typeVersion": 1.2,
+        "position": [
+          912,
+          208
+        ],
+        "id": "3f8a0918-189f-412b-9616-cf7bf705b6a6",
+        "name": "OpenAI Chat Model",
+        "credentials": {
+          "openAiApi": {
+            "id": "4GXamIpdskwyAIku",
+            "name": "Blog Agent"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "={{ $json.question }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1776,
+          -192
+        ],
+        "id": "b8f01fab-b0bd-497c-b8d8-0d717803723e",
+        "name": "Send a text message",
+        "webhookId": "a0a5ebf1-ee7c-4a4d-9425-17c18732fd18",
+        "credentials": {
+          "telegramApi": {
+            "id": "f1RPbBIJo6MlXSpn",
+            "name": "Catering Agent"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "append",
+          "documentId": {
+            "__rl": true,
+            "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+            "mode": "list",
+            "cachedResultName": "Catering Menu",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Category": "={{$json.Category}}",
+              "Quantity ": "={{$json.Quantity}}",
+              "Item": "={{$json.Item}}",
+              "Size": "={{$json.Size}}",
+              "orderID": "={{$json.OrderID}}",
+              "Revision": "={{$json.Revision}}",
+              "IsCurrent": "={{$json.IsCurrent}}",
+              "LineID": "={{$json.LineID}}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "orderID",
+                "displayName": "orderID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Revision",
+                "displayName": "Revision",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "IsCurrent",
+                "displayName": "IsCurrent",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "LineID",
+                "displayName": "LineID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Category",
+                "displayName": "Category",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Quantity ",
+                "displayName": "Quantity ",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Item",
+                "displayName": "Item",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              },
+              {
+                "id": "Size",
+                "displayName": "Size",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          2352,
+          0
+        ],
+        "id": "0c20d7df-b8ae-4265-87da-09da2cd025e3",
+        "name": "Append row in sheet",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "lOnwdkB64nY6ZNRm",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          1056,
+          208
+        ],
+        "id": "515018fc-a04c-4a3e-b1c9-3303a3f47d2d",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "5b7e6fe0-e86b-47a8-8908-0c54ee959c36",
+                "leftValue": "={{ $json.status }}",
+                "rightValue": "need_info",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1408,
+          -64
+        ],
+        "id": "28246e82-08ca-4f61-acad-03a85067b989",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "mode": "runOnceForEachItem",
+          "jsCode": "const text =\n  $json.output ||\n  $json.text ||\n  $json.message?.text ||\n  $json.content ||\n  \"\";\n\n// Parse whole response as JSON\nconst data = JSON.parse(text);\n\nreturn data;"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1264,
+          16
+        ],
+        "id": "6cd794aa-ef8a-4930-afed-ee904bddf193",
+        "name": "Code in JavaScript1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "a64eb819-c458-4aef-883d-ef77182751b5",
+                "name": "chatID",
+                "value": "={{ $json.message.chat.id }}",
+                "type": "number"
+              },
+              {
+                "id": "01ba4437-695e-4a61-a4fa-a9f78fb3ad3e",
+                "name": "message.text",
+                "value": "={{ $json.message.text }}",
+                "type": "string"
+              },
+              {
+                "id": "faba2c97-c8d1-4871-b89d-f4dcda28a945",
+                "name": "orderID",
+                "value": "={{ \"TG-\" + $json.message.chat.id }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          672,
+          -192
+        ],
+        "id": "195a5e03-e439-46d3-94bf-aef9dd4eddc0",
+        "name": "Set Node Fields"
+      },
+      {
+        "parameters": {
+          "jsCode": "const maxRevision = Number($json.maxRevision || 0);\nreturn [{ json: { nextRevision: maxRevision + 1, existing_menu_lines: \"\" } }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          768,
+          -768
+        ],
+        "id": "63e32b04-c03b-4ef8-9d34-62bb3e8c1e60",
+        "name": "next_revision"
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": false
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          2000,
+          320
+        ],
+        "id": "116d931a-07e2-4d34-945b-8b5a48419412",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "name": "Replace Me",
+        "typeVersion": 1,
+        "position": [
+          2480,
+          384
+        ],
+        "id": "9da154cc-aa81-4e6c-ac40-758e23ac87b1"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "documentId": {
+            "__rl": true,
+            "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+            "mode": "list",
+            "cachedResultName": "Catering Menu",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "row_number": "={{$json.row_number}}"
+            },
+            "matchingColumns": [
+              "row_number"
+            ],
+            "schema": [
+              {
+                "id": "orderID",
+                "displayName": "orderID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Revision",
+                "displayName": "Revision",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "IsCurrent",
+                "displayName": "IsCurrent",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "LineID",
+                "displayName": "LineID",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Category",
+                "displayName": "Category",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Quantity ",
+                "displayName": "Quantity ",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Item",
+                "displayName": "Item",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "Size",
+                "displayName": "Size",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "canBeUsedToMatch": true,
+                "removed": true
+              },
+              {
+                "id": "row_number",
+                "displayName": "row_number",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "canBeUsedToMatch": true,
+                "readOnly": true,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          1488,
+          352
+        ],
+        "id": "0da86c6c-a331-49b7-a7cc-ec5525bc83b5",
+        "name": "Update row in sheet1",
+        "alwaysOutputData": false,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "lOnwdkB64nY6ZNRm",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const all = await $input.all();\nconst data = all[0].json;\n\n// Expect fields from earlier steps present on the item:\n// orderId, nextRevision, attendance, budget, menu_lines\nconst orderId = data.orderId;\nconst revision = Number(data.nextRevision);\nconst attendance = Number(data.attendance);\nconst budget = Number(data.budget);\nconst menu = Array.isArray(data.menu_lines) ? data.menu_lines : [];\n\nconst ts = new Date().toISOString();\n\nreturn menu.map((m, idx) => {\n  const lineId = m.line_id || String(idx + 1).padStart(3, \"0\");\n  return {\n    json: {\n      OrderID: orderId,\n      Revision: revision,\n      IsCurrent: true,\n      LineID: lineId,\n      Category: m.category,\n      Quantity: m.quantity,\n      Item: m.item,\n      Size: m.size || \"\",\n     \n    }\n  };\n});"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2144,
+          16
+        ],
+        "id": "ebfb0df2-87d9-43ec-9c51-e1fbeced40ec",
+        "name": "Build New Revision Rows",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "const all = await $input.all();\n\n// all items = each menu row just written\n// we want a short grouped summary\n\nconst foods = [];\nconst drinks = [];\n\nfor (const item of all) {\n\n  const r = item.json;\n\n  if ((r.Category || \"\").toLowerCase() === \"drink\") {\n\n    drinks.push(\n      `${r.Quantity} ${r.Item}${r.Size ? \" (\" + r.Size + \")\" : \"\"}`\n    );\n\n  } else {\n\n    foods.push(\n      `${r.Quantity} ${r.Item}`\n    );\n  }\n}\n\n// Build short summary text\nlet message = `✅ Catering order logged successfully.\\n\\n`;\n\nif (foods.length) {\n\n  message += `🍽 Food:\\n`;\n\n  message += foods.slice(0,5).map(f => `• ${f}`).join(\"\\n\");\n\n  if (foods.length > 5) {\n\n    message += `\\n• +${foods.length - 5} more items`;\n  }\n\n  message += \"\\n\\n\";\n}\n\nif (drinks.length) {\n\n  message += `🥤 Drinks:\\n`;\n\n  message += drinks.slice(0,5).map(d => `• ${d}`).join(\"\\n\");\n\n  if (drinks.length > 5) {\n\n    message += `\\n• +${drinks.length - 5} more items`;\n  }\n}\n\nreturn [\n  {\n    json: {\n      telegramMessage: message\n    }\n  }\n];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2560,
+          0
+        ],
+        "id": "d3158ff5-12cb-49ce-9952-63d9d5f7ba54",
+        "name": "Build Confirmation Message",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "chatId": "={{$node[\"Telegram Trigger\"].json.message.chat.id}}",
+          "text": "={{$json.telegramMessage}}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2768,
+          0
+        ],
+        "id": "37dac16b-cb39-423d-8414-9ab4fbe91d9b",
+        "name": "Send a text message1",
+        "webhookId": "3eea2e4e-38cf-4bd0-b19a-5fe7086006ad",
+        "credentials": {
+          "telegramApi": {
+            "id": "f1RPbBIJo6MlXSpn",
+            "name": "Catering Agent"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const all = await $input.all();\n\n// If the read returned no items, emit one default item\nif (!all || all.length === 0) {\n  return [{\n    json: {\n      hasCurrentRows: false,\n      currentRows: [],\n      maxRevision: 0\n    }\n  }];\n}\n\n// Otherwise package the rows into one item\nconst rows = all.map(x => x.json);\nconst revs = rows.map(r => Number(r.Revision)).filter(n => Number.isFinite(n));\nconst maxRevision = revs.length ? Math.max(...revs) : 0;\n\nreturn [{\n  json: {\n    hasCurrentRows: true,\n    currentRows: rows,\n    maxRevision\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          880,
+          -960
+        ],
+        "id": "6e1c871d-426d-42fb-9803-65999127bc74",
+        "name": "Create Default Item"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+            "mode": "list",
+            "cachedResultName": "Catering Menu",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "orderID",
+                "lookupValue": "orderId"
+              },
+              {
+                "lookupColumn": "IsCurrent",
+                "lookupValue": "TRUE"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          528,
+          -656
+        ],
+        "id": "f3999d32-c710-412e-b6b7-0946d5d94741",
+        "name": "GetRows",
+        "alwaysOutputData": true,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "lOnwdkB64nY6ZNRm",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "db2985f1-f8e6-459d-8699-e4215baa4bde",
+                "leftValue": "={{ $items(\"Google Sheets - Get Rows\").some(i => i.json && i.json.LineID) }}",
+                "rightValue": 0,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1968,
+          64
+        ],
+        "id": "223fe0d1-f463-4d91-b21d-23ded55a59d6",
+        "name": "If1"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI",
+            "mode": "list",
+            "cachedResultName": "Catering Menu",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1vEOiCLEuX9A081ZrZ_YUw4Ag5K17DOI4DuPJb0UMXbI/edit#gid=0"
+          },
+          "filtersUI": {
+            "values": [
+              {
+                "lookupColumn": "orderID",
+                "lookupValue": "={{$node[\"Set Node Fields\"].json.orderId}}"
+              },
+              {
+                "lookupColumn": "IsCurrent",
+                "lookupValue": "TRUE"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          1456,
+          176
+        ],
+        "id": "a96100d7-2842-4b5e-a808-a43f00287343",
+        "name": "Google Sheets - Get Rows",
+        "alwaysOutputData": false,
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "lOnwdkB64nY6ZNRm",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1696,
+          -16
+        ],
+        "id": "0fec1f15-ebfd-441b-b88f-0138cab7e2dc",
+        "name": "Merge"
+      }
+    ],
+    "connections": {
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "Set Node Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "OpenAI Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send a text message": {
+        "main": [
+          []
+        ]
+      },
+      "Append row in sheet": {
+        "main": [
+          [
+            {
+              "node": "Build Confirmation Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Send a text message",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Google Sheets - Get Rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript1": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Set Node Fields": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "next_revision": {
+        "main": [
+          []
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Build New Revision Rows",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Replace Me",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Replace Me": {
+        "main": [
+          [
+            {
+              "node": "Update row in sheet1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Update row in sheet1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build New Revision Rows": {
+        "main": [
+          [
+            {
+              "node": "Append row in sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Build Confirmation Message": {
+        "main": [
+          [
+            {
+              "node": "Send a text message1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create Default Item": {
+        "main": [
+          []
+        ]
+      },
+      "GetRows": {
+        "main": [
+          []
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Build New Revision Rows",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Sheets - Get Rows": {
+        "main": [
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "system migration",
+    "name": null,
+    "description": null,
+    "autosaved": false
+  },
+  "tags": []
+}
