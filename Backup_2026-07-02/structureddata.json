@@ -1,0 +1,283 @@
+{
+  "updatedAt": "2026-05-18T21:30:29.296Z",
+  "createdAt": "2026-05-13T01:14:01.328Z",
+  "id": "SYHdoQmE1Jb0pb8S",
+  "name": "structureddata",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2f9c6a9b-8928-4fb7-98e8-68e13690554c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "11DBNh-0FPd6H3XDq7zobFKIiN5OZb8jZ3p2smftK2Q8",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Events Schema ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11DBNh-0FPd6H3XDq7zobFKIiN5OZb8jZ3p2smftK2Q8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11DBNh-0FPd6H3XDq7zobFKIiN5OZb8jZ3p2smftK2Q8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d469e69e-0a09-42b2-8543-625cdd9e45be",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7d1ab054-42ae-4dbf-b69a-88431cc2254c",
+              "name": "@context",
+              "value": "={{ $json['@context'] }}",
+              "type": "string"
+            },
+            {
+              "id": "8c3dc1f5-48a4-44b2-a016-02ef5f474140",
+              "name": "@type",
+              "value": "={{ $json['@type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "d56d590a-be79-4300-b74b-d82234dd745e",
+              "name": "location.@type",
+              "value": "={{ $json['location.@type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "9f7fe661-3989-4b83-9006-34f9a0668381",
+              "name": "location.address.@type",
+              "value": "={{ $json['location.address.@type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "79212ff1-d72f-46c1-9985-814d95b8317f",
+              "name": "location.address.addressLocality",
+              "value": "={{ $json['location.address.addressLocality'] }}",
+              "type": "string"
+            },
+            {
+              "id": "aae2a0fb-14b8-4761-8a2d-80a91ce243aa",
+              "name": "location.address.addressRegion",
+              "value": "={{ $json['location.address.addressRegion'] }}",
+              "type": "string"
+            },
+            {
+              "id": "b0257390-dc57-41b4-80b0-5b154e442384",
+              "name": "location.address.postalCode",
+              "value": "={{ $json['location.address.postalCode'] }}",
+              "type": "number"
+            },
+            {
+              "id": "06d7cdb3-faa3-4849-9705-56bb22ca306d",
+              "name": "location.address.streetAddress",
+              "value": "={{ $json['location.address.streetAddress'] }}",
+              "type": "string"
+            },
+            {
+              "id": "c71cd9f5-5c9b-4952-bf1d-ea453bbf5fb6",
+              "name": "location.name",
+              "value": "={{ $json['location.name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "f066d000-5e62-4330-b0be-6a38816c73cd",
+              "name": "name",
+              "value": "={{ $json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "2edb0012-3798-4841-bfdd-212378550482",
+              "name": "offers.@type",
+              "value": "={{ $json['offers.@type'] }}",
+              "type": "string"
+            },
+            {
+              "id": "76a36c5a-9fa2-406b-8f48-be982ecdfdca",
+              "name": "offers.price",
+              "value": "={{ $json['offers.price'] }}",
+              "type": "number"
+            },
+            {
+              "id": "a6822595-cff1-4910-8319-710dee9f7cdb",
+              "name": "offers.priceCurrency",
+              "value": "={{ $json['offers.priceCurrency'] }}",
+              "type": "string"
+            },
+            {
+              "id": "deabcf3e-040d-4260-9192-9bfe5a39f8fb",
+              "name": "offers.url",
+              "value": "={{ $json['offers.url'] }}",
+              "type": "string"
+            },
+            {
+              "id": "ec9ee4aa-fad1-4dcc-821f-191d488d8d0c",
+              "name": "startDate",
+              "value": "={{ $json.startDate }}",
+              "type": "string"
+            },
+            {
+              "id": "71136a9a-ac1e-4fee-933e-944b6a8ab306",
+              "name": "Description",
+              "value": "={{ $json.Description }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        128
+      ],
+      "id": "30637681-f14d-4572-b8a6-180260371f5c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n    \"@context\": \"https://schema.org\",\n    \"@type\": \"MusicGroup\",\n    \"location\": {\n    \"@type\": \"Place\",\n    \"address\": {\n      \"@type\": \"PostalAddress\",\n      \"addressLocality\": \"Denver\",\n      \"addressRegion\": \"CO\",\n      \"postalCode\": \"80209\",\n      \"streetAddress\": \"7 S. Broadway\"\n    },\n    \"event\": [\n        {\n            \"@type\": \"Event\",\n            \"name\": \"event name\",\n            \"startDate\": \"2011-05-20\",\n            \"url\": \"foo-fighters-may20-fedexforum\",\n            \"description\": \"this is a description\"\n        }\n       \n    ]\n    \n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "de54115a-ee1f-4e88-99f1-9ed48cc34e09",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n   \"@context\": $('Get row(s) in sheet').first().json['@context'],\n    \"@type\":$('Get row(s) in sheet').first().json['@type'] ,\n    \"location\": {\n    \"@type\":$('Get row(s) in sheet').first().json['location.@type'] ,\n    \"address\": {\n      \"@type\":$('Get row(s) in sheet').first().json['location.address.@type'] ,\n      \"addressLocality\": $('Get row(s) in sheet').first().json['location.address.addressRegion'],\n      \"addressRegion\":$('Get row(s) in sheet').first().json['location.address.addressRegion'] ,\n      \"postalCode\":$('Get row(s) in sheet').first().json['location.address.streetAddress'] ,\n      \"streetAddress\": $('Get row(s) in sheet').first().json['location.address.streetAddress']\n    },\n    \"event\": [\n        {\n            \"@type\": \"Event\",\n            \"name\":$('Get row(s) in sheet').first().json.name ,\n            \"startDate\": $('Get row(s) in sheet').first().json.startDate,\n            \"url\":$('Get row(s) in sheet').first().json['offers.url'],\n            \"description\":$('Get row(s) in sheet').first().json.Description\n        }\n       \n    ]\n    \n  }\n    \n    \n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        656,
+        0
+      ],
+      "id": "c61c5189-018e-4a35-b4e2-39e2672ec168",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        864,
+        0
+      ],
+      "id": "192c9e66-a10d-4e02-ab33-32522f23be0e",
+      "name": "Convert to File"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "1c1b3edb-e31f-40a4-89f7-641844ece196",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-13T01:14:01.328Z",
+      "createdAt": "2026-05-13T01:14:01.328Z",
+      "role": "workflow:owner",
+      "workflowId": "SYHdoQmE1Jb0pb8S",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
