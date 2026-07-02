@@ -1,0 +1,245 @@
+{
+  "updatedAt": "2026-06-12T16:59:57.282Z",
+  "createdAt": "2026-06-04T18:39:21.646Z",
+  "id": "oBlMjdFheQ7URTSV",
+  "name": "googlesearchconsole",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9c62c4d3-169f-4b1d-ae42-b6750a00527d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/webmasters/v3/sites/",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4457a62a-3c40-4201-a922-cae63ea87c33",
+      "name": "HTTP Request",
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "phZRQbykQLVUsdrG",
+          "name": "Google account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/webmasters/v3/sites/https%3A%2F%2Ftackettsmill.com%2F/searchAnalytics/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"startDate\": \"2026-06-07\",\n  \"endDate\":   \"2026-06-12\",\n  \"dimensions\": [\"date\",\"query\",\"page\"],\n  \"rowLimit\": 500,\n  \"startRow\": 0,\n  \"aggregationType\": \"auto\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "62eaf252-c2ed-4e0a-bb2f-109676d19ad0",
+      "name": "HTTP Request1",
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "phZRQbykQLVUsdrG",
+          "name": "Google account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11bmsByqmgw27VO6auS_aQtEVYbUtHDZWFi1gpiUrNwo",
+          "mode": "list",
+          "cachedResultName": "Tackett's GSC Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11bmsByqmgw27VO6auS_aQtEVYbUtHDZWFi1gpiUrNwo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11bmsByqmgw27VO6auS_aQtEVYbUtHDZWFi1gpiUrNwo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.date }}",
+            "Page": "={{ $json.website }}",
+            "Keywords": "={{ $json.keywords }}",
+            "Impressions": "={{ $json.impressions }}",
+            "Clicks": "={{ $json.clicks }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Page",
+              "displayName": "Page",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Impressions",
+              "displayName": "Impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Clicks",
+              "displayName": "Clicks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        944,
+        -128
+      ],
+      "id": "eb866727-7787-42bb-95a5-55203ec5c09e",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.first().json.rows.map(row => ({\n  date: row.keys[0],\n  keywords: row.keys[1],\n  website:row.keys[2],\n  clicks:row.clicks ,\n  impressions:row.impressions,\n  clickthrough:row.ctr,\n  position:row.position\n  \n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -128
+      ],
+      "id": "69a68a11-0da5-4907-a0e1-1275910419e7",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "cca7a622-a514-4de6-ab3f-4eede552850f",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-04T18:39:21.646Z",
+      "createdAt": "2026-06-04T18:39:21.646Z",
+      "role": "workflow:owner",
+      "workflowId": "oBlMjdFheQ7URTSV",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
