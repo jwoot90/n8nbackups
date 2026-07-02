@@ -1,0 +1,96 @@
+{
+  "updatedAt": "2026-06-28T19:59:01.464Z",
+  "createdAt": "2026-06-28T19:41:44.531Z",
+  "id": "djowFdsHHS5Icrdp",
+  "name": "My workflow 3",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "1e10870a-bf23-4a76-9120-88c9e7229e59",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+          "mode": "list",
+          "cachedResultName": "Rejected TKM Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "01226ab2-d5b7-46ee-9b84-4575912516b7",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "a70b25a2-4859-40f9-91fe-81b24eb8654b",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-28T19:41:44.531Z",
+      "createdAt": "2026-06-28T19:41:44.531Z",
+      "role": "workflow:owner",
+      "workflowId": "djowFdsHHS5Icrdp",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
