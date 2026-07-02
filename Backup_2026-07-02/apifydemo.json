@@ -1,0 +1,230 @@
+{
+  "updatedAt": "2026-06-29T17:47:42.868Z",
+  "createdAt": "2026-06-29T15:37:55.181Z",
+  "id": "EQqzA4cOzXUcfZq8",
+  "name": "apifydemo",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "62cde954-b59c-4a07-8b18-3bffa70f85ec",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1UrEuvUPYne42fYC424HYQNtGrEoQ5qLOiGybTFsJoY4",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Dirty Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UrEuvUPYne42fYC424HYQNtGrEoQ5qLOiGybTFsJoY4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UrEuvUPYne42fYC424HYQNtGrEoQ5qLOiGybTFsJoY4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Username ": "={{ $json.Username }}",
+            "Post": "={{ $json.post }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Username ",
+              "displayName": "Username ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        928,
+        0
+      ],
+      "id": "8ab7a0ca-853a-436d-9fec-52fb82510839",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Actor tasks",
+        "actorTaskId": {
+          "__rl": true,
+          "value": "7Bc3sfNH5ffQUcxNH",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Scraper Task",
+          "cachedResultUrl": "https://console.apify.com/actors/tasks/7Bc3sfNH5ffQUcxNH/input"
+        }
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "1e45875a-7454-456c-9a8c-e8718cc27cb3",
+      "name": "Run task",
+      "credentials": {
+        "apifyApi": {
+          "id": "fvH2TLQSysGA6K9x",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "Datasets",
+        "datasetId": "={{ $json.storageIds.datasets.default }}",
+        "options": {}
+      },
+      "type": "@apify/n8n-nodes-apify.apify",
+      "typeVersion": 1,
+      "position": [
+        432,
+        0
+      ],
+      "id": "9d704ed3-b2f4-4122-897a-ff73a2024364",
+      "name": "Get dataset items",
+      "credentials": {
+        "apifyApi": {
+          "id": "fvH2TLQSysGA6K9x",
+          "name": "Apify account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "524d3ab2-367c-4274-946b-3a78b3a35c1b",
+              "name": "post",
+              "value": "={{ $json.caption }}",
+              "type": "string"
+            },
+            {
+              "id": "bc0c0fa5-c239-4cae-bf0f-68b5b7782a7e",
+              "name": "Username",
+              "value": "={{ $json.ownerUsername }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        0
+      ],
+      "id": "71c35321-984f-470c-a879-f6563013b1cf",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Run task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run task": {
+      "main": [
+        [
+          {
+            "node": "Get dataset items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get dataset items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "504c2e0b-f5cb-4d16-915a-ce20261bbc46",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-29T15:37:55.181Z",
+      "createdAt": "2026-06-29T15:37:55.181Z",
+      "role": "workflow:owner",
+      "workflowId": "EQqzA4cOzXUcfZq8",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
