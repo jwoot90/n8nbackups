@@ -1,0 +1,316 @@
+{
+  "updatedAt": "2026-06-27T17:19:33.707Z",
+  "createdAt": "2026-04-14T21:06:18.815Z",
+  "id": "liLqqoMJNrDmbGq7",
+  "name": "Address Finder",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "fab83431-5a40-42d2-b2e2-0a58f26e482a",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ISGGpwoJXY2fhbYfMcKWly1iujxcJ9WRWmFY6-dO4TQ",
+          "mode": "list",
+          "cachedResultName": "Flyer Dropoff locations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISGGpwoJXY2fhbYfMcKWly1iujxcJ9WRWmFY6-dO4TQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISGGpwoJXY2fhbYfMcKWly1iujxcJ9WRWmFY6-dO4TQ/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "efe4b56c-aaa6-460f-9e2c-b585a4cd187f",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        816,
+        -48
+      ],
+      "id": "81d3ca4e-e51a-41c8-b0d7-0481607acfd8",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        0
+      ],
+      "id": "363351b0-02b2-4659-b00b-369aa6e18fa8"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1ISGGpwoJXY2fhbYfMcKWly1iujxcJ9WRWmFY6-dO4TQ",
+          "mode": "list",
+          "cachedResultName": "Flyer Dropoff locations",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISGGpwoJXY2fhbYfMcKWly1iujxcJ9WRWmFY6-dO4TQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ISGGpwoJXY2fhbYfMcKWly1iujxcJ9WRWmFY6-dO4TQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Business Name": "={{ $('Get row(s) in sheet').item.json['Business Name'] }}"
+          },
+          "matchingColumns": [
+            "Business Name"
+          ],
+          "schema": [
+            {
+              "id": "Business Name",
+              "displayName": "Business Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Address",
+              "displayName": "Address",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Hours of Operation",
+              "displayName": "Hours of Operation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1936,
+        -16
+      ],
+      "id": "092f8323-2964-4ad7-9483-50b125559298",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lOnwdkB64nY6ZNRm",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2240,
+        0
+      ],
+      "id": "1928da3c-a1ed-4a54-ba3a-af2a9ed2fdb7",
+      "name": "Wait",
+      "webhookId": "55c4fe16-689c-41df-b564-0dc332965444"
+    },
+    {
+      "parameters": {
+        "query": "=Find the website for {{ $json.Name }} located at{{ $json.Address }}?",
+        "options": {}
+      },
+      "type": "@tavily/n8n-nodes-tavily.tavily",
+      "typeVersion": 1,
+      "position": [
+        672,
+        -384
+      ],
+      "id": "f49a2f1d-12b0-441f-b6e7-85cd0cbd04fe",
+      "name": "Search",
+      "credentials": {
+        "tavilyApi": {
+          "id": "o41ChwLCtWJ1tlwd",
+          "name": "Tavily account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "MapSearch",
+        "operation": "search",
+        "query": "=find the full storefront address for {{ $json['Business Name'] }} at {{ $json.Address }}",
+        "requestOptions": {}
+      },
+      "type": "@mendable/n8n-nodes-firecrawl.firecrawl",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        -112
+      ],
+      "id": "5925830f-6592-4e56-893d-abafb1a5ff24",
+      "name": "/search",
+      "credentials": {
+        "firecrawlApi": {
+          "id": "sdkglgxG9QCpqFnO",
+          "name": "Firecrawl account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "/search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search": {
+      "main": [
+        []
+      ]
+    },
+    "/search": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "e5642ab2-9f9b-4a3e-9983-c2ea57a81f53",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-14T21:06:18.815Z",
+      "createdAt": "2026-04-14T21:06:18.815Z",
+      "role": "workflow:owner",
+      "workflowId": "liLqqoMJNrDmbGq7",
+      "projectId": "ltdhHXOvbQcr8AFb"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
