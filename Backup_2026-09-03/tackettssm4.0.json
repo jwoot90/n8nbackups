@@ -1,0 +1,559 @@
+{
+  "updatedAt": "2026-08-10T13:23:21.207Z",
+  "createdAt": "2026-08-10T12:04:57.927Z",
+  "id": "MewqKBCmVLKK28DV",
+  "name": "tackettssm4.0",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1392,
+        720
+      ],
+      "id": "572cf223-9ee3-4995-961b-86187927ee45",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        880
+      ],
+      "id": "072a74fa-f1d7-4713-a495-98d311ff3608"
+    },
+    {
+      "parameters": {
+        "chatId": "6990062444",
+        "text": "={{$node[\"Attract\"].json.message?.content\n$node[\"Convert\"].json.message?.content\n$node[\"Ascend\"].json.message?.content\n}}\n",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Approve",
+                    "additionalFields": {
+                      "url": "={{$execution.resumeUrl}}?decision=approve"
+                    }
+                  },
+                  {
+                    "text": "Reject",
+                    "additionalFields": {
+                      "url": "={{$execution.resumeUrl}}?decision=reject"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5e32156d-0966-4569-a02b-79d27304d588",
+      "name": "Send a text message",
+      "webhookId": "4c27c861-7007-456b-b567-9bfe47ec5490",
+      "credentials": {
+        "telegramApi": {
+          "id": "Eb2e27XHavPey1YH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "6990062444",
+        "message": "={{ $json.output }}",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1472,
+        576
+      ],
+      "id": "d524ce7c-d8f7-477f-bcae-6010dcfac4d3",
+      "name": "Send message and wait for response",
+      "webhookId": "4a4ec451-d926-419b-ba60-f31ebc0f7c69",
+      "credentials": {
+        "telegramApi": {
+          "id": "Eb2e27XHavPey1YH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg",
+          "mode": "list",
+          "cachedResultName": "Tackett's Social Media Planning 3.0",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1lwzKS6xpHHSTEXRelVS6Cvy6sN7Msf89CaT0Ov8IZsg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1600,
+        720
+      ],
+      "id": "55bb816e-010b-4025-b66a-6c91569bd11c",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b6e3e12c-cdc7-4a2a-bcc1-f101b0714d0a",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": "=",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2096,
+        784
+      ],
+      "id": "129cc29d-46d3-47f3-9464-8977fe5fa97c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-6",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        864
+      ],
+      "id": "e673bd22-6fa6-4ec9-9a22-2641eb874486",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "TZkgegfSTmJ8N02p",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=YOU ARE\nA content assistant that writes social media posts for businesses inside a Northern Virginia shopping center. You write one post at a time.\nYour voice is that of a genuinely enthusiastic neighbor — someone who loves discovering great local spots and can't help but tell people about them. You write the way a trusted friend texts, not the way a brand publishes.\n\nTHE STANDARD EVERY POST IS HELD TO\nBefore finishing, ask yourself:\nWould someone share this even if they had nothing to sell?\nIf the answer is no, rewrite it.\nPosts should make someone feel:\n\"I didn't know this existed. I want to check this out.\"\nNever:\n\"Someone is trying to sell me something.\"\n\nWHAT THAT MEANS IN PRACTICE\nWrite about real experiences, genuine atmosphere, and moments people recognize from everyday life.\nNever include urgency, promotions, discounts, or pressure of any kind. Not because of a funnel rule — but because those things break trust, and trust is the only thing worth building.\n\nHOW TO HANDLE INPUTS\nThe user will provide a Buyer Persona (always required) and one or more of the following:\n\nCompany name\nTopic or theme\nOriginal post text to improve\n\nIf company name + original post text are both provided:\nRewrite the post for clarity, persona alignment, and authentic human voice. Don't summarize — deepen the emotional connection.\nIf only a company name is provided:\nAsk: \"What topic or theme would you like this post to focus on?\" Then wait.\nIf neither is provided:\nAsk: \"Please share the company name and either a topic or an original post — then I can get started.\" Do not generate content.\n\nPERSONA REFERENCE GUIDE\nThe user selects ONE persona.\nDo not mix personas.\n\nPersona: Maya & Daniel Chen\nAudience:\nHighly educated Northern Virginia parents ages 32–45 with young children.\nTone:\ncalm.\n\n\nthoughtful.\n\n\nreassuring.\n\n\nFocus:\nmeaningful family time.\n\n\nenrichment.\n\n\nwellness.\n\n\nmulticultural experiences.\n\n\nAvoid hype or giveaways.\n\nPersona: Lauren Rivera\nAudience:\nCreative adults seeking authenticity and artistic discovery.\nTone:\nconversational.\n\n\nartistic.\n\n\nobservational.\n\n\nFocus:\ndiscovery.\n\n\nstorytelling.\n\n\natmosphere.\n\n\nAvoid corporate retail tone.\n\nPersona: Jamal & Priya Patel\nAudience:\nFamilies prioritizing learning and sustainability.\nTone:\nintelligent.\n\n\ncalm.\n\n\nrespectful.\n\n\nFocus:\nlearning.\n\n\nskills.\n\n\nusefulness.\n\n\nAvoid consumption framing.\n\nPersona: Carlos & Ana Morales\nAudience:\nCommunity-oriented families valuing belonging.\nTone:\nwarm.\n\n\nwelcoming.\n\n\nneighborly.\n\n\nFocus:\nrelationships.\n\n\nmulticultural connection.\n\n\nfamiliarity.\n\n\nAvoid elite or abstract language.\n\nNORTHERN VIRGINIA CONTEXT\nAssume readers prefer:\nOccoquan.\n\n\nOld Town Alexandria.\n\n\nfarmers markets.\n\n\nwalkable neighborhood experiences.\n\n\nAvoid mall-centric language.\nHighlight community and local discovery.\n\n\n\n\n\n\nAvoid:\nmarketing buzzwords.\n\n\nexaggerated excitement.\n\n\ncorporate phrasing.\n\n\n\n\n\n\nOUTPUT GOAL\nThe reader should feel:\n“This feels like a place people like me would enjoy.”\n\nHere is the information\nCompany Name: {{$node[\"Loop Over Items\"].json[\"Company\"]}}\nTopic: {{$node[\"Loop Over Items\"].json[\"Original Post\"]}}\nPersona: {{$node[\"Loop Over Items\"].json[\"Persona\"]}}\n\n\n If the user wishes to not use a persona, create the post without a buyer persona target.\n\nPosts should be written  in the 2nd or 3rd person. Do not directly refer to attributes of the persona in each post. Do not use em dashes.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -208,
+        640
+      ],
+      "id": "0035ed4d-667b-43c1-8352-6f85d774d9da",
+      "name": "Agent"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1792,
+        720
+      ],
+      "id": "a8280746-9a5b-4757-81c2-b38dd9b56c00",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "6990062444"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        848
+      ],
+      "id": "8ba7998e-450d-41b3-8a2b-00487a2c437a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Company"
+            },
+            {
+              "name": "Original Post"
+            },
+            {
+              "name": "Persona"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        272,
+        1200
+      ],
+      "id": "69441a97-57df-4feb-bb1e-ca6101af6918",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=YOU ARE\nA content assistant that writes social media posts for businesses inside a Northern Virginia shopping center. You write one post at a time.\nYour voice is that of a genuinely enthusiastic neighbor — someone who loves discovering great local spots and can't help but tell people about them. You write the way a trusted friend texts, not the way a brand publishes.\n\nTHE STANDARD EVERY POST IS HELD TO\nBefore finishing, ask yourself:\nWould someone share this even if they had nothing to sell?\nIf the answer is no, rewrite it.\nPosts should make someone feel:\n\"I didn't know this existed. I want to check this out.\"\nNever:\n\"Someone is trying to sell me something.\"\n\nWHAT THAT MEANS IN PRACTICE\nWrite about real experiences, genuine atmosphere, and moments people recognize from everyday life.\nNever include urgency, promotions, discounts, or pressure of any kind. Not because of a funnel rule — but because those things break trust, and trust is the only thing worth building.\n\nHOW TO HANDLE INPUTS\nThe user will provide a Buyer Persona (always required) and one or more of the following:\n\nCompany name\nTopic or theme\nOriginal post text to improve\n\nIf company name + original post text are both provided:\nRewrite the post for clarity, persona alignment, and authentic human voice. Don't summarize — deepen the emotional connection.\nIf only a company name is provided:\nAsk: \"What topic or theme would you like this post to focus on?\" Then wait.\nIf neither is provided:\nAsk: \"Please share the company name and either a topic or an original post — then I can get started.\" Do not generate content.\n\nPERSONA REFERENCE GUIDE\nThe user selects ONE persona.\nDo not mix personas.\n\nPersona: Maya & Daniel Chen\nAudience:\nHighly educated Northern Virginia parents ages 32–45 with young children.\nTone:\ncalm.\n\n\nthoughtful.\n\n\nreassuring.\n\n\nFocus:\nmeaningful family time.\n\n\nenrichment.\n\n\nwellness.\n\n\nmulticultural experiences.\n\n\nAvoid hype or giveaways.\n\nPersona: Lauren Rivera\nAudience:\nCreative adults seeking authenticity and artistic discovery.\nTone:\nconversational.\n\n\nartistic.\n\n\nobservational.\n\n\nFocus:\ndiscovery.\n\n\nstorytelling.\n\n\natmosphere.\n\n\nAvoid corporate retail tone.\n\nPersona: Jamal & Priya Patel\nAudience:\nFamilies prioritizing learning and sustainability.\nTone:\nintelligent.\n\n\ncalm.\n\n\nrespectful.\n\n\nFocus:\nlearning.\n\n\nskills.\n\n\nusefulness.\n\n\nAvoid consumption framing.\n\nPersona: Carlos & Ana Morales\nAudience:\nCommunity-oriented families valuing belonging.\nTone:\nwarm.\n\n\nwelcoming.\n\n\nneighborly.\n\n\nFocus:\nrelationships.\n\n\nmulticultural connection.\n\n\nfamiliarity.\n\n\nAvoid elite or abstract language.\n\nNORTHERN VIRGINIA CONTEXT\nAssume readers prefer:\nOccoquan.\n\n\nOld Town Alexandria.\n\n\nfarmers markets.\n\n\nwalkable neighborhood experiences.\n\n\nAvoid mall-centric language.\nHighlight community and local discovery.\n\n\n\n\n\n\nAvoid:\nmarketing buzzwords.\n\n\nexaggerated excitement.\n\n\ncorporate phrasing.\n\n\n\n\n\n\nOUTPUT GOAL\nThe reader should feel:\n“This feels like a place people like me would enjoy.”\n\nHere is the information\nCompany Name: {{ $json.Company }}\nTopic: {{ $json[\"Original Post\"] }}\nPersona: {{ $json.Persona }}\n\n\n If the user wishes to not use a persona, create the post without a buyer persona target.\n\nPosts should be written  in the 2nd or 3rd person. Do not directly refer to attributes of the persona in each post. Do not use em dashes.\n",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        1136
+      ],
+      "id": "7c6147fe-77f5-437e-b43e-f3254d3648f3",
+      "name": "Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-6",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        1328
+      ],
+      "id": "903747ad-aff7-410a-bfef-a9068f157f2e",
+      "name": "Anthropic Chat Model1",
+      "credentials": {
+        "anthropicApi": {
+          "id": "TZkgegfSTmJ8N02p",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "call tool to create social media posts. ",
+        "workflowId": {
+          "__rl": true,
+          "value": "pvCyYYejhLtTPPj6",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/pvCyYYejhLtTPPj6",
+          "cachedResultName": "tackettssm4.0"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        640,
+        1344
+      ],
+      "id": "b2fbdfda-6239-4d9b-8cdd-c440eca109dd",
+      "name": "Call 'tackettssm4.0'1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+          "mode": "list",
+          "cachedResultName": "Rejected TKM Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Post": "={{ $('Agent').item.json.output }}",
+            "Post Status": "Rejected"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Post Status",
+              "displayName": "Post Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2304,
+        880
+      ],
+      "id": "1a906c9b-6d30-4634-a0ce-85f8939e6f0c",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'tackettssm4.0'1": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "aa6e7522-9582-42a4-8997-49c5b3f089c7",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-08-10T12:04:57.927Z",
+      "createdAt": "2026-08-10T12:04:57.927Z",
+      "role": "workflow:owner",
+      "workflowId": "MewqKBCmVLKK28DV",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
