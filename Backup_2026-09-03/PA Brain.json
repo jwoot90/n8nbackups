@@ -1,0 +1,575 @@
+{
+  "updatedAt": "2026-08-22T04:25:15.615Z",
+  "createdAt": "2026-08-17T20:15:28.473Z",
+  "id": "0WtFaxWBg3d5FYG5",
+  "name": "PA Brain",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            },
+            {
+              "triggerAtHour": 18
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        16
+      ],
+      "id": "84394868-6234-4847-9c47-a52d3c8d01f8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ddde03c1-1d0a-4a75-ad8c-5a4e59a08c07",
+              "name": "Task",
+              "value": "={{ $json.property_task }}",
+              "type": "string"
+            },
+            {
+              "id": "a2c6fb00-aa58-4ff0-a23b-d0c476856085",
+              "name": "Task Due Date",
+              "value": "={{ $json.property_due_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "e73ede0f-c5f3-4fe2-bfac-36bf301fa7fa",
+              "name": "Event Date",
+              "value": "={{ $json.property_event_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "ae846dda-6441-4eb6-b115-e36dcdb07ded",
+              "name": "Task Category",
+              "value": "={{ $json.property_category }}",
+              "type": "string"
+            },
+            {
+              "id": "f7496f29-33d6-44f4-a745-447841b37b09",
+              "name": "Event Name",
+              "value": "CAC Horror Film Fest ",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        464,
+        -112
+      ],
+      "id": "8f9e031c-fbb2-48fd-8789-ffbfbb7215d9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefaca0-0c32-4e87-bf34-53ba6c0207c0",
+              "name": "Task",
+              "value": "={{ $json.property_task }}",
+              "type": "string"
+            },
+            {
+              "id": "8e3f1c82-5d69-45dc-be17-37fe0fbbdded",
+              "name": "Task Due Date",
+              "value": "={{ $json.property_due_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "45c5fc04-9cc2-468e-b9d8-ced7521018ef",
+              "name": "Event Date",
+              "value": "={{ $json.property_event_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "a65b703a-a91a-4a92-9424-e74dd3cab6aa",
+              "name": "Task Category",
+              "value": "={{ $json.property_category }}",
+              "type": "string"
+            },
+            {
+              "id": "40a89ab0-65aa-4db9-a09d-381090530fd0",
+              "name": "Event Name",
+              "value": "={{ $json.property_event }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        128
+      ],
+      "id": "0838bb7b-bd77-481f-a9eb-5b03d1954e68",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        48
+      ],
+      "id": "382e5af2-15f7-424f-bebc-82e3e77e071b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY",
+          "mode": "list",
+          "cachedResultName": "master task sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 428903102,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY/edit#gid=428903102"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Task": "={{ $json.Task }}",
+            "Task Due Date": "={{ $json['Task Due Date'] }}",
+            "Event Date": "={{ $json['Event Date'] }}",
+            "Task Category": "={{ $json['Task Category'] }}",
+            "Event Name": "={{ $json['Event Name'] }}"
+          },
+          "matchingColumns": [
+            "Event Name"
+          ],
+          "schema": [
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task Due Date",
+              "displayName": "Task Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Event Date",
+              "displayName": "Event Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Task Category",
+              "displayName": "Task Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Event Name",
+              "displayName": "Event Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1024,
+        48
+      ],
+      "id": "262a67cb-5367-46bf-9a53-a7aa0c2d5773",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "f045f149-687a-4e3b-8110-ea165d94fd24",
+          "mode": "list",
+          "cachedResultName": "🍂 Fall Festival Task Management",
+          "cachedResultUrl": "https://app.notion.com/p/dbed76f1ad7147f5b210de1cfb7e36b0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        224,
+        320
+      ],
+      "id": "d5c63656-275a-4815-9cc4-a5ff8ed7e62b",
+      "name": "Get many database pages2",
+      "credentials": {
+        "notionApi": {
+          "id": "EXJNttvCaUBpwsHC",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "f18aadba-9d4d-49fe-96ac-395fd4c26802",
+          "mode": "list",
+          "cachedResultName": "🎬 Horror Film Fest Task Management",
+          "cachedResultUrl": "https://app.notion.com/p/5cb80834a21f4ef89b29fb3aa56871a2"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "e07551ab-7be5-4802-a940-1800b3aff7f3",
+      "name": "CAC Film Fest Task DB",
+      "credentials": {
+        "notionApi": {
+          "id": "EXJNttvCaUBpwsHC",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "300eabf1-c506-44c0-9ac9-4825bc788e87",
+          "mode": "list",
+          "cachedResultName": "Community Market Task Management",
+          "cachedResultUrl": "https://app.notion.com/p/6f36ab77a5504a3f8e89fb3b23440312"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        224,
+        128
+      ],
+      "id": "c2faf824-edd4-4428-ab29-1f77d2a2dcca",
+      "name": "Community Market Task DB",
+      "credentials": {
+        "notionApi": {
+          "id": "EXJNttvCaUBpwsHC",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefaca0-0c32-4e87-bf34-53ba6c0207c0",
+              "name": "Task",
+              "value": "={{ $json.property_task }}",
+              "type": "string"
+            },
+            {
+              "id": "8e3f1c82-5d69-45dc-be17-37fe0fbbdded",
+              "name": "Task Due Date",
+              "value": "={{ $json.property_due_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "45c5fc04-9cc2-468e-b9d8-ced7521018ef",
+              "name": "Event Date",
+              "value": "={{ $json.property_event_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "a65b703a-a91a-4a92-9424-e74dd3cab6aa",
+              "name": "Task Category",
+              "value": "={{ $json.property_category }}",
+              "type": "string"
+            },
+            {
+              "id": "40a89ab0-65aa-4db9-a09d-381090530fd0",
+              "name": "Event Name",
+              "value": "Fall Festival",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        320
+      ],
+      "id": "82141bb4-03ea-4cda-a3bf-26810ac0e268",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "18ad1d55-a86d-40c6-8c1e-d610f0b5fbf2",
+          "mode": "list",
+          "cachedResultName": "💼 Personal Business Task Management",
+          "cachedResultUrl": "https://app.notion.com/p/68cb61cc2b7d48d098af94bc79bc0da8"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        208,
+        560
+      ],
+      "id": "96e7012d-362d-42b2-a81b-d1a706a84646",
+      "name": "Get many database pages",
+      "credentials": {
+        "notionApi": {
+          "id": "EXJNttvCaUBpwsHC",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9aefaca0-0c32-4e87-bf34-53ba6c0207c0",
+              "name": "Task",
+              "value": "={{ $json.property_task }}",
+              "type": "string"
+            },
+            {
+              "id": "8e3f1c82-5d69-45dc-be17-37fe0fbbdded",
+              "name": "Task Due Date",
+              "value": "={{ $json.property_due_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "45c5fc04-9cc2-468e-b9d8-ced7521018ef",
+              "name": "Event Date",
+              "value": "={{ $json.property_due_date.start }}",
+              "type": "string"
+            },
+            {
+              "id": "a65b703a-a91a-4a92-9424-e74dd3cab6aa",
+              "name": "Task Category",
+              "value": "={{ $json.property_category }}",
+              "type": "string"
+            },
+            {
+              "id": "40a89ab0-65aa-4db9-a09d-381090530fd0",
+              "name": "Event Name",
+              "value": "Fall Festival",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        400,
+        560
+      ],
+      "id": "3eec853e-822f-490f-99de-ae8c6b0484fe",
+      "name": "Edit Fields3"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "CAC Film Fest Task DB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Community Market Task DB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get many database pages2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get many database pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CAC Film Fest Task DB": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Community Market Task DB": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many database pages2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        []
+      ]
+    },
+    "Get many database pages": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "fecf79dd-a561-4df1-8d6d-92feee24f5c1",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-08-17T20:15:28.473Z",
+      "createdAt": "2026-08-17T20:15:28.473Z",
+      "role": "workflow:owner",
+      "workflowId": "0WtFaxWBg3d5FYG5",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
