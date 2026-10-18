@@ -1,0 +1,582 @@
+{
+  "updatedAt": "2026-09-13T15:55:55.080Z",
+  "createdAt": "2026-09-12T17:18:20.783Z",
+  "id": "fvqcUt1LTtm7uckj",
+  "name": "subworkflow add task",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Status"
+            },
+            {
+              "name": "Priority"
+            },
+            {
+              "name": "Event Name"
+            },
+            {
+              "name": "Due Date",
+              "type": "any"
+            },
+            {
+              "name": "Task"
+            }
+          ]
+        }
+      },
+      "id": "c055762a-8fe7-4141-a639-df2372f30060",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        112,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "formatDate",
+        "date": "={{ $json['Due Date'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        528,
+        352
+      ],
+      "id": "407885af-72a9-4d6a-a4c5-a4dd8a3ad0af",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "13a87a43-e26b-4fd8-b293-fc7ca57d85a4",
+              "leftValue": "",
+              "rightValue": "01/01/1970",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        992,
+        352
+      ],
+      "id": "b1a92421-3142-42c3-80a1-e6bef9378a6a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "05a9b4f7-03c6-4611-97b2-f792645355f6",
+              "name": "Status",
+              "value": "={{ $('When Executed by Another Workflow').item.json.Status }}",
+              "type": "string"
+            },
+            {
+              "id": "f987261b-1188-4f44-a26a-0c9c043cc246",
+              "name": "Priority",
+              "value": "={{ $('When Executed by Another Workflow').item.json.Priority }}",
+              "type": "string"
+            },
+            {
+              "id": "fb6fcd09-8823-4fe6-878f-62b88493ea31",
+              "name": "Event Name",
+              "value": "={{ $('When Executed by Another Workflow').item.json['Event Name'] }}",
+              "type": "string"
+            },
+            {
+              "id": "eb911c5e-749f-4175-85d1-c53ca6035093",
+              "name": "Due Date",
+              "value": "={{ $('When Executed by Another Workflow').item.json['Due Date'] }}",
+              "type": "string"
+            },
+            {
+              "id": "e5b49479-0b3f-4bea-bfde-1c77d52400b9",
+              "name": "Task",
+              "value": "={{ $('When Executed by Another Workflow').item.json.Task }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        752,
+        352
+      ],
+      "id": "7764d838-b097-400d-a2b8-9e0b945656d9",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b336802-ea58-4235-8e71-3d03a6a5b941",
+              "name": "formattedDate",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1216,
+        256
+      ],
+      "id": "d0ea6689-3db7-4c99-b806-7bfb7fa91007",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "value": "https://app.notion.com/p/2cd7f7b07bcb42eca45ce252e8b20745?v=14f4316e20af42768537a11ccb42b886&source=copy_link",
+          "mode": "url"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "={{ $json.Status }}"
+            },
+            {
+              "key": "={{ $json.Priority }}"
+            },
+            {
+              "key": "={{ $json['Event Name'] }}"
+            },
+            {
+              "key": "={{ $json['Due Date'] }}"
+            },
+            {
+              "key": "={{ $json.Task }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 3,
+      "position": [
+        1408,
+        368
+      ],
+      "id": "6c192ff4-e0c2-4e60-8ce4-f5d33d3e82e2",
+      "name": "Update a database page",
+      "credentials": {
+        "notionApi": {
+          "id": "EXJNttvCaUBpwsHC",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Update a database page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false,
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Status": "Not Started",
+          "Priority": "Medium",
+          "Event Name": "Fall Festival",
+          "Due Date": "9/20/2026",
+          "Task": "Test out workflow "
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "f6f9425f-9eae-4058-a394-744a2e29fa4e",
+  "activeVersionId": "f6f9425f-9eae-4058-a394-744a2e29fa4e",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-09-12T17:18:20.783Z",
+      "createdAt": "2026-09-12T17:18:20.783Z",
+      "role": "workflow:owner",
+      "workflowId": "fvqcUt1LTtm7uckj",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-09-13T15:56:02.239Z",
+    "createdAt": "2026-09-13T15:55:55.081Z",
+    "versionId": "f6f9425f-9eae-4058-a394-744a2e29fa4e",
+    "workflowId": "fvqcUt1LTtm7uckj",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "Status"
+              },
+              {
+                "name": "Priority"
+              },
+              {
+                "name": "Event Name"
+              },
+              {
+                "name": "Due Date",
+                "type": "any"
+              },
+              {
+                "name": "Task"
+              }
+            ]
+          }
+        },
+        "id": "c055762a-8fe7-4141-a639-df2372f30060",
+        "typeVersion": 1.1,
+        "name": "When Executed by Another Workflow",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "position": [
+          112,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "formatDate",
+          "date": "={{ $json['Due Date'] }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dateTime",
+        "typeVersion": 2,
+        "position": [
+          528,
+          352
+        ],
+        "id": "407885af-72a9-4d6a-a4c5-a4dd8a3ad0af",
+        "name": "Date & Time"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 3
+            },
+            "conditions": [
+              {
+                "id": "13a87a43-e26b-4fd8-b293-fc7ca57d85a4",
+                "leftValue": "",
+                "rightValue": "01/01/1970",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.3,
+        "position": [
+          992,
+          352
+        ],
+        "id": "b1a92421-3142-42c3-80a1-e6bef9378a6a",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "05a9b4f7-03c6-4611-97b2-f792645355f6",
+                "name": "Status",
+                "value": "={{ $('When Executed by Another Workflow').item.json.Status }}",
+                "type": "string"
+              },
+              {
+                "id": "f987261b-1188-4f44-a26a-0c9c043cc246",
+                "name": "Priority",
+                "value": "={{ $('When Executed by Another Workflow').item.json.Priority }}",
+                "type": "string"
+              },
+              {
+                "id": "fb6fcd09-8823-4fe6-878f-62b88493ea31",
+                "name": "Event Name",
+                "value": "={{ $('When Executed by Another Workflow').item.json['Event Name'] }}",
+                "type": "string"
+              },
+              {
+                "id": "eb911c5e-749f-4175-85d1-c53ca6035093",
+                "name": "Due Date",
+                "value": "={{ $('When Executed by Another Workflow').item.json['Due Date'] }}",
+                "type": "string"
+              },
+              {
+                "id": "e5b49479-0b3f-4bea-bfde-1c77d52400b9",
+                "name": "Task",
+                "value": "={{ $('When Executed by Another Workflow').item.json.Task }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          752,
+          352
+        ],
+        "id": "7764d838-b097-400d-a2b8-9e0b945656d9",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "3b336802-ea58-4235-8e71-3d03a6a5b941",
+                "name": "formattedDate",
+                "value": "",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.5,
+        "position": [
+          1216,
+          256
+        ],
+        "id": "d0ea6689-3db7-4c99-b806-7bfb7fa91007",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "operation": "update",
+          "pageId": {
+            "__rl": true,
+            "value": "https://app.notion.com/p/2cd7f7b07bcb42eca45ce252e8b20745?v=14f4316e20af42768537a11ccb42b886&source=copy_link",
+            "mode": "url"
+          },
+          "propertiesUi": {
+            "propertyValues": [
+              {
+                "key": "={{ $json.Status }}"
+              },
+              {
+                "key": "={{ $json.Priority }}"
+              },
+              {
+                "key": "={{ $json['Event Name'] }}"
+              },
+              {
+                "key": "={{ $json['Due Date'] }}"
+              },
+              {
+                "key": "={{ $json.Task }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notion",
+        "typeVersion": 3,
+        "position": [
+          1408,
+          368
+        ],
+        "id": "6c192ff4-e0c2-4e60-8ce4-f5d33d3e82e2",
+        "name": "Update a database page",
+        "credentials": {
+          "notionApi": {
+            "id": "EXJNttvCaUBpwsHC",
+            "name": "Notion account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Date & Time",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Date & Time": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Update a database page",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Update a database page",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "John Wooten",
+    "name": "Version f6f9425f",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
