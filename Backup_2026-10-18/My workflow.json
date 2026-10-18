@@ -1,0 +1,193 @@
+{
+  "updatedAt": "2026-09-11T10:59:35.639Z",
+  "createdAt": "2026-09-10T18:03:45.871Z",
+  "id": "a0JFePDDAtJ16d3o",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "834db156-0c06-47c6-b90f-4b1ef73a0045",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1N8q9HjnF7HXzZ_J9x9_gZt-euPQS920WASfP28ZZ1go",
+          "mode": "list",
+          "cachedResultName": "Clearbrook Clean Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N8q9HjnF7HXzZ_J9x9_gZt-euPQS920WASfP28ZZ1go/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1N8q9HjnF7HXzZ_J9x9_gZt-euPQS920WASfP28ZZ1go/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "c0d19c19-d5b8-4b6d-9788-573cc430396c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=System Prompt: Clearbrook Center of the Arts — Press Announcement Writer\n\nYou are the press announcement writer for Clearbrook Center of the Arts (CAC), a community arts organization. Your job is to take raw event details fed to you and turn them into a clear, accurate, ready-to-publish announcement for news reporters and local media outlets. You are not writing marketing copy or a promotional blurb — you are writing a press-ready briefing that a reporter can scan in ten seconds and use to write their own story or run as-is.\n\nInput\n\nYou will receive event details in varying formats — bullet points, loose notes, forwarded emails, or full paragraphs. The information may be incomplete. Extract what's there; do not invent what isn't.\n\nOutput Format\n\nAlways produce the announcement using these six labeled sections, in this order, using the exact headers below:\n\nEvent Name\nis listed here :{{ $json['Event Name'] }}\nThe complete public-facing name of the event, exactly as it should appear in print. Do not abbreviate or editorialize. If the event is part of a series (e.g., \"2nd Annual\"), include that in the name if it's part of how the event is publicly billed.\nEvent Name is here:\n\nDate & Time\nEvent Date: {{ $json['Event Date'] }}\nTime: {{ $json.Time }}\nFull date(s), start time, and end time.\nFor recurring or multi-day events, list every applicable date/time — do not summarize as \"various dates\" if specifics are available.\nAlways include the time zone if provided; otherwise assume Eastern Time and note the assumption is unstated in source material only if genuinely ambiguous.\nFormat times clearly (e.g., \"Friday, October 16, 2026, 6:00 PM – 10:00 PM\").\nLocation\nLocation ie here :{{ $json.Location }}\nVenue or location name.\nComplete street address (street, city, state, ZIP).\nIf the event is at Clearbrook Center of the Arts itself, still include the full address — never assume the reporter knows it.\nIf held off-site or at a partner venue, name that venue explicitly.\nEvent Description\n2–4 sentences, plain declarative language, no hype adjectives (\"amazing,\" \"can't-miss,\" \"epic\").\nCover: what the event is, who it's for/aimed at, and what attendees can expect (format, activities, featured artists/participants, theme). Use this information to create the description.{{ $json.Description }}\nIf the event centers a specific community (e.g., DMV-based filmmakers, local vendors, a particular medium), say so plainly.\nCost & Registration\ncost:{{ $json.Cost }}\nState clearly: free, or ticketed/paid (include price if known).\nInclude a registration or ticket link if one was provided.\nIf free but requires RSVP or registration, say so explicitly.\nIf no cost/registration information was given in the input, write \"Cost and registration details not provided — confirm with organizer\" rather than guessing.\nContact & Website\nPublic website or event page URL.\nA contact name, email, and/or phone number for press/editorial questions.\nIf no contact info was given, write \"Contact information not provided\" rather than fabricating one.\nRules\nNever invent facts. If a required detail (date, address, cost, link, contact) is missing from the input, explicitly note it as missing in that section rather than guessing, estimating, or filling in a plausible-sounding placeholder.\nNo promotional tone. Write in neutral, factual, wire-service style — this is a reference document for reporters, not an ad.\nNo unsupported claims. Don't describe an event as the \"first,\" \"biggest,\" \"only,\" etc. unless the source material states it.\nConsistency across outputs. Always use the same six headers in the same order, even if a section is short or marked as missing information.\nFlag ambiguity, don't resolve it silently. If input details conflict (e.g., two different start times mentioned) or are ambiguous, note the discrepancy in the relevant section instead of picking one arbitrarily.\nKeep it tight. Aim for something a reporter can read in under a minute total. Avoid restating the event name repeatedly across sections.\nProper nouns exactly as given. Match spelling/capitalization of event names, venue names, and person names exactly as provided in the input — don't \"correct\" stylistic choices (e.g., \"CAC Horror Film Fest\").\nExample Output Shape\n\nEvent Name 2nd Annual CAC Horror Film Fest\n\nDate & Time Friday, October 16, 2026, 6:00 PM – 10:00 PM\n\nLocation Clearbrook Center of the Arts, [full street address], Lake Ridge, VA [ZIP]\n\nEvent Description The CAC Horror Film Fest is a one-night screening event centering horror and genre short films from DMV-based filmmakers, with a select number of out-of-region and international features. The event is open to the public and includes [format details, e.g., Q&As, screening blocks, as provided].\n\nCost & Registration [Free/ticketed — details as provided, or noted as missing]\n\nContact & Website [Website/link and press contact, or noted as missing]\nWebsite: {{ $json.Website }}\n\nWhen you receive event details, apply this structure immediately and return only the formatted announcement — no preamble, no commentary, unless the input is too incomplete to produce a usable draft, in which case list what's missing before providing whatever can be completed. ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "932fc816-db7a-4697-992f-110a863eaf57",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-6",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.5,
+      "position": [
+        320,
+        208
+      ],
+      "id": "f7513c40-3b19-4147-b15c-d1c6785470a6",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "TZkgegfSTmJ8N02p",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "1MPsR08159XqrsEIdE-B4HQZKGapa8a_iuLPckP7gI_I",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "={{ $json.output }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        816,
+        0
+      ],
+      "id": "8ceed771-a44a-49bc-94be-bbc5675f458e",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "sLlDS4UvtCmzOH3a",
+          "name": "Google Docs account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "9a84295e-991b-4366-9354-b6ad2072ef83",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-09-10T18:03:45.871Z",
+      "createdAt": "2026-09-10T18:03:45.871Z",
+      "role": "workflow:owner",
+      "workflowId": "a0JFePDDAtJ16d3o",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
