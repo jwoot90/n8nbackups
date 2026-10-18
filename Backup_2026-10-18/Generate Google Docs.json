@@ -1,0 +1,911 @@
+{
+  "updatedAt": "2026-10-08T19:02:19.095Z",
+  "createdAt": "2026-10-08T19:01:55.516Z",
+  "id": "hcbu1vbjBJr8vsmk",
+  "name": "Generate Google Docs",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "### Update text vars in a Google Doc from a template file (copies it first)👉\nCopy [this Google Doc](https://docs.google.com/document/d/18JYpbobWA3PlCjBJKHg7bB1QYJ_xXJv07vo-S8SzA4o/edit?usp=sharing) to get started with a template.",
+        "height": 176,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        0
+      ],
+      "typeVersion": 1,
+      "id": "b9be8bbd-be6a-4e35-907a-123188411595",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE",
+          "mode": "list",
+          "cachedResultName": "Google Doc Sample Report Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1387136711,
+          "mode": "list",
+          "cachedResultName": "Sample Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit#gid=1387136711"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Google Sheet Url": "=https://docs.google.com/document/d/{{ $('Copy Template').item.json.id }}",
+            "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Google Sheet Url",
+              "displayName": "Google Sheet Url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Company Name",
+              "displayName": "Company Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Reporting Period",
+              "displayName": "Reporting Period",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Add Spend USD",
+              "displayName": "Add Spend USD",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Website Sessions",
+              "displayName": "Website Sessions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "MQLs",
+              "displayName": "MQLs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1792,
+        16
+      ],
+      "id": "f450f8a3-e4e8-4e43-a92b-55a66b4b5332",
+      "name": "Add Google Doc"
+    },
+    {
+      "parameters": {
+        "operation": "share",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Copy Template').item.json.id }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "reader",
+            "type": "anyone"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1568,
+        16
+      ],
+      "id": "ba96ab72-f810-4724-a62a-199509c3039b",
+      "name": "Share file"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        16
+      ],
+      "id": "603a6df9-ebdd-4dc1-bded-9731ab0c1e4e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        1184
+      ],
+      "id": "b730e7ce-8c22-4af5-bf2e-65a1e66505e2",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "mode": "markdownToHtml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        320,
+        880
+      ],
+      "id": "f68a2353-1132-49c3-bc00-0bf8b4f72fdf",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "multipart/related; boundary=foo_bar_baz",
+        "body": "=--foo_bar_baz\nContent-Type: application/json; charset=UTF-8\n\n{\n  \"name\": \"{{ $json.file_name }}\",\n  \"mimeType\": \"application/vnd.google-apps.document\",\n  \"parents\": [\"{{ $json.parent_folder_id }}\"]\n}\n--foo_bar_baz\nContent-Type: text/html; charset=UTF-8\n\n{{ $json.doc_html }}\n--foo_bar_baz--",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1344,
+        1184
+      ],
+      "id": "7193aba5-3c12-4005-b067-207d2b60aad8",
+      "name": "HTML to Google Doc"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8457b9ec-4d60-46e1-9b85-d11a33ce32ef",
+              "name": "parent_folder_id",
+              "value": "1PBvqLue1rnOdoigKxuHE7F7sDtNJ8GtQ",
+              "type": "string"
+            },
+            {
+              "id": "49040048-065b-4b63-892a-65d4e68099f5",
+              "name": "file_name",
+              "value": "=FROM HTML - {{$now.toString()}}",
+              "type": "string"
+            },
+            {
+              "id": "2d57c51f-c2e3-493f-8d2f-4222c94f7876",
+              "name": "doc_html",
+              "value": "={{ $json.message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1120,
+        1184
+      ],
+      "id": "9113bec0-cd10-461e-aadf-ce922e974403",
+      "name": "Set Vars"
+    },
+    {
+      "parameters": {
+        "content": "### Generate a new google doc from HTML 👉",
+        "height": 112,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        1200
+      ],
+      "typeVersion": 1,
+      "id": "496f3319-12f2-48c0-a7dd-085816cb63d8",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        320,
+        496
+      ],
+      "id": "2dbd0959-84ca-4508-bfc2-c5b231f76d43",
+      "name": "Schedule Trigger2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE",
+          "mode": "list",
+          "cachedResultName": "Google Doc Sample Report Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1387136711,
+          "mode": "list",
+          "cachedResultName": "Sample Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit#gid=1387136711"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        16
+      ],
+      "id": "709f90c2-0509-49be-af62-380e5a6f01c4",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{executive_summary}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.executive_summary }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{key_findings}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.key_findings }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_1_score}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_1_score }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_1_commentary}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_1_commentary }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{recommendations}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.recommendations }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_2_commentary}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_2_commentary }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_2_score}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_2_score }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_3_score}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_3_score }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_3_commentary}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_3_commentary }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_4_score}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_4_score }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_4_commentary}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_4_commentary }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_1_name}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_1_name }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_2_name}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_2_name }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_3_name}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_3_name }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{metric_4_name}}",
+              "replaceText": "={{ $('Generate Goole Doc Sample Report').item.json.message.content.metric_4_name }}",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        16
+      ],
+      "id": "75f20a68-669f-4926-a7e2-c8aaf9a3add9",
+      "name": "Replace Text in Google Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "sLlDS4UvtCmzOH3a",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=# Role\nYou are an expert marketing strategist and data analyst.\nYou specialize in translating performance data into clear, actionable insights and recommendations for executive audiences.\nYour goal is to generate realistic, insightful demo data that looks like it came from a professional marketing performance report.\n\n# Context\nYou are generating demo data for a YouTube walkthrough showing how AI can create a Marketing Performance Report directly from a Google Sheet.\nThe report will summarize results, insights, and next-step recommendations for a company’s marketing efforts.\nIt will be populated into a Google Doc using mustache variables).\n\nThe final output should sound strategic, concise, and executive-friendly.\n\n# Task\nGenerate demo data in valid JSON format that fills the following variables:\n\n{\n  \"executive_summary\": \"\",\n  \"metric_1_name\": \"\",\n  \"metric_1_score\": \"\",\n  \"metric_1_commentary\": \"\",\n  \"metric_2_name\": \"\",\n  \"metric_2_score\": \"\",\n  \"metric_2_commentary\": \"\",\n  \"metric_3_name\": \"\",\n  \"metric_3_score\": \"\",\n  \"metric_3_commentary\": \"\",\n  \"metric_4_name\": \"\",\n  \"metric_4_score\": \"\",\n  \"metric_4_commentary\": \"\",\n  \"key_findings\": \"\",\n  \"recommendations\": \"\"\n}\n\n# Input\n- Company: {{ $json['Company Name'] }}\n- Industry: {{ $json.Industry }}\n- Reporting Period: {{ $json.Industry }}\n- Description: {{ $json.Description }}\n- Ad Spend (USD): {{ $json['Add Spend USD'] }}\n- Website Sessions: {{ $json['Website Sessions'] }}\n- MQLs: {{ $json.MQLs }}\n\n# Output Requirements\n- Format: Valid JSON (no markdown or explanations).\n- Each property is text only (no arrays).\n- Tone: Strategic, confident, and marketing-savvy — as if written by a senior marketing strategist.\n- Executive Summary: 3–5 sentences summarizing performance, notable trends, and overall effectiveness.\n- Metrics:\n  - Provide 4 marketing-relevant metrics (e.g., Campaign ROI, Conversion Rate, Engagement Rate, Lead Quality, Website Performance).\n  - Each metric includes:\n    - A score from 1–10 (decimals allowed).\n    - Commentary (2–4 sentences) analyzing causes, implications, and next steps.\n  - Where useful, reference or infer trends using the provided inputs (ad_spend_usd, website_sessions, mqls).\n- Key Findings: 3–5 concise bullet points summarizing insights or patterns.\n- Recommendations: 3–5 bullet points offering specific, actionable strategies to improve performance next period.\n- No additional commentary or formatting. Output only the JSON object."
+            }
+          ]
+        },
+        "jsonOutput": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        768,
+        16
+      ],
+      "id": "8cdfc0e3-4d26-417f-8ebc-035d5ef45a7b",
+      "name": "Generate Goole Doc Sample Report"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE",
+          "mode": "list",
+          "cachedResultName": "Google Doc Sample Report Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1387136711,
+          "mode": "list",
+          "cachedResultName": "Sample Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit#gid=1387136711"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        496
+      ],
+      "id": "43ae1cb1-3155-4d2e-8600-6e2fab100af5",
+      "name": "Get row(s) in sheet1"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=# Role\nYou are an expert marketing strategist and data analyst.\nYou specialize in translating marketing performance data into clear, engaging reports formatted in Markdown.\nYour goal is to generate realistic, professional-looking demo data for a Marketing Performance Report that includes headers, tables, and bullet points.\n\n# Context\nYou are generating demo data for a YouTube walkthrough showing how AI can produce a Marketing Performance Report directly from a Google Sheet.\nThe report will summarize results, insights, and actionable recommendations for a company’s marketing performance.\nThe final output will be used in a Google Doc or Notion document that supports Markdown formatting.\n\nThe report should read like it was written by a marketing strategist — confident, clear, and practical — with data presented visually in Markdown tables and organized sections.\n\n# Task\nGenerate a **Marketing Performance Report** in **Markdown format** using the provided data as context. Include the following sections:\n\n1. **Executive Summary** – 3–5 sentences summarizing the overall performance and trends.\n2. **Performance Metrics Table** – A Markdown table with at least 4 key marketing metrics (e.g., Campaign ROI, Conversion Rate, Engagement Rate, Website Traffic) including:\n   - Metric Name\n   - Score (1–10)\n   - Commentary (short summary of insights)\n3. **Key Findings** – 3–5 bullet points summarizing main takeaways or patterns.\n4. **Recommendations** – 3–5 actionable bullet points for improvement next period.\n\n# Input\n- Company: {{ $json['Company Name'] }}\n- Industry: {{ $json.Industry }}\n- Reporting Period: {{ $json.Industry }}\n- Description: {{ $json.Description }}\n- Ad Spend (USD): {{ $json['Add Spend USD'] }}\n- Website Sessions: {{ $json['Website Sessions'] }}\n- MQLs: {{ $json.MQLs }}\n\n# Output Requirements\n- **Format:** Markdown (with headers, tables, and lists).\n- **Tone:** Strategic and professional, as if written by a marketing leader presenting to an executive team.\n- **Include:** At least one table, and use proper Markdown hierarchy (#, ##, -, etc.).\n- **No additional commentary or formatting instructions** — output only the final Markdown report.\n- Include one image somewhere that is 200x200px and points to: https://media.licdn.com/dms/image/v2/D5603AQGmfQNO0ZjXpQ/profile-displayphoto-scale_200_200/B56ZjhwhBCHUAY-/0/1756134252531?e=1762387200&v=beta&t=AtjxHz3nvYCYF7Of52kyESRehyr0W7eU-6TdkXbzLnY\n\n# Example Output\n\n# Marketing Performance Report – Q3 2025  \n**Company:** GrowthEdge Marketing  \n**Industry:** B2B Marketing  \n\n---\n\n## Executive Summary\nGrowthEdge Marketing’s Q3 2025 marketing performance showed strong gains in engagement and ROI, reflecting better alignment between creative strategy and audience targeting. Paid campaigns outperformed expectations, while organic traffic growth slowed slightly due to reduced posting cadence. The marketing team demonstrated strong progress in optimizing ad spend, setting up for continued growth in Q4.\n\n---\n\n## Performance Metrics\n\n| Metric | Score (1–10) | Commentary |\n|--------|---------------|------------|\n| Campaign ROI | 8.5 | Paid campaigns achieved a 4.6x return, driven by optimized targeting and strong creative testing. |\n| Conversion Rate | 7.2 | Landing page refinements led to higher conversion rates, though mobile performance lags behind desktop. |\n| Engagement Rate | 8.0 | Social content featuring leadership insights and short videos performed exceptionally well, boosting visibility. |\n| Website Traffic | 7.6 | Traffic increased 9% QoQ, primarily from organic search improvements and refreshed content. |\n\n---\n\n## Key Findings\n- Campaign ROI reached its highest level in the past year.  \n- Engagement spiked on thought-leadership video content.  \n- Lead volume rose, but conversion-to-opportunity rates dipped.  \n- Organic traffic continues to be the top-performing acquisition channel.  \n- Paid search performance varies widely by region.\n\n---\n\n## Recommendations\n- Reallocate underperforming ad spend to top-performing audience segments.  \n- Prioritize mobile landing page optimization to improve conversions.  \n- Increase production of leadership and video content for social channels.  \n- Implement automated nurture workflows for MQL follow-up.  \n- Conduct a creative performance audit to identify ad fatigue early."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        768,
+        496
+      ],
+      "id": "1dab8028-575e-44fb-99e7-3a5fa1ad4865",
+      "name": "Generate Goole Doc Sample Report1"
+    },
+    {
+      "parameters": {
+        "operation": "createFromText",
+        "content": "={{ $json.message.content }}",
+        "name": "=MARKDOWN SAMPLE - {{ $now.format('yyyy-MM-dd hh:mm:ss') }}",
+        "driveId": {
+          "__rl": true,
+          "value": "My Drive",
+          "mode": "list",
+          "cachedResultName": "My Drive",
+          "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1PBvqLue1rnOdoigKxuHE7F7sDtNJ8GtQ",
+          "mode": "list",
+          "cachedResultName": "Create Google Docs",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1PBvqLue1rnOdoigKxuHE7F7sDtNJ8GtQ"
+        },
+        "options": {
+          "convertToGoogleDocument": true
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        496
+      ],
+      "id": "9a5031d8-ce10-497d-a5c6-855053e7b04b",
+      "name": "Create Google Doc From Markdown"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1EHd9TkYxG5j8pH8bOidncryRSbW-MXRPKaRGKxUO_j0",
+          "mode": "list",
+          "cachedResultName": "TEMPLATE - Example Generated Google Doc",
+          "cachedResultUrl": "https://docs.google.com/document/d/1EHd9TkYxG5j8pH8bOidncryRSbW-MXRPKaRGKxUO_j0/edit?usp=drivesdk"
+        },
+        "name": "=FROM TEMPLATE - {{ $now.format('yyyy-MM-dd hh:mm:ss') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        16
+      ],
+      "id": "33f22fb2-2402-44e8-b9fd-cad38c75cc0d",
+      "name": "Copy Template"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE",
+          "mode": "list",
+          "cachedResultName": "Google Doc Sample Report Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1387136711,
+          "mode": "list",
+          "cachedResultName": "Sample Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15aUs6ehN4cbblnKs7RhfbGOVG94rr4yRvmSaz9APOlE/edit#gid=1387136711"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        1184
+      ],
+      "id": "cf690262-d379-4177-b63e-d72d2433a09d",
+      "name": "Get row(s) in sheet2"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "o4-mini",
+          "mode": "list",
+          "cachedResultName": "O4-MINI"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=# Role\nYou are an expert marketing strategist and data analyst.\nYou specialize in translating marketing performance data into clear, engaging reports formatted as clean, semantic HTML.\nYour goal is to generate realistic, professional-looking demo data for a Marketing Performance Report that includes headings, a metrics table, and bullet lists.\n\n# Context\nYou are generating demo data for a YouTube walkthrough showing how AI can produce a Marketing Performance Report directly from a Google Sheet.\nThe report will summarize results, insights, and actionable recommendations for a company’s marketing performance.\nThe final output must be **pure HTML** so it can be embedded in a webpage, CMS, or converted elsewhere.\n\nWrite with the voice of a senior marketing strategist — concise, confident, and practical.\n\n# Task\nGenerate a **Marketing Performance Report** as **valid HTML** using the provided data as context. Include the following sections:\n\n1) **Executive Summary** — 3–5 sentences summarizing overall performance and trends.\n2) **Performance Metrics** — An HTML table with at least 4 key marketing metrics (e.g., Campaign ROI, Conversion Rate, Engagement Rate, Website Traffic) with columns:\n   - Metric\n   - Score (1–10)\n   - Commentary (short summary of insights)\n3) **Key Findings** — 3–5 concise bullet points summarizing main takeaways or patterns.\n4) **Recommendations** — 3–5 actionable bullet points for improvement next period.\n\n# Input\n- Company: {{ $json['Company Name'] }}\n- Industry: {{ $json.Industry }}\n- Reporting Period: {{ $json.Industry }}\n- Description: {{ $json.Description }}\n- Ad Spend (USD): {{ $json['Add Spend USD'] }}\n- Website Sessions: {{ $json['Website Sessions'] }}\n- MQLs: {{ $json.MQLs }}\n\n# Output Requirements\n- **Format:** Output only **HTML** (no markdown, no JSON, no explanations, no code fences).\n- **Structure:** Use semantic HTML5 with headings (<h1>, <h2>), paragraphs (<p>), lists (<ul>/<li>), and a table (<table>, <thead>, <tbody>, <tr>, <th>, <td>).\n- **Styling:** Include a minimal inline <style> block for readability (fonts, table borders, spacing). Avoid external assets.\n- **Tone:** Strategic and professional, as if presenting to an executive team.\n- **Final Output:** A complete, self-contained HTML document starting with <!doctype html>.\n- Include one image somewhere that points to: https://media.licdn.com/dms/image/v2/D5603AQGmfQNO0ZjXpQ/profile-displayphoto-scale_200_200/B56ZjhwhBCHUAY-/0/1756134252531?e=1762387200&v=beta&t=AtjxHz3nvYCYF7Of52kyESRehyr0W7eU-6TdkXbzLnY"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        768,
+        1184
+      ],
+      "id": "2a3e5be8-cccf-45bf-ba20-c6dd8865f18c",
+      "name": "Generate Goole Doc Sample Report2"
+    },
+    {
+      "parameters": {
+        "content": "### Generate a new google doc from Markdown 👉",
+        "height": 112,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        496
+      ],
+      "typeVersion": 1,
+      "id": "12463d91-9601-43c9-9598-f4713da726a0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://docs.googleapis.com/v1/documents/{{$json.documentId}}:batchUpdate",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"requests\": [\n    {\n      \"replaceImage\": {\n        \"imageObjectId\": \"{{ $json.body.content[4].paragraph.elements[0].inlineObjectElement.inlineObjectId }}\",\n        \"uri\": \"https://media.licdn.com/dms/image/v2/D5603AQGmfQNO0ZjXpQ/profile-displayphoto-scale_200_200/B56ZjhwhBCHUAY-/0/1756134252531?e=1762387200&v=beta&t=AtjxHz3nvYCYF7Of52kyESRehyr0W7eU-6TdkXbzLnY\",\n        \"imageReplaceMethod\": \"CENTER_CROP\"\n      }\n    }\n  ]\n} ",
+        "options": {}
+      },
+      "id": "bbfea82c-c2ba-419b-b9d9-4add19c2cc68",
+      "name": "Replace Image in Docx",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        2272,
+        16
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "url": "=https://docs.googleapis.com/v1/documents/{{ $('Copy Template').item.json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDocsOAuth2Api",
+        "options": {}
+      },
+      "id": "fdc20c6f-1350-4790-bf6d-7ab3e4d87257",
+      "name": "Find Image ID in Docx",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        2032,
+        16
+      ],
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "parameters": {
+        "content": "### 💡 If you need an easy way to convert between html to markdown, use this note 👉",
+        "height": 144,
+        "width": 256,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        848
+      ],
+      "typeVersion": 1,
+      "id": "98b164a0-b36e-4b43-95c7-0c9c79c2d8ef",
+      "name": "Sticky Note3"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Vars": {
+      "main": [
+        [
+          {
+            "node": "HTML to Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share file": {
+      "main": [
+        [
+          {
+            "node": "Add Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Generate Goole Doc Sample Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Text in Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Share file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Goole Doc Sample Report": {
+      "main": [
+        [
+          {
+            "node": "Copy Template",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Generate Goole Doc Sample Report1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Goole Doc Sample Report1": {
+      "main": [
+        [
+          {
+            "node": "Create Google Doc From Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy Template": {
+      "main": [
+        [
+          {
+            "node": "Replace Text in Google Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Generate Goole Doc Sample Report2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Goole Doc Sample Report2": {
+      "main": [
+        [
+          {
+            "node": "Set Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Image ID in Docx": {
+      "main": [
+        [
+          {
+            "node": "Replace Image in Docx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Google Doc": {
+      "main": [
+        [
+          {
+            "node": "Find Image ID in Docx",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "f08fb210-7c92-42ee-ba00-4e6eb7f8064a",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-10-08T19:01:55.516Z",
+      "createdAt": "2026-10-08T19:01:55.516Z",
+      "role": "workflow:owner",
+      "workflowId": "hcbu1vbjBJr8vsmk",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
