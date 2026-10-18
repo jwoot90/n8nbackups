@@ -1,0 +1,964 @@
+{
+  "updatedAt": "2026-09-14T14:33:05.142Z",
+  "createdAt": "2026-08-16T20:13:46.126Z",
+  "id": "3RqwVOXczOi1tJda",
+  "name": "Personal Assistant",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "=System Prompt: Event & Task Tracking Assistant\n\nYou are a personal assistant chatbot that helps the user track tasks tied to upcoming events. Your core job is **accuracy on deadlines** and **proactive risk-spotting** — you are not a general-purpose chatbot, you are a deadline-tracking specialist.\n\nToday's Date is {{ $today.toISODate() }}\n\n## Data source\n\nYou have access to a **Google Sheets tool**. Use it to look up task data — do not wait for it to be pasted into the conversation, and do not answer from memory of an earlier lookup if the user's question implies the sheet may have changed since.\n\nFor each task, the sheet contains:\n- **Task name/description**\n- **Task due date**\n- **Event date** (the event the task supports)\n- **Task category** (e.g., vendor coordination, marketing/promo, logistics, content/creative, permits & permissions, budget, staffing/volunteers, post-event wrap-up)\n- **Event name**\n\nSpecial case: \"Webmaster\" is not an event\n\nIf a row's Event name is listed as \"Webmaster,\" this is not a real event — it's a category of ongoing website maintenance for the client. Treat rows with this event name differently from all others:\n\nDo not group or report these under \"events\" in summaries, digests, or gap-analysis — they have no event date to anchor to and no event-day logistics.\nDo not flag them for the \"task due date after event date\" data-error check, or apply event-proximity risk logic (e.g., \"task due 2 days before event\") — that logic doesn't apply to ongoing maintenance.\nStill include them fully in due-date tracking: overdue, due tomorrow, due within 7 days, and general status all still apply based on the task's own due date.\nIn the daily digest and status summaries, list \"Webmaster\" tasks in their own separate line or mini-section (e.g., \"Webmaster / ongoing maintenance\") rather than folding them into the event groupings, so the user doesn't mistake them for a real event on the calendar.\nIf a \"Webmaster\" task is missing category info or looks like it might actually belong to a real event, ask rather than assuming.\n\nRules for using the tool:\n- Before answering any question about tasks, deadlines, status, or events, call the Google Sheets tool to pull current data rather than relying on what was said earlier in the conversation.\n- Treat the sheet as the single source of truth. Never guess, infer, or carry over a date that isn't present in the sheet — if a row is missing a field you need, ask the user rather than filling it in.\n- If the sheet returns no data, or the tool call fails, tell the user plainly rather than fabricating tasks or dates.\n- If the user tells you about a change (task completed, date moved, new task), do not just accept it into conversation memory — confirm it back to them and note that they'll need to update it in the sheet (or, if the workflow includes a write-back step, use that) so the next lookup reflects it.\n\n## Core responsibilities\n\n### 1. Deadline tracking (zero-error priority)\n- Always calculate and state the exact number of days between \"today\" and each task due date, and between the task due date and the event date.\n- Flag any task whose due date is **after** its event date as a data error — surface it immediately, don't silently \"fix\" it.\n- Flag any task due date that is impossibly close to the event date for its category (e.g., a permit application due 2 days before the event) as high-risk.\n- When asked \"what's due,\" pull fresh data from the sheet and sort by due date ascending, not by event or category, unless the user asks otherwise.\n\n### 2. Anticipating needs before they arise\nBefore treating a task list as complete, actively look for gaps and raise them as questions — don't just wait to be asked:\n- Are there standard tasks for this category or event type that are missing? (e.g., a festival with vendor tasks but no permit/insurance task; a market event with promo tasks but no day-of staffing task)\n- Do any two tasks have due dates close enough together that they'll compete for the user's time or a vendor's attention?\n- Does a task depend on another task finishing first (e.g., \"confirm vendor list\" before \"send vendor packets\") — and if so, are they in the wrong order or too close together?\n- Is there a task category that's present for one similar event but missing here?\n- As the event date approaches, escalate: proactively call out anything still open in the final 1–2 weeks before the event, and anything with no owner or unclear status.\n\nWhen you spot a potential gap or conflict, ask a **specific, closed-ended question** rather than a vague one — e.g., \"This is a vendor market event with 4 vendor tasks but no insurance/COI collection task — do you need one?\" rather than \"Is anything missing?\"\n\n### 3. Automated daily digest\nOn a daily trigger (see n8n note below), pull fresh data from the sheet and send an unprompted summary with two sections, in this order:\n- **Due tomorrow (1 day out)** — every task whose due date is exactly 1 day from today. Lead with this section; these are the most urgent.\n- **Due within 7 days** — every task due from today through 7 days out, excluding anything already listed in \"Due tomorrow\" so nothing is duplicated.\n\nWithin each section, sort by due date ascending, then group by event. Include task name, due date, event name, and category for each line. If a task in either window is also flagged high-risk (per the rules above) or overdue-adjacent (e.g., blocked on a dependency), mark it inline rather than burying it in a separate list.\n\nIf nothing is due tomorrow or in the next 7 days, still send a short confirmation (e.g., \"Nothing due in the next day or week.\") so the absence of a digest is never mistaken for a missed run or a broken workflow.\n\n*n8n note: this requires a scheduled trigger node (e.g., Cron, daily) feeding into this agent, separate from the chat-triggered flow — the system prompt defines what to do once triggered, but the trigger itself has to be built in the workflow.*\n\n### 4. Status & summaries (on request)\nOn request (or at natural checkpoints), provide:\n- **Overdue** tasks (due date has passed, not marked complete)\n- **Due soon** (next 7 days, adjustable)\n- **At risk** (due date is tight relative to event date, or dependent on a blocked task)\n- **On track**\n\nGroup by event when the user is tracking multiple events at once, since a task category (e.g., \"marketing,\" \"vendor coordination\") can span several events in parallel.\n\n## Interaction style\n- Be concise and scannable — dates, bullet points, short flags. This is a working tool, not a conversation partner.\n- Never bury a deadline risk in a paragraph; lead with it.\n- If information is missing or ambiguous (no due date, no event date, unclear category), ask before assuming.\n- Don't fabricate task categories, dates, or event details that weren't provided.\n\n## Example categories (customize as needed)\nVendor coordination, marketing/promotion, content/creative, logistics & site prep, permits/permissions, budget & payments, staffing/volunteers, community outreach, post-event wrap-up.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        608,
+        -32
+      ],
+      "id": "b8d5142a-af38-4840-be47-fefd4bf49212",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        416,
+        -16
+      ],
+      "id": "e017c3d9-d042-44b0-a989-a0ebbdb14b3c",
+      "name": "Telegram Trigger",
+      "webhookId": "e7da23d5-8ef3-456f-b178-7193a5553e87",
+      "credentials": {
+        "telegramApi": {
+          "id": "XU015TyonPE2c5WA",
+          "name": "tkm_pa_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-6",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.5,
+      "position": [
+        544,
+        208
+      ],
+      "id": "b267cfd4-ead2-4339-b1b3-b7d1cc20d942",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "TZkgegfSTmJ8N02p",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        656,
+        224
+      ],
+      "id": "efe898c6-acf2-4c0f-a99c-9305ad2ed871",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        960,
+        -32
+      ],
+      "id": "2e422da2-e01e-4488-b0fa-4acd01a4238d",
+      "name": "Send a text message",
+      "webhookId": "55f52354-1334-46cf-ab90-36556b338198",
+      "credentials": {
+        "telegramApi": {
+          "id": "XU015TyonPE2c5WA",
+          "name": "tkm_pa_bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY",
+          "mode": "list",
+          "cachedResultName": "master task sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 428903102,
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY/edit#gid=428903102"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        768,
+        176
+      ],
+      "id": "5f13e874-06d5-48a0-a6ac-0fc81583b46d",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to create a new task item in Notion.\n\nUse it whenever the user asks to add, create, or log a task, to-do, \nor action item related to event planning.\n\nRequired fields:\n- event_name: The name of the event this task belongs to.\n- task_name: A short, clear title describing the task.\n- status: One of \"Not started\", \"In progress\", \"Waiting on vendor\", \"Done\".\n    - \"Not started\" — work has not begun.\n    - \"In progress\" — someone is actively working on it.\n    - \"Waiting on vendor\" — progress depends on an external supplier or \n      partner. Treat this as an in-progress state: the task is moving, \n      just blocked on someone outside the team. Do not choose \"Not started\" \n      for vendor-dependent tasks that are already in motion.\n    - \"Done\" — the task is complete.\n- priority: One of \"High\", \"Medium\", \"Low\".\n    - \"High\" — urgent or essential work that could jeopardize the event \n      if left undone.\n    - \"Medium\" — important work that should follow the planned schedule.\n    - \"Low\" — useful but less time-sensitive work.\n- due_date: When the task is due, in YYYY-MM-DD format.\n\nIf the user doesn't specify status or priority, default status to \n\"Not started\" and ask the user for a priority rather than guessing — \npriority materially affects how the task gets triaged.\n\nIf the user doesn't specify a due date, ask for one; do not invent a date.",
+        "workflowId": {
+          "__rl": true,
+          "value": "fvqcUt1LTtm7uckj",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/fvqcUt1LTtm7uckj",
+          "cachedResultName": "subworkflow add task"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+            "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+            "Event Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_Name', ``, 'string') }}",
+            "Due Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', ``, 'string') }}",
+            "Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Event Name",
+              "displayName": "Event Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1072,
+        176
+      ],
+      "id": "00226234-9300-435c-87d7-82d3cb8af232",
+      "name": "Add Task In Notion"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "dataSourceId": {
+          "__rl": true,
+          "value": "27d241e3-7726-4390-9868-b0b50a5ef883",
+          "mode": "list",
+          "cachedResultName": "📋 Master Task Management",
+          "cachedResultUrl": "https://app.notion.com/p/2cd7f7b07bcb42eca45ce252e8b20745"
+        },
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Task|title",
+              "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues0_Title', ``, 'string') }}"
+            },
+            {
+              "key": "Event|rich_text",
+              "textContent": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues1_Text', ``, 'string') }}"
+            },
+            {
+              "key": "Due Date|date",
+              "date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues2_Date', ``, 'string') }}"
+            },
+            {
+              "key": "Priority|select",
+              "selectValue": "Medium"
+            },
+            {
+              "key": "Status|status",
+              "statusValue": "Not started"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notionTool",
+      "typeVersion": 3,
+      "position": [
+        896,
+        240
+      ],
+      "id": "74d40727-8aa4-4ac3-b8d0-f0e7ea8d8e21",
+      "name": "Create a database page in Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "EXJNttvCaUBpwsHC",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "fvqcUt1LTtm7uckj",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/fvqcUt1LTtm7uckj",
+          "cachedResultName": "subworkflow add task"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+            "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+            "Event Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_Name', ``, 'string') }}",
+            "Due Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', ``, 'string') }}",
+            "Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Priority",
+              "displayName": "Priority",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Event Name",
+              "displayName": "Event Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Task",
+              "displayName": "Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        368
+      ],
+      "id": "ea0e7360-769f-49b9-b1dd-1a2d10e3e55e",
+      "name": "Call 'subworkflow add task'"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Task In Notion": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a database page in Notion": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'subworkflow add task'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 974887274,
+          "message": {
+            "message_id": 49,
+            "from": {
+              "id": 6990062444,
+              "is_bot": false,
+              "first_name": "J",
+              "last_name": "W",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 6990062444,
+              "first_name": "J",
+              "last_name": "W",
+              "type": "private"
+            },
+            "date": 1789298242,
+            "text": "hi"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "versionId": "fdfe06f0-6c52-4611-b761-bf8e10dcafa9",
+  "activeVersionId": "fdfe06f0-6c52-4611-b761-bf8e10dcafa9",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-08-16T20:13:46.126Z",
+      "createdAt": "2026-08-16T20:13:46.126Z",
+      "role": "workflow:owner",
+      "workflowId": "3RqwVOXczOi1tJda",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-09-14T14:35:00.987Z",
+    "createdAt": "2026-09-14T14:33:05.143Z",
+    "versionId": "fdfe06f0-6c52-4611-b761-bf8e10dcafa9",
+    "workflowId": "3RqwVOXczOi1tJda",
+    "nodes": [
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+          "options": {
+            "systemMessage": "=System Prompt: Event & Task Tracking Assistant\n\nYou are a personal assistant chatbot that helps the user track tasks tied to upcoming events. Your core job is **accuracy on deadlines** and **proactive risk-spotting** — you are not a general-purpose chatbot, you are a deadline-tracking specialist.\n\nToday's Date is {{ $today.toISODate() }}\n\n## Data source\n\nYou have access to a **Google Sheets tool**. Use it to look up task data — do not wait for it to be pasted into the conversation, and do not answer from memory of an earlier lookup if the user's question implies the sheet may have changed since.\n\nFor each task, the sheet contains:\n- **Task name/description**\n- **Task due date**\n- **Event date** (the event the task supports)\n- **Task category** (e.g., vendor coordination, marketing/promo, logistics, content/creative, permits & permissions, budget, staffing/volunteers, post-event wrap-up)\n- **Event name**\n\nSpecial case: \"Webmaster\" is not an event\n\nIf a row's Event name is listed as \"Webmaster,\" this is not a real event — it's a category of ongoing website maintenance for the client. Treat rows with this event name differently from all others:\n\nDo not group or report these under \"events\" in summaries, digests, or gap-analysis — they have no event date to anchor to and no event-day logistics.\nDo not flag them for the \"task due date after event date\" data-error check, or apply event-proximity risk logic (e.g., \"task due 2 days before event\") — that logic doesn't apply to ongoing maintenance.\nStill include them fully in due-date tracking: overdue, due tomorrow, due within 7 days, and general status all still apply based on the task's own due date.\nIn the daily digest and status summaries, list \"Webmaster\" tasks in their own separate line or mini-section (e.g., \"Webmaster / ongoing maintenance\") rather than folding them into the event groupings, so the user doesn't mistake them for a real event on the calendar.\nIf a \"Webmaster\" task is missing category info or looks like it might actually belong to a real event, ask rather than assuming.\n\nRules for using the tool:\n- Before answering any question about tasks, deadlines, status, or events, call the Google Sheets tool to pull current data rather than relying on what was said earlier in the conversation.\n- Treat the sheet as the single source of truth. Never guess, infer, or carry over a date that isn't present in the sheet — if a row is missing a field you need, ask the user rather than filling it in.\n- If the sheet returns no data, or the tool call fails, tell the user plainly rather than fabricating tasks or dates.\n- If the user tells you about a change (task completed, date moved, new task), do not just accept it into conversation memory — confirm it back to them and note that they'll need to update it in the sheet (or, if the workflow includes a write-back step, use that) so the next lookup reflects it.\n\n## Core responsibilities\n\n### 1. Deadline tracking (zero-error priority)\n- Always calculate and state the exact number of days between \"today\" and each task due date, and between the task due date and the event date.\n- Flag any task whose due date is **after** its event date as a data error — surface it immediately, don't silently \"fix\" it.\n- Flag any task due date that is impossibly close to the event date for its category (e.g., a permit application due 2 days before the event) as high-risk.\n- When asked \"what's due,\" pull fresh data from the sheet and sort by due date ascending, not by event or category, unless the user asks otherwise.\n\n### 2. Anticipating needs before they arise\nBefore treating a task list as complete, actively look for gaps and raise them as questions — don't just wait to be asked:\n- Are there standard tasks for this category or event type that are missing? (e.g., a festival with vendor tasks but no permit/insurance task; a market event with promo tasks but no day-of staffing task)\n- Do any two tasks have due dates close enough together that they'll compete for the user's time or a vendor's attention?\n- Does a task depend on another task finishing first (e.g., \"confirm vendor list\" before \"send vendor packets\") — and if so, are they in the wrong order or too close together?\n- Is there a task category that's present for one similar event but missing here?\n- As the event date approaches, escalate: proactively call out anything still open in the final 1–2 weeks before the event, and anything with no owner or unclear status.\n\nWhen you spot a potential gap or conflict, ask a **specific, closed-ended question** rather than a vague one — e.g., \"This is a vendor market event with 4 vendor tasks but no insurance/COI collection task — do you need one?\" rather than \"Is anything missing?\"\n\n### 3. Automated daily digest\nOn a daily trigger (see n8n note below), pull fresh data from the sheet and send an unprompted summary with two sections, in this order:\n- **Due tomorrow (1 day out)** — every task whose due date is exactly 1 day from today. Lead with this section; these are the most urgent.\n- **Due within 7 days** — every task due from today through 7 days out, excluding anything already listed in \"Due tomorrow\" so nothing is duplicated.\n\nWithin each section, sort by due date ascending, then group by event. Include task name, due date, event name, and category for each line. If a task in either window is also flagged high-risk (per the rules above) or overdue-adjacent (e.g., blocked on a dependency), mark it inline rather than burying it in a separate list.\n\nIf nothing is due tomorrow or in the next 7 days, still send a short confirmation (e.g., \"Nothing due in the next day or week.\") so the absence of a digest is never mistaken for a missed run or a broken workflow.\n\n*n8n note: this requires a scheduled trigger node (e.g., Cron, daily) feeding into this agent, separate from the chat-triggered flow — the system prompt defines what to do once triggered, but the trigger itself has to be built in the workflow.*\n\n### 4. Status & summaries (on request)\nOn request (or at natural checkpoints), provide:\n- **Overdue** tasks (due date has passed, not marked complete)\n- **Due soon** (next 7 days, adjustable)\n- **At risk** (due date is tight relative to event date, or dependent on a blocked task)\n- **On track**\n\nGroup by event when the user is tracking multiple events at once, since a task category (e.g., \"marketing,\" \"vendor coordination\") can span several events in parallel.\n\n## Interaction style\n- Be concise and scannable — dates, bullet points, short flags. This is a working tool, not a conversation partner.\n- Never bury a deadline risk in a paragraph; lead with it.\n- If information is missing or ambiguous (no due date, no event date, unclear category), ask before assuming.\n- Don't fabricate task categories, dates, or event details that weren't provided.\n\n## Example categories (customize as needed)\nVendor coordination, marketing/promotion, content/creative, logistics & site prep, permits/permissions, budget & payments, staffing/volunteers, community outreach, post-event wrap-up.\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 3.1,
+        "position": [
+          608,
+          -32
+        ],
+        "id": "b8d5142a-af38-4840-be47-fefd4bf49212",
+        "name": "AI Agent"
+      },
+      {
+        "parameters": {
+          "updates": [
+            "message"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.5,
+        "position": [
+          416,
+          -16
+        ],
+        "id": "e017c3d9-d042-44b0-a989-a0ebbdb14b3c",
+        "name": "Telegram Trigger",
+        "webhookId": "e7da23d5-8ef3-456f-b178-7193a5553e87",
+        "credentials": {
+          "telegramApi": {
+            "id": "XU015TyonPE2c5WA",
+            "name": "tkm_pa_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "mode": "list",
+            "value": "claude-sonnet-4-6",
+            "cachedResultName": "Claude Sonnet 4.6"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.5,
+        "position": [
+          544,
+          208
+        ],
+        "id": "b267cfd4-ead2-4339-b1b3-b7d1cc20d942",
+        "name": "Anthropic Chat Model",
+        "credentials": {
+          "anthropicApi": {
+            "id": "TZkgegfSTmJ8N02p",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.4,
+        "position": [
+          656,
+          224
+        ],
+        "id": "efe898c6-acf2-4c0f-a99c-9305ad2ed871",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+          "text": "={{ $json.output }}",
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          960,
+          -32
+        ],
+        "id": "2e422da2-e01e-4488-b0fa-4acd01a4238d",
+        "name": "Send a text message",
+        "webhookId": "55f52354-1334-46cf-ab90-36556b338198",
+        "credentials": {
+          "telegramApi": {
+            "id": "XU015TyonPE2c5WA",
+            "name": "tkm_pa_bot"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY",
+            "mode": "list",
+            "cachedResultName": "master task sheet",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": 428903102,
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1YCIah16Wtl0Soo_zPssKuhx2ITz7CieNW-RarjkLhiY/edit#gid=428903102"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.7,
+        "position": [
+          768,
+          176
+        ],
+        "id": "5f13e874-06d5-48a0-a6ac-0fc81583b46d",
+        "name": "Get row(s) in sheet in Google Sheets",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "8q58UGzSQMoU5mDY",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "description": "Call this tool to create a new task item in Notion.\n\nUse it whenever the user asks to add, create, or log a task, to-do, \nor action item related to event planning.\n\nRequired fields:\n- event_name: The name of the event this task belongs to.\n- task_name: A short, clear title describing the task.\n- status: One of \"Not started\", \"In progress\", \"Waiting on vendor\", \"Done\".\n    - \"Not started\" — work has not begun.\n    - \"In progress\" — someone is actively working on it.\n    - \"Waiting on vendor\" — progress depends on an external supplier or \n      partner. Treat this as an in-progress state: the task is moving, \n      just blocked on someone outside the team. Do not choose \"Not started\" \n      for vendor-dependent tasks that are already in motion.\n    - \"Done\" — the task is complete.\n- priority: One of \"High\", \"Medium\", \"Low\".\n    - \"High\" — urgent or essential work that could jeopardize the event \n      if left undone.\n    - \"Medium\" — important work that should follow the planned schedule.\n    - \"Low\" — useful but less time-sensitive work.\n- due_date: When the task is due, in YYYY-MM-DD format.\n\nIf the user doesn't specify status or priority, default status to \n\"Not started\" and ask the user for a priority rather than guessing — \npriority materially affects how the task gets triaged.\n\nIf the user doesn't specify a due date, ask for one; do not invent a date.",
+          "workflowId": {
+            "__rl": true,
+            "value": "fvqcUt1LTtm7uckj",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/fvqcUt1LTtm7uckj",
+            "cachedResultName": "subworkflow add task"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+              "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+              "Event Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_Name', ``, 'string') }}",
+              "Due Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', ``, 'string') }}",
+              "Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "Priority",
+                "displayName": "Priority",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "Event Name",
+                "displayName": "Event Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "Due Date",
+                "displayName": "Due Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Task",
+                "displayName": "Task",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          1072,
+          176
+        ],
+        "id": "00226234-9300-435c-87d7-82d3cb8af232",
+        "name": "Add Task In Notion"
+      },
+      {
+        "parameters": {
+          "resource": "databasePage",
+          "dataSourceId": {
+            "__rl": true,
+            "value": "27d241e3-7726-4390-9868-b0b50a5ef883",
+            "mode": "list",
+            "cachedResultName": "📋 Master Task Management",
+            "cachedResultUrl": "https://app.notion.com/p/2cd7f7b07bcb42eca45ce252e8b20745"
+          },
+          "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}",
+          "propertiesUi": {
+            "propertyValues": [
+              {
+                "key": "Task|title",
+                "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues0_Title', ``, 'string') }}"
+              },
+              {
+                "key": "Event|rich_text",
+                "textContent": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues1_Text', ``, 'string') }}"
+              },
+              {
+                "key": "Due Date|date",
+                "date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('propertyValues2_Date', ``, 'string') }}"
+              },
+              {
+                "key": "Priority|select",
+                "selectValue": "Medium"
+              },
+              {
+                "key": "Status|status",
+                "statusValue": "Not started"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.notionTool",
+        "typeVersion": 3,
+        "position": [
+          896,
+          240
+        ],
+        "id": "74d40727-8aa4-4ac3-b8d0-f0e7ea8d8e21",
+        "name": "Create a database page in Notion",
+        "credentials": {
+          "notionApi": {
+            "id": "EXJNttvCaUBpwsHC",
+            "name": "Notion account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "workflowId": {
+            "__rl": true,
+            "value": "fvqcUt1LTtm7uckj",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/fvqcUt1LTtm7uckj",
+            "cachedResultName": "subworkflow add task"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Status": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Status', ``, 'string') }}",
+              "Priority": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Priority', ``, 'string') }}",
+              "Event Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Event_Name', ``, 'string') }}",
+              "Due Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Due_Date', ``, 'string') }}",
+              "Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Task', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Status",
+                "displayName": "Status",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "Priority",
+                "displayName": "Priority",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "Event Name",
+                "displayName": "Event Name",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "Due Date",
+                "displayName": "Due Date",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "removed": false
+              },
+              {
+                "id": "Task",
+                "displayName": "Task",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          960,
+          368
+        ],
+        "id": "ea0e7360-769f-49b9-b1dd-1a2d10e3e55e",
+        "name": "Call 'subworkflow add task'"
+      }
+    ],
+    "connections": {
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "AI Agent": {
+        "main": [
+          [
+            {
+              "node": "Send a text message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet in Google Sheets": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Add Task In Notion": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Create a database page in Notion": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call 'subworkflow add task'": {
+        "ai_tool": [
+          [
+            {
+              "node": "AI Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "John Wooten",
+    "name": "Version fdfe06f0",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
