@@ -1,0 +1,155 @@
+{
+  "updatedAt": "2026-09-08T18:29:51.065Z",
+  "createdAt": "2026-09-08T17:18:04.349Z",
+  "id": "f3CQ9mlWB5wR43qy",
+  "name": "tkmmarketapps",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "96cf0042-9c51-417d-973d-f5f0d4b56e75",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "returnAll": true,
+        "simple": false,
+        "filters": {
+          "q": "\"Vendor Information\"",
+          "receivedAfter": "2026-08-01T14:00:00"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        192,
+        80
+      ],
+      "id": "a3157163-021c-42cc-ace9-9162c82c602f",
+      "name": "Get many messages",
+      "webhookId": "5f0af59c-f14c-4ad5-b312-363daf978181",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "XwkonRVFW7A3MiEF",
+          "name": "TKM Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1AE3PX9vta1M0MhtT4q-qADGd4dBMhzFgHZOWjwyE1J0",
+          "mode": "list",
+          "cachedResultName": "Tackett's Mill Community Market",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AE3PX9vta1M0MhtT4q-qADGd4dBMhzFgHZOWjwyE1J0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AE3PX9vta1M0MhtT4q-qADGd4dBMhzFgHZOWjwyE1J0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Vendor Blurb": "= {{ $json.text }}"
+          },
+          "matchingColumns": [
+            "Vendor Blurb"
+          ],
+          "schema": [
+            {
+              "id": "Vendor Blurb",
+              "displayName": "Vendor Blurb",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        16
+      ],
+      "id": "b11fe62e-a196-4a8e-8853-40856389a08c",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many messages": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "06d70b77-d79e-4edd-b9be-48af19dec175",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-09-08T17:18:04.349Z",
+      "createdAt": "2026-09-08T17:18:04.349Z",
+      "role": "workflow:owner",
+      "workflowId": "f3CQ9mlWB5wR43qy",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
