@@ -1,0 +1,65 @@
+{
+  "updatedAt": "2026-09-13T11:02:30.798Z",
+  "createdAt": "2026-09-12T17:07:41.223Z",
+  "id": "Lj4t9ls8N2LeDOCQ",
+  "name": "Subworkflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Priority"
+            },
+            {
+              "name": "Task"
+            },
+            {
+              "name": "Status"
+            },
+            {
+              "name": "Category "
+            },
+            {
+              "name": "Due Date"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "52d9744b-a85a-460f-8fc2-fdc6b89aef37",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "87446498-a3cc-45b9-955b-541e9572f9f0",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-09-12T17:07:41.223Z",
+      "createdAt": "2026-09-12T17:07:41.223Z",
+      "role": "workflow:owner",
+      "workflowId": "Lj4t9ls8N2LeDOCQ",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
