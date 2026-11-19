@@ -1,0 +1,266 @@
+{
+  "updatedAt": "2026-09-21T18:19:21.528Z",
+  "createdAt": "2026-09-16T17:27:05.036Z",
+  "id": "OBBat0aEgkxYNJPG",
+  "name": "Community Market Email",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "48f46a63-6cfb-4eba-84f8-54b038ae7696",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1rZwUR0CyZ1ouKYxLnmwDyeIxlPut131_so75zwM3wC8",
+          "mode": "list",
+          "cachedResultName": "Commuity Market Correspondence ",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rZwUR0CyZ1ouKYxLnmwDyeIxlPut131_so75zwM3wC8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1rZwUR0CyZ1ouKYxLnmwDyeIxlPut131_so75zwM3wC8/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        -32
+      ],
+      "id": "91fb69d4-d5bd-466a-a8f5-69087a5580c4",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=j.wooten90@gmail.com",
+        "subject": "Vendor Setup for Community Market",
+        "emailType": "text",
+        "message": "=Hello  {{ $json['Vendor Name'] }},\n\nGood afternoon,It was great seeing you on Saturday! This market was a long time coming, and we're excited for this new journey. Thank you for being part of it from the very beginning.As we look ahead, our goal is to keep building momentum and watch this market grow with each event. Our next market is Saturday, October 17th, and we'd love to have you back.Please let me know if you'll be participating in the October market so we can secure your spot.Thanks again for a great first market!\n\nRegards,\n\nTackett's Mill Team\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1088,
+        0
+      ],
+      "id": "f3c211cf-3666-4a39-b523-c6db2ec232ce",
+      "name": "Send a message",
+      "webhookId": "b357218b-871d-4d08-882c-286e7932695f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "XwkonRVFW7A3MiEF",
+          "name": "TKM Gmail"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "Vendor",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "1d_OYLP2OwMJjU3jwbFsZv9W0V4CCF4aq",
+            "mode": "list",
+            "cachedResultName": "Community Market",
+            "cachedResultUrl": "https://drive.google.com/drive/folders/1d_OYLP2OwMJjU3jwbFsZv9W0V4CCF4aq"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        288,
+        -304
+      ],
+      "id": "71b8a352-3a26-499d-ab67-67ee3eba3886",
+      "name": "Search files and folders",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0vHldYKuMiFuJQrt",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        496,
+        -320
+      ],
+      "id": "7e700b28-dc41-48b9-9469-23693ecebcaf",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "0vHldYKuMiFuJQrt",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://files.catbox.moe/6dhbtp.jpg",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        672,
+        -48
+      ],
+      "id": "baa70b31-f532-45da-9b5b-c2c5f10feff7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://files.catbox.moe/fdwj9w.jpg",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "tkmdata"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        848,
+        16
+      ],
+      "id": "6b975846-8d05-4902-82e3-45f46476edec",
+      "name": "HTTP Request1"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "91ff73e6-2ba0-4355-b4cf-11b3895a4213",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-09-16T17:27:05.036Z",
+      "createdAt": "2026-09-16T17:27:05.036Z",
+      "role": "workflow:owner",
+      "workflowId": "OBBat0aEgkxYNJPG",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
