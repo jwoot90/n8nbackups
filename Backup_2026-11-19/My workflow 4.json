@@ -1,0 +1,973 @@
+{
+  "updatedAt": "2026-11-19T22:09:49.766Z",
+  "createdAt": "2026-11-19T14:23:40.923Z",
+  "id": "KhxJX8CcAO01t0rk",
+  "name": "My workflow 4",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f22f9b44-9c95-4dba-8c6b-9282de279cbe",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v25.0",
+        "node": "={{ $json.account_id }}",
+        "edge": "campaigns",
+        "options": {
+          "fields": {
+            "field": [
+              {
+                "name": "id,name,status,objective"
+              }
+            ]
+          },
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "filtering",
+                "value": "=[{\"field\":\"id\",\"operator\":\"EQUAL\",\"value\":\"{{$json.campaign_id}}\" }]"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        432,
+        -32
+      ],
+      "id": "f6098d5d-bb84-4696-a045-f4fed36ba515",
+      "name": "Facebook Graph API",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "2993gmPZ0pr8nvNF",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v25.0",
+        "node": "={{ $('Set Campaign Config').item.json.campaign_id}}",
+        "edge": "insights",
+        "options": {
+          "fields": {
+            "field": [
+              {
+                "name": "campaign_id, campaign_name, impressions, clicks,spend,cpc,cpm,ctr,reach,frequency,conversions,conversion_values,cost_per_unique_conversion"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        672,
+        -256
+      ],
+      "id": "7ff62bf9-1e26-457c-adaf-4de254ad84d4",
+      "name": "campaign",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "2993gmPZ0pr8nvNF",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v25.0",
+        "node": "={{ $('Set Campaign Config').item.json.campaign_id}}",
+        "edge": "adsets",
+        "options": {
+          "fields": {
+            "field": [
+              {
+                "name": "id,name,status,campaign_id"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        672,
+        -32
+      ],
+      "id": "88ac72f4-6b22-4fce-a3f1-4e8427de444f",
+      "name": "Ad Set",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "2993gmPZ0pr8nvNF",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "graphApiVersion": "v25.0",
+        "node": "={{ $('Set Campaign Config').item.json.campaign_id }}",
+        "edge": "ads",
+        "options": {
+          "fields": {
+            "field": [
+              {
+                "name": "id,name,status,adset_id,campaign_id"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        672,
+        160
+      ],
+      "id": "e9489429-5cb4-4bc9-84a4-d429d187b5db",
+      "name": "Ad",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "2993gmPZ0pr8nvNF",
+          "name": "Facebook Graph account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d146fe5-7927-478d-a473-7cf0dde0e840",
+              "name": "account_id",
+              "value": "act_760616170623478",
+              "type": "string"
+            },
+            {
+              "id": "2b1dbab0-79b6-480d-a5bb-fdea2b7768d3",
+              "name": "campaign_id",
+              "value": "6953363665188",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        192,
+        -32
+      ],
+      "id": "ad114589-2b5c-4041-9031-b71ed3507dd8",
+      "name": "Set Campaign Config"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const campaignData = $input.item.json.data[0] ||  {};\nconst timestamp = $('Set Campaign Config').item.json.timestamp;\nconst date = $('Set Campaign Config').item.json.date;\n\n\nreturn{\n    campaign_id: campaignData.campaign_id,\n    campaign_name: campaignData.campaign_name,\n    status:\"ACTIVE\",\n    objective:\"CONVERSIONS\",\n    impressions: parseFloat(campaignData.impressions || 0),\n    clicks: parseFloat(campaignData.clicks || 0),\n    spend: parseFloat(campaignData.spend || 0),\n    cpc: parseFloat(campaignData.cpc || 0),\n    cpm:parseFloat(campaignData.cpm || 0),\n    ctr: parseFloat(campaignData.ctr || 0),\n    reach:parseFloat(campaignData.reach || 0),\n    frequency:parseFloat(campaignData.frequency || 0),\n    conversions:parseFloat(campaignData.conversions || 0),\n       conversion_value:parseFloat(campaignData.conversion_value || 0),\n\n    \n     cost_per_unique_conversion:\n     parseFloat(campaignData.cost_per_unique_conversion || 0),\n roas: parseFloat(\n  campaignData.purchase_roas?.[0]?.value || 0\n),\n     last_updated:timestamp,\n     date: date\n\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -192
+      ],
+      "id": "37d770b5-12b1-4ce9-81b0-39a7c27a6f6f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const adsetData = $input.item.json.data[0] ||  {};\nconst adsetDetails = $('Split Ad Sets').item.json;\nconst timestamp = $('Set Campaign Config').item.json.timestamp;\nconst date = $('Set Campaign Config').item.json.date;\n\n\nreturn{\n    campaign_id: adsetData.campaign_id,\n    campaign_name: adsetData.campaign_name,\n    adset_id : adsetData.adset_name ||adsetDetails.id,\n    adset_name:adsetData.adset_name || adsetDetails.name,\n    status: adsetDetails.status,\n    impressions: parseFloat(adsetData.impressions || 0),\n    clicks: parseFloat(adsetData.clicks || 0),\n    spend: parseFloat(adsetData.spend || 0),\n    cpc: parseFloat(adsetData.cpc || 0),\n    cpm:parseFloat(adsetData.cpm || 0),\n    ctr: parseFloat(adsetData.ctr || 0),\n    reach:parseFloat(adsetData.reach || 0),\n    frequency:parseFloat(adsetData.frequency || 0),\n    conversions:parseFloat(adsetData.conversions || 0),\n       conversion_value:parseFloat(adsetData.conversion_value || 0),\n\n    \n     cost_per_unique_conversion:\n     parseFloat(adsetData.cost_per_unique_conversion || 0),\n roas: parseFloat(\n  adsetData.purchase_roas?.[0]?.value || 0\n),\n     last_updated:timestamp,\n     date: date\n\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -32
+      ],
+      "id": "0ff97fe9-b688-44f7-ae65-d68ac49a86cb",
+      "name": "Format Ad Set Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        160
+      ],
+      "id": "4ff58095-f9cd-4e05-beec-9ee2b1a8b88e",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ",
+          "mode": "list",
+          "cachedResultName": "Meta Ads Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "campaign summary",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "campaign_id"
+          ],
+          "schema": [
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "campaign_name",
+              "displayName": "campaign_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "objective",
+              "displayName": "objective",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "impressions",
+              "displayName": "impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "click",
+              "displayName": "click",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "spend",
+              "displayName": "spend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cpc",
+              "displayName": "cpc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cpm",
+              "displayName": "cpm",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ctr",
+              "displayName": "ctr",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reach",
+              "displayName": "reach",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "frequency",
+              "displayName": "frequency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversions",
+              "displayName": "conversions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversion_value",
+              "displayName": "conversion_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cost_per_conversion",
+              "displayName": "cost_per_conversion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "roas",
+              "displayName": "roas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_updated",
+              "displayName": "last_updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        -192
+      ],
+      "id": "6d5d4c9e-68bf-48f0-b448-badae6688d47",
+      "name": "Update Campaign Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ",
+          "mode": "list",
+          "cachedResultName": "Meta Ads Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1682650168,
+          "mode": "list",
+          "cachedResultName": "ad sets",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ/edit#gid=1682650168"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "campaign_name",
+              "displayName": "campaign_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "objective",
+              "displayName": "objective",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "impressions",
+              "displayName": "impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "click",
+              "displayName": "click",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "spend",
+              "displayName": "spend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cpc",
+              "displayName": "cpc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cpm",
+              "displayName": "cpm",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ctr",
+              "displayName": "ctr",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reach",
+              "displayName": "reach",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "frequency",
+              "displayName": "frequency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversions",
+              "displayName": "conversions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversion_value",
+              "displayName": "conversion_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cost_per_conversion",
+              "displayName": "cost_per_conversion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "roas",
+              "displayName": "roas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_updated",
+              "displayName": "last_updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        -32
+      ],
+      "id": "6dd474f5-e02e-4e19-a1cc-9c690aa1211d",
+      "name": "Update Ad Set Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ",
+          "mode": "list",
+          "cachedResultName": "Meta Ads Tracker",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1837396027,
+          "mode": "list",
+          "cachedResultName": "ads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/12C3lc82zIUALMmPo52vOhRsSu78g0beNsxY9Xb-WDyQ/edit#gid=1837396027"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "campaign_name",
+              "displayName": "campaign_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "objective",
+              "displayName": "objective",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "impressions",
+              "displayName": "impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "click",
+              "displayName": "click",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "spend",
+              "displayName": "spend",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cpc",
+              "displayName": "cpc",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cpm",
+              "displayName": "cpm",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ctr",
+              "displayName": "ctr",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "reach",
+              "displayName": "reach",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "frequency",
+              "displayName": "frequency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversions",
+              "displayName": "conversions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "conversion_value",
+              "displayName": "conversion_value",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "cost_per_conversion",
+              "displayName": "cost_per_conversion",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "roas",
+              "displayName": "roas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "last_updated",
+              "displayName": "last_updated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1168,
+        160
+      ],
+      "id": "517286b4-e28a-42a9-90f5-a4d6c611e0ab",
+      "name": "Update Ad Data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Campaign Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Graph API": {
+      "main": [
+        [
+          {
+            "node": "campaign",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ad Set",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Campaign Config": {
+      "main": [
+        [
+          {
+            "node": "Facebook Graph API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "campaign": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ad Set": {
+      "main": [
+        [
+          {
+            "node": "Format Ad Set Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ad": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Update Campaign Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Ad Set Data": {
+      "main": [
+        [
+          {
+            "node": "Update Ad Set Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Update Ad Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "90c73aa8-ceef-4517-9251-72e64e70898b",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-11-19T14:23:40.923Z",
+      "createdAt": "2026-11-19T14:23:40.923Z",
+      "role": "workflow:owner",
+      "workflowId": "KhxJX8CcAO01t0rk",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
