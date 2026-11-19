@@ -1,0 +1,1403 @@
+{
+  "updatedAt": "2026-09-01T15:53:37.350Z",
+  "createdAt": "2026-08-10T13:13:17.988Z",
+  "id": "JsO7Ct84Pw8H6Hdy",
+  "name": "tkmchatbot",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Post"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -128,
+        640
+      ],
+      "id": "dcbc5db6-6e5c-47eb-a62c-00bc412b108e",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=",
+        "options": {
+          "systemMessage": "=YOU ARE\nA content assistant that writes social media posts for businesses inside a Northern Virginia shopping center. You write one post at a time.\nYour voice is that of a genuinely enthusiastic neighbor — someone who loves discovering great local spots and can't help but tell people about them. You write the way a trusted friend texts, not the way a brand publishes.\n\nTHE STANDARD EVERY POST IS HELD TO\nBefore finishing, ask yourself:\nWould someone share this even if they had nothing to sell?\nIf the answer is no, rewrite it.\nPosts should make someone feel:\n\"I didn't know this existed. I want to check this out.\"\nNever:\n\"Someone is trying to sell me something.\"\n\nWHAT THAT MEANS IN PRACTICE\nWrite about real experiences, genuine atmosphere, and moments people recognize from everyday life.\nNever include urgency, promotions, discounts, or pressure of any kind. Not because of a funnel rule — but because those things break trust, and trust is the only thing worth building.\n\n\nRewrite the original post for clarity, persona alignment, and authentic human voice. Don't summarize — deepen the emotional connection.\nIf only a company name is provided:\nAsk: \"What topic or theme would you like this post to focus on?\" Then wait.\nIf neither is provided:\nAsk: \"Please share the company name and either a topic or an original post — then I can get started.\" Do not generate content.\n\n\nNORTHERN VIRGINIA CONTEXT\nAssume readers prefer:\nOccoquan.\n\n\nOld Town Alexandria.\n\n\nfarmers markets.\n\n\nwalkable neighborhood experiences.\n\n\nAvoid mall-centric language.\nHighlight community and local discovery.\n\n\n\n\n\n\nAvoid:\nmarketing buzzwords.\n\n\nexaggerated excitement.\n\n\ncorporate phrasing.\n\n\n\n\n\n\nOUTPUT GOAL\nThe reader should feel:\n“This feels like a place people like me would enjoy.”\n\nHere is the information\nUse the Call 'tackettssm4.0' tool to retrieve the original post. \n If the user wishes to not use a persona, create the post without a buyer persona target.\n\nPosts should be written  in the 2nd or 3rd person. Do not directly refer to attributes of the persona in each post. Do not use em dashes.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -592,
+        -144
+      ],
+      "id": "79884d08-4fb0-4cb7-b689-2cab69b49911",
+      "name": "Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-opus-4-7",
+          "mode": "list",
+          "cachedResultName": "Claude Opus 4.7"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        -720,
+        96
+      ],
+      "id": "d4b21420-dfee-45a3-aa54-dd84592cfeea",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "TZkgegfSTmJ8N02p",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to reference the original post. ",
+        "workflowId": {
+          "__rl": true,
+          "value": "pvCyYYejhLtTPPj6",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/pvCyYYejhLtTPPj6",
+          "cachedResultName": "tackettssm4.0"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Original Post": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Original_Post', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Company",
+              "displayName": "Company",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "Original Post",
+              "displayName": "Original Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Persona",
+              "displayName": "Persona",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -352,
+        32
+      ],
+      "id": "0bbd94b3-0e64-4e23-9105-e3c7f7ab2479",
+      "name": "Call 'tackettssm4.0'"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        720,
+        240
+      ],
+      "id": "67fa54ed-a47c-4188-9188-068e3178a926",
+      "name": "Telegram Trigger",
+      "webhookId": "31247d31-dae8-4277-8970-7fa73352fa0d",
+      "credentials": {
+        "telegramApi": {
+          "id": "Eb2e27XHavPey1YH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "6990062444"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -432,
+        144
+      ],
+      "id": "623cf61a-80db-4ffd-a284-9a2212918b62",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -64,
+        -128
+      ],
+      "id": "f18ec42f-5cee-415e-9908-624587b753d2",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "6990062444"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        848,
+        672
+      ],
+      "id": "9e07f854-1b9c-43f4-b67b-0623df411bd4",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "claude-sonnet-4-6",
+          "mode": "list",
+          "cachedResultName": "Claude Sonnet 4.6"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        720,
+        672
+      ],
+      "id": "bb93798d-ec08-4f9e-9be1-5e04a1c040dc",
+      "name": "Anthropic Chat Model1",
+      "credentials": {
+        "anthropicApi": {
+          "id": "TZkgegfSTmJ8N02p",
+          "name": "Anthropic account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c2eaa232-6281-4ac9-bbad-63d740fc184b",
+              "name": "prompt ",
+              "value": "={{ $json.Post }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        256,
+        528
+      ],
+      "id": "79ce4721-a509-49cf-a508-03d100983f40",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1248,
+        -48
+      ],
+      "id": "1f5ce4d2-1243-42a7-91d8-c8395dc6afeb",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "13263e61-d108-4a19-ba6b-b65d905ca875",
+              "name": "botprompt",
+              "value": "={{ $json.prompt }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        528,
+        16
+      ],
+      "id": "37b3ff68-a2a9-4ea5-8e73-7d275883f494",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "602139e9-20b8-4425-a4be-30792f0d3553",
+              "name": "prompt",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        368,
+        -32
+      ],
+      "id": "81d81195-ff0b-453a-8a1c-48fe45fe3f04",
+      "name": "edit fields"
+    },
+    {
+      "parameters": {
+        "description": "\"Call this tool whenever you receive a rejected social media post that needs revision. It retrieves the original post data — including company name, original post text, topic, and persona — needed to write an accurate revision. Required input: pass the full rejected post message you received as the 'output' parameter.\"",
+        "workflowId": {
+          "__rl": true,
+          "value": "djowFdsHHS5Icrdp",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/djowFdsHHS5Icrdp",
+          "cachedResultName": "My workflow 3"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        1152
+      ],
+      "id": "4e0342ec-9a63-42c0-9d24-29b5d6ed70ea",
+      "name": "fetch'tackettssm4.0 workflow'"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}\nMandatory:\nUse the Google Sheets Get Row Tool to retrieve the rejected post for you to revise:\n",
+        "options": {
+          "systemMessage": "=YOU ARE\n\nA content assistant that writes revised social media posts for businesses inside a Northern Virginia shopping center.\nYOUR TASK\n\nYou will receive a rejected post along with feedback or specifications for improvement. Your job is to revise the post to address that feedback while staying true to the original company, topic, and persona.\nRejected Post: \n{{ $json.Post }}\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        944,
+        240
+      ],
+      "id": "2422d6b1-4e4d-4e8e-a76b-9b002ad34a3e",
+      "name": "TKMCHATBOTAGENT2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+          "mode": "list",
+          "cachedResultName": "Rejected TKM Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        576,
+        496
+      ],
+      "id": "198f7927-35bf-44a4-a1ce-afaa7d51f9f9",
+      "name": "Get row(s) in sheet"
+    },
+    {
+      "parameters": {
+        "chatId": "6990062444",
+        "text": "={{ $json.output }}",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Approve Changes",
+                    "additionalFields": {
+                      "callback_data": ""
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1424,
+        80
+      ],
+      "id": "ac85f8a2-f612-4461-ac82-70a123fc115d",
+      "name": "Send a text message",
+      "webhookId": "a7a65f31-da7f-4358-8342-3c4ae3fc7f92",
+      "credentials": {
+        "telegramApi": {
+          "id": "Eb2e27XHavPey1YH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+          "mode": "list",
+          "cachedResultName": "Rejected TKM Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1104,
+        448
+      ],
+      "id": "d0afb5b4-175d-4a69-bffd-f5a108e4037e",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "6990062444",
+        "message": "={{ $json.output }}",
+        "responseType": "customForm",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Approve Revision",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Approve Revision"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        224
+      ],
+      "id": "07dc6292-7700-4897-9c95-6ff394e2bc39",
+      "name": "Send message and wait for response",
+      "webhookId": "b9ab8fe3-9a98-43f9-83a8-50b73db66027",
+      "credentials": {
+        "telegramApi": {
+          "id": "Eb2e27XHavPey1YH",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f8aa6833-c9ff-40ca-9b7a-0966e81cdab8",
+              "leftValue": "={{ $json.data['Approve Revision'] }}",
+              "rightValue": "Approve Revision",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1552,
+        224
+      ],
+      "id": "2adad841-43f5-4a59-8721-cc8b9b6c9453",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+          "mode": "list",
+          "cachedResultName": "Rejected TKM Posts",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1760,
+        128
+      ],
+      "id": "5973b619-b074-4d90-b447-36c26f08287c",
+      "name": "Delete rows or columns from sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'tackettssm4.0'": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "TKMCHATBOTAGENT2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "TKMCHATBOTAGENT2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "TKMCHATBOTAGENT2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "edit fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TKMCHATBOTAGENT2": {
+      "main": [
+        [
+          {
+            "node": "Send message and wait for response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "TKMCHATBOTAGENT2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send message and wait for response": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Delete rows or columns from sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "nodeGroups": [],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Post": "Here's the post:\n\n---\n\n**Most heat-related illness is preventable. That's actually the important part.**\n\nSummer in Northern Virginia is no joke. The humidity alone changes the math on how long a person can safely be outside, and a lot of people underestimate that until something goes wrong.\n\nA few things worth understanding before the hottest weeks hit:\n\n**Hydration works best when it's consistent.** Waiting until you're thirsty means you're already playing catch-up. Small amounts of water throughout the day do more than a large amount all at once.\n\n**Heat exhaustion and heat stroke are different situations.** Heat exhaustion usually involves heavy sweating, weakness, and nausea. Heat stroke is more serious: the sweating often stops, thinking becomes unclear, and body temperature can spike above 103°F. One can be managed carefully at home. The other cannot.\n\n**Children and older adults need extra attention.** They are less reliable at signaling when something feels wrong, and their bodies respond to heat differently than a healthy adult's does.\n\n**Parked cars are dangerous faster than most people expect.** Even on a mild day, interior temperatures rise quickly. There is no errand short enough to make that a safe choice.\n\nWhen you're not sure whether something needs medical attention, Patient First is right here in the shopping center, no appointment necessary.\n\nThe heat is manageable. It just takes a little knowledge.\n\n---"
+        }
+      }
+    ]
+  },
+  "versionId": "f9cb294f-c6c1-481e-974a-a9f3fb86965a",
+  "activeVersionId": "f9cb294f-c6c1-481e-974a-a9f3fb86965a",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-08-10T13:13:17.988Z",
+      "createdAt": "2026-08-10T13:13:17.988Z",
+      "role": "workflow:owner",
+      "workflowId": "JsO7Ct84Pw8H6Hdy",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-09-02T17:21:20.948Z",
+    "createdAt": "2026-09-01T15:53:37.354Z",
+    "versionId": "f9cb294f-c6c1-481e-974a-a9f3fb86965a",
+    "workflowId": "JsO7Ct84Pw8H6Hdy",
+    "nodes": [
+      {
+        "parameters": {
+          "workflowInputs": {
+            "values": [
+              {
+                "name": "Post"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          -128,
+          640
+        ],
+        "id": "dcbc5db6-6e5c-47eb-a62c-00bc412b108e",
+        "name": "When Executed by Another Workflow"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "=",
+          "options": {
+            "systemMessage": "=YOU ARE\nA content assistant that writes social media posts for businesses inside a Northern Virginia shopping center. You write one post at a time.\nYour voice is that of a genuinely enthusiastic neighbor — someone who loves discovering great local spots and can't help but tell people about them. You write the way a trusted friend texts, not the way a brand publishes.\n\nTHE STANDARD EVERY POST IS HELD TO\nBefore finishing, ask yourself:\nWould someone share this even if they had nothing to sell?\nIf the answer is no, rewrite it.\nPosts should make someone feel:\n\"I didn't know this existed. I want to check this out.\"\nNever:\n\"Someone is trying to sell me something.\"\n\nWHAT THAT MEANS IN PRACTICE\nWrite about real experiences, genuine atmosphere, and moments people recognize from everyday life.\nNever include urgency, promotions, discounts, or pressure of any kind. Not because of a funnel rule — but because those things break trust, and trust is the only thing worth building.\n\n\nRewrite the original post for clarity, persona alignment, and authentic human voice. Don't summarize — deepen the emotional connection.\nIf only a company name is provided:\nAsk: \"What topic or theme would you like this post to focus on?\" Then wait.\nIf neither is provided:\nAsk: \"Please share the company name and either a topic or an original post — then I can get started.\" Do not generate content.\n\n\nNORTHERN VIRGINIA CONTEXT\nAssume readers prefer:\nOccoquan.\n\n\nOld Town Alexandria.\n\n\nfarmers markets.\n\n\nwalkable neighborhood experiences.\n\n\nAvoid mall-centric language.\nHighlight community and local discovery.\n\n\n\n\n\n\nAvoid:\nmarketing buzzwords.\n\n\nexaggerated excitement.\n\n\ncorporate phrasing.\n\n\n\n\n\n\nOUTPUT GOAL\nThe reader should feel:\n“This feels like a place people like me would enjoy.”\n\nHere is the information\nUse the Call 'tackettssm4.0' tool to retrieve the original post. \n If the user wishes to not use a persona, create the post without a buyer persona target.\n\nPosts should be written  in the 2nd or 3rd person. Do not directly refer to attributes of the persona in each post. Do not use em dashes.\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          -592,
+          -144
+        ],
+        "id": "79884d08-4fb0-4cb7-b689-2cab69b49911",
+        "name": "Agent"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "claude-opus-4-7",
+            "mode": "list",
+            "cachedResultName": "Claude Opus 4.7"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.3,
+        "position": [
+          -720,
+          96
+        ],
+        "id": "d4b21420-dfee-45a3-aa54-dd84592cfeea",
+        "name": "Anthropic Chat Model",
+        "credentials": {
+          "anthropicApi": {
+            "id": "TZkgegfSTmJ8N02p",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "description": "Call this tool to reference the original post. ",
+          "workflowId": {
+            "__rl": true,
+            "value": "pvCyYYejhLtTPPj6",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/pvCyYYejhLtTPPj6",
+            "cachedResultName": "tackettssm4.0"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "Original Post": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Original_Post', ``, 'string') }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "Company",
+                "displayName": "Company",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": true
+              },
+              {
+                "id": "Original Post",
+                "displayName": "Original Post",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": false
+              },
+              {
+                "id": "Persona",
+                "displayName": "Persona",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "canBeUsedToMatch": true,
+                "type": "string",
+                "removed": true
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          -352,
+          32
+        ],
+        "id": "0bbd94b3-0e64-4e23-9105-e3c7f7ab2479",
+        "name": "Call 'tackettssm4.0'"
+      },
+      {
+        "parameters": {
+          "updates": [
+            "message"
+          ],
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          720,
+          240
+        ],
+        "id": "67fa54ed-a47c-4188-9188-068e3178a926",
+        "name": "Telegram Trigger",
+        "webhookId": "31247d31-dae8-4277-8970-7fa73352fa0d",
+        "credentials": {
+          "telegramApi": {
+            "id": "Eb2e27XHavPey1YH",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "6990062444"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          -432,
+          144
+        ],
+        "id": "623cf61a-80db-4ffd-a284-9a2212918b62",
+        "name": "Simple Memory"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          -64,
+          -128
+        ],
+        "id": "f18ec42f-5cee-415e-9908-624587b753d2",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "sessionIdType": "customKey",
+          "sessionKey": "6990062444"
+        },
+        "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+        "typeVersion": 1.3,
+        "position": [
+          848,
+          672
+        ],
+        "id": "9e07f854-1b9c-43f4-b67b-0623df411bd4",
+        "name": "Simple Memory1"
+      },
+      {
+        "parameters": {
+          "model": {
+            "__rl": true,
+            "value": "claude-sonnet-4-6",
+            "mode": "list",
+            "cachedResultName": "Claude Sonnet 4.6"
+          },
+          "options": {}
+        },
+        "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+        "typeVersion": 1.3,
+        "position": [
+          720,
+          672
+        ],
+        "id": "bb93798d-ec08-4f9e-9be1-5e04a1c040dc",
+        "name": "Anthropic Chat Model1",
+        "credentials": {
+          "anthropicApi": {
+            "id": "TZkgegfSTmJ8N02p",
+            "name": "Anthropic account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "c2eaa232-6281-4ac9-bbad-63d740fc184b",
+                "name": "prompt ",
+                "value": "={{ $json.Post }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          256,
+          528
+        ],
+        "id": "79ce4721-a509-49cf-a508-03d100983f40",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1248,
+          -48
+        ],
+        "id": "1f5ce4d2-1243-42a7-91d8-c8395dc6afeb",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "13263e61-d108-4a19-ba6b-b65d905ca875",
+                "name": "botprompt",
+                "value": "={{ $json.prompt }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          528,
+          16
+        ],
+        "id": "37b3ff68-a2a9-4ea5-8e73-7d275883f494",
+        "name": "Edit Fields2"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "602139e9-20b8-4425-a4be-30792f0d3553",
+                "name": "prompt",
+                "value": "={{ $json.message.text }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          368,
+          -32
+        ],
+        "id": "81d81195-ff0b-453a-8a1c-48fe45fe3f04",
+        "name": "edit fields"
+      },
+      {
+        "parameters": {
+          "description": "\"Call this tool whenever you receive a rejected social media post that needs revision. It retrieves the original post data — including company name, original post text, topic, and persona — needed to write an accurate revision. Required input: pass the full rejected post message you received as the 'output' parameter.\"",
+          "workflowId": {
+            "__rl": true,
+            "value": "djowFdsHHS5Icrdp",
+            "mode": "list",
+            "cachedResultUrl": "/workflow/djowFdsHHS5Icrdp",
+            "cachedResultName": "My workflow 3"
+          },
+          "workflowInputs": {
+            "mappingMode": "defineBelow",
+            "value": {},
+            "matchingColumns": [],
+            "schema": [],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+        "typeVersion": 2.2,
+        "position": [
+          880,
+          1152
+        ],
+        "id": "4e0342ec-9a63-42c0-9d24-29b5d6ed70ea",
+        "name": "fetch'tackettssm4.0 workflow'"
+      },
+      {
+        "parameters": {
+          "promptType": "define",
+          "text": "={{ $('Telegram Trigger').item.json.message.text }}\nMandatory:\nUse the Google Sheets Get Row Tool to retrieve the rejected post for you to revise:\n",
+          "options": {
+            "systemMessage": "=YOU ARE\n\nA content assistant that writes revised social media posts for businesses inside a Northern Virginia shopping center.\nYOUR TASK\n\nYou will receive a rejected post along with feedback or specifications for improvement. Your job is to revise the post to address that feedback while staying true to the original company, topic, and persona.\nRejected Post: \n{{ $json.Post }}\n"
+          }
+        },
+        "type": "@n8n/n8n-nodes-langchain.agent",
+        "typeVersion": 2.2,
+        "position": [
+          944,
+          240
+        ],
+        "id": "2422d6b1-4e4d-4e8e-a76b-9b002ad34a3e",
+        "name": "TKMCHATBOTAGENT2"
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+            "mode": "list",
+            "cachedResultName": "Rejected TKM Posts",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          576,
+          496
+        ],
+        "id": "198f7927-35bf-44a4-a1ce-afaa7d51f9f9",
+        "name": "Get row(s) in sheet"
+      },
+      {
+        "parameters": {
+          "chatId": "6990062444",
+          "text": "={{ $json.output }}",
+          "replyMarkup": "inlineKeyboard",
+          "inlineKeyboard": {
+            "rows": [
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "Approve Changes",
+                      "additionalFields": {
+                        "callback_data": ""
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "additionalFields": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1424,
+          80
+        ],
+        "id": "ac85f8a2-f612-4461-ac82-70a123fc115d",
+        "name": "Send a text message",
+        "webhookId": "a7a65f31-da7f-4358-8342-3c4ae3fc7f92",
+        "credentials": {
+          "telegramApi": {
+            "id": "Eb2e27XHavPey1YH",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "documentId": {
+            "__rl": true,
+            "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+            "mode": "list",
+            "cachedResultName": "Rejected TKM Posts",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.googleSheetsTool",
+        "typeVersion": 4.7,
+        "position": [
+          1104,
+          448
+        ],
+        "id": "d0afb5b4-175d-4a69-bffd-f5a108e4037e",
+        "name": "Get row(s) in sheet in Google Sheets",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "8q58UGzSQMoU5mDY",
+            "name": "Google Sheets account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "sendAndWait",
+          "chatId": "6990062444",
+          "message": "={{ $json.output }}",
+          "responseType": "customForm",
+          "formFields": {
+            "values": [
+              {
+                "fieldLabel": "Approve Revision",
+                "fieldType": "radio",
+                "fieldOptions": {
+                  "values": [
+                    {
+                      "option": "Approve Revision"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          1344,
+          224
+        ],
+        "id": "07dc6292-7700-4897-9c95-6ff394e2bc39",
+        "name": "Send message and wait for response",
+        "webhookId": "b9ab8fe3-9a98-43f9-83a8-50b73db66027",
+        "credentials": {
+          "telegramApi": {
+            "id": "Eb2e27XHavPey1YH",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "f8aa6833-c9ff-40ca-9b7a-0966e81cdab8",
+                "leftValue": "={{ $json.data['Approve Revision'] }}",
+                "rightValue": "Approve Revision",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1552,
+          224
+        ],
+        "id": "2adad841-43f5-4a59-8721-cc8b9b6c9453",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "operation": "delete",
+          "documentId": {
+            "__rl": true,
+            "value": "1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI",
+            "mode": "list",
+            "cachedResultName": "Rejected TKM Posts",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit?usp=drivesdk"
+          },
+          "sheetName": {
+            "__rl": true,
+            "value": "gid=0",
+            "mode": "list",
+            "cachedResultName": "Sheet1",
+            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1cbooIsDwnfLMaKeQtYFgNj7rbyEOIfmUvf8oNv-moFI/edit#gid=0"
+          }
+        },
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.7,
+        "position": [
+          1760,
+          128
+        ],
+        "id": "5973b619-b074-4d90-b447-36c26f08287c",
+        "name": "Delete rows or columns from sheet",
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "8q58UGzSQMoU5mDY",
+            "name": "Google Sheets account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "When Executed by Another Workflow": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "Agent",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Call 'tackettssm4.0'": {
+        "ai_tool": [
+          [
+            {
+              "node": "Agent",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "TKMCHATBOTAGENT2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory": {
+        "ai_memory": [
+          [
+            {
+              "node": "Agent",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Simple Memory1": {
+        "ai_memory": [
+          [
+            {
+              "node": "TKMCHATBOTAGENT2",
+              "type": "ai_memory",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Anthropic Chat Model1": {
+        "ai_languageModel": [
+          [
+            {
+              "node": "TKMCHATBOTAGENT2",
+              "type": "ai_languageModel",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "edit fields": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "TKMCHATBOTAGENT2": {
+        "main": [
+          [
+            {
+              "node": "Send message and wait for response",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Get row(s) in sheet in Google Sheets": {
+        "ai_tool": [
+          [
+            {
+              "node": "TKMCHATBOTAGENT2",
+              "type": "ai_tool",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send message and wait for response": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Delete rows or columns from sheet",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "nodeGroups": [],
+    "authors": "John Wooten",
+    "name": "Version f9cb294f",
+    "description": "",
+    "autosaved": true
+  },
+  "tags": []
+}
