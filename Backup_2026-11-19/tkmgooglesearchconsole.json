@@ -1,0 +1,293 @@
+{
+  "updatedAt": "2026-11-16T17:37:48.059Z",
+  "createdAt": "2026-11-13T16:15:47.491Z",
+  "id": "qhBELLGJW5DNjYLy",
+  "name": "tkmgooglesearchconsole",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        128
+      ],
+      "id": "a2aa3d26-3aa0-4700-abcf-042cca63ad8c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "11bmsByqmgw27VO6auS_aQtEVYbUtHDZWFi1gpiUrNwo",
+          "mode": "list",
+          "cachedResultName": "Tackett's GSC Report",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11bmsByqmgw27VO6auS_aQtEVYbUtHDZWFi1gpiUrNwo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/11bmsByqmgw27VO6auS_aQtEVYbUtHDZWFi1gpiUrNwo/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.date }}",
+            "Page": "={{ $json.website }}",
+            "Keywords": "={{ $json.keywords }}",
+            "Impressions": "={{ $json.impressions }}",
+            "Clicks": "={{ $json.clicks }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Page",
+              "displayName": "Page",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Impressions",
+              "displayName": "Impressions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Clicks",
+              "displayName": "Clicks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        272,
+        0
+      ],
+      "id": "3563e81c-16e7-4a21-ac86-36e8d480cc18",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8q58UGzSQMoU5mDY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return $input.first().json.rows.map(row => ({\n  date: row.keys[0],\n  keywords: row.keys[1],\n  website:row.keys[2],\n  clicks:row.clicks ,\n  impressions:row.impressions,\n  clickthrough:row.ctr,\n  position:row.position\n  \n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d8d1489f-eed5-4b24-99cd-7606da1e4cc2",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/webmasters/v3/sites/",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -464,
+        128
+      ],
+      "id": "9947224c-0b89-4d4a-ad8a-ef8a5e64a70d",
+      "name": "HTTP Request Get Sites",
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "PJeBVuowJCIAyJyi",
+          "name": "Google Search Console demo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://www.googleapis.com/webmasters/v3/sites/https%3A%2F%2Ftackettsmill.com%2F/searchAnalytics/query",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"startDate\": \"2026-11-01\",\n  \"endDate\":   \"2026-11-12\",\n  \"dimensions\": [\"date\",\"query\",\"page\"],\n  \"rowLimit\": 500,\n  \"startRow\": 0,\n  \"aggregationType\": \"auto\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -128,
+        128
+      ],
+      "id": "3e5d32be-8168-477a-9445-0de941fd350f",
+      "name": "HTTP Request Post",
+      "credentials": {
+        "googleOAuth2Api": {
+          "id": "PJeBVuowJCIAyJyi",
+          "name": "Google Search Console demo"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "aed7dcf0-57c9-40d1-a8bc-74f54664db6a",
+              "name": "site1",
+              "value": "=tackettsmill.com",
+              "type": "string"
+            },
+            {
+              "id": "31dadc43-bff4-4904-a36c-36b75812610c",
+              "name": "site2",
+              "value": "=clearbrookcenterofthearts.org",
+              "type": "string"
+            },
+            {
+              "id": "a2179ea2-cb3a-4e2d-8fe4-52254aed2cd1",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -272,
+        144
+      ],
+      "id": "5b50f335-8803-435f-977e-495295a341d4",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Get Sites",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Get Sites": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Post": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "44b2830e-8773-416e-b9c6-5a251d108bf6",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-11-13T16:15:47.491Z",
+      "createdAt": "2026-11-13T16:15:47.491Z",
+      "role": "workflow:owner",
+      "workflowId": "qhBELLGJW5DNjYLy",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
