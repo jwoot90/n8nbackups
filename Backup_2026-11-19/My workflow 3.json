@@ -1,0 +1,83 @@
+{
+  "updatedAt": "2026-11-12T00:08:27.789Z",
+  "createdAt": "2026-11-12T00:04:44.449Z",
+  "id": "HynhcblyHgL39OPN",
+  "name": "My workflow 3",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "810ed504-de63-4b93-a22c-c4ff6c1f4001",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "filters": {
+          "receivedAfter": "2026-10-12T00:00:00",
+          "sender": "shipment-tracking@amazon.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        224,
+        0
+      ],
+      "id": "e769d313-3b9e-4256-993d-051a12be20b4",
+      "name": "Get many messages",
+      "webhookId": "24e3e252-3bc1-4e46-b6bf-2a62d98eecba",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "XwkonRVFW7A3MiEF",
+          "name": "TKM Gmail"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get many messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "pinData": {},
+  "versionId": "7605e53b-c5a6-4902-bdaf-806462ff0088",
+  "activeVersionId": null,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-11-12T00:04:44.449Z",
+      "createdAt": "2026-11-12T00:04:44.449Z",
+      "role": "workflow:owner",
+      "workflowId": "HynhcblyHgL39OPN",
+      "projectId": "9tcaBAqWpqyqWSAr"
+    }
+  ],
+  "activeVersion": null,
+  "tags": []
+}
